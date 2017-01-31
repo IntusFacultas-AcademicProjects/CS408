@@ -1,0 +1,34 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+		<!-- Latest AngularJS lib -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+		<!-- Our Angular Code -->
+		<script src="app.js"></script>
+		<title>RSVP</title>
+	</head>
+	<body>
+		<div class="container">
+			<h1>RSVP</h1>
+			<div ng-app="myApp" ng-controller="myCtrl">
+				<p>I'm {{ firstName + " " + lastName }}</p>
+         		<p>Enter Room Name: <input class="form-control" ng-model="roomData.name"></p>
+				<p>Enter Room Id: <input class="form-control" ng-model="roomData.id"></p>
+				<p>Enter Room Capacity: <input class="form-control" ng-model="roomData.capacity"></p>
+ 				<button ng-click="addRoom(roomData.id, roomData.name, roomData.capacity)"> Reserve Room </button>
+        		<ng-form  ng-repeat="roomData in roomsData">
+					<p> Name: {{roomData.name}}</p>
+					<p> Id: {{roomData.id}}</p>	
+					<p> Capacity: {{roomData.capacity}} </p>
+				</ng-form>
+			</div>
+			<!-- Footer -->
+			<footer id="footer">
+				<p>&copy; RSVP. All rights reserved.</p>
+			</footer>
+		</div>
+	</body>
+</html>
+
