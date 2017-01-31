@@ -4,21 +4,35 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 app.controller("myCtrl", function($scope) {
-    $scope.firstName = "John";
-    $scope.lastName = "Doe";
+
+	$scope.user = { 
+		"username": String,
+		"password":String,
+		"userid": Number,
+		"email": String,
+		"budget": Number,
+		"admin": Boolean
+	};
+
+    $scope.user.username = "Sfellers";
+    $scope.user.password = "password";
+	$scope.user.userid = 0;
+	$scope.user.email = "sfellers@purdue.edu";
+	$scope.user.budget = 3;
+	$scope.user.admin = true;
+	
  	$scope.roomsData  = [];
 
 
 	//functions go in here.
   	$scope.addRoom = function(id, name, capacity) {
-		console.log("adding room id: " + id);
-		var roomData = 
+		var room = 
 		{
 			"id":id,
 			"name":name,
 			"capacity":capacity
 		};
-		$scope.roomsData.push(roomData);
+		$scope.roomsData.push(room);
 		$scope.roomData = "";
 	
   	};
