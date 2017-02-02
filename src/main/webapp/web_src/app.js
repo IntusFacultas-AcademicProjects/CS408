@@ -46,19 +46,7 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
-    $scope.log = function() {
-        console.log("hello");
-    }
-     $scope.groups = [
-    {
-      title: "Dynamic Group Header - 1",
-      items: [{"item-title": "item 1"}, {"item-title": "item 2"}]
-    },
-    {
-      title: "Dynamic Group Header - 2",
-      items: [{"item-title": "item 3"}, {"item-title": "item 4"}]
-    }
-  ];
+
     $scope.isCollapsed = true;
     $scope.roomsData  = [
         {
@@ -72,11 +60,102 @@ app.controller("reservation", function($scope) {
             res: {},
             day: 1,
             roomid:2
-        },{
+        },
+        {
             blocked:false,
             res: {},
             day: 1,
-            roomid:3
+            roomid:4
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:5
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:6
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:7
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:8
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:9
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:10
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:11
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:12
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:13
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:14
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:15
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:16
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:17
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:18
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:19
         }
     ];
 });
