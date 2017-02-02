@@ -3,11 +3,12 @@
 
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
-app.controller("myCtrl", function($scope) {
+
+app.controller("index", function($scope) {
 
 	$scope.user = { 
 		"username": String,
-		"password":String,
+		"password": String,
 		"userid": Number,
 		"email": String,
 		"budget": Number,
@@ -20,7 +21,8 @@ app.controller("myCtrl", function($scope) {
 	$scope.user.email = "sfellers@purdue.edu";
 	$scope.user.budget = 3;
 	$scope.user.admin = true;
-	
+	$scope.firstName = "Sam";
+    $scope.lastName = "Fellers";
  	$scope.roomsData  = [];
 
 
@@ -39,7 +41,7 @@ app.controller("myCtrl", function($scope) {
 
 });
 
-
+app.controller("navbar", function($scope) {});
 
 
 /*

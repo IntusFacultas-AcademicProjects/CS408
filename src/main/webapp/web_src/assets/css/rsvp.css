@@ -67,3 +67,7 @@
         color: #333;
     }
 }
+#tableView {
+    background-color:#999999;
+    height: 500px;
+}
