@@ -69,7 +69,7 @@
 }
 #tableView {
     background-color:#999999;
-    height: 500px;
+    height: 530px;
     overflow-y:scroll;
     overflow-x:hidden;
 }

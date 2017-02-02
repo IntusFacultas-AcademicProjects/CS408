@@ -7,6 +7,7 @@
 		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
 		<link type="text/css" rel="stylesheet" href="assets/css/material.min.css">
 		<link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-datetimepicker-standalone.min.css">
         
         <!-- Latest jQuery-->
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -43,10 +44,13 @@
                             </div>
                             <script type="text/javascript">
                                 $(function () {
+                                    var dateNow = new Date();
                                     $('#datetimepicker1').datetimepicker({
                                          format: 'MM/DD/YYYY',
-                                         minDate: new Date()
+                                         minDate: new Date(),
+                                        defaultDate: dateNow
                                     });
+                                    
                                 });
                             </script>
                         </div>    
