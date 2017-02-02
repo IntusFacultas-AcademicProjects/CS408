@@ -2,8 +2,10 @@
 
 
 //BEFORE HOOKING UP WITH BACKEND
+
 var app = angular.module("myApp", []);
-app.controller("myCtrl", function($scope) {
+
+app.controller("myCtrl", function ($scope) {
 
 	$scope.user = { 
 		"username": String,
@@ -14,7 +16,7 @@ app.controller("myCtrl", function($scope) {
 		"admin": Boolean
 	};
 
-    $scope.user.username = "Sfellers";
+    $scope.user.username = "SFellers";
     $scope.user.password = "password";
 	$scope.user.userid = 0;
 	$scope.user.email = "sfellers@purdue.edu";
@@ -25,22 +27,19 @@ app.controller("myCtrl", function($scope) {
 
 
 	//functions go in here.
-  	$scope.addRoom = function(id, name, capacity) {
+  	$scope.addRoom = function(id, capacity, hours) {
 		var room = 
 		{
 			"id":id,
-			"name":name,
-			"capacity":capacity
+			"capacity":capacity,
+			"hours":hours
 		};
 		$scope.roomsData.push(room);
 		$scope.roomData = "";
 	
   	};
-
 });
-
-
-
+  
 
 /*
  * POST HOOKING UP WITH BACKEND
