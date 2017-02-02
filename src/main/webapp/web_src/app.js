@@ -15,7 +15,7 @@ app.controller("index", function($scope) {
 		"admin": Boolean
 	};
 
-    $scope.user.username = "SFellers";
+    $scope.user.username = "Sfellers";
     $scope.user.password = "password";
 	$scope.user.userid = 0;
 	$scope.user.email = "sfellers@purdue.edu";
@@ -27,12 +27,12 @@ app.controller("index", function($scope) {
 
 
 	//functions go in here.
-  	$scope.addRoom = function(id, capacity, hours) {
+  	$scope.addRoom = function(id, name, capacity) {
 		var room = 
 		{
 			"id":id,
-			"capacity":capacity,
-			"capacity":hours
+			"name":name,
+			"capacity":capacity
 		};
 		$scope.roomsData.push(room);
 		$scope.roomData = "";
@@ -41,7 +41,27 @@ app.controller("index", function($scope) {
 
 });
 
-app.controller("navbar", function($scope) {});
+app.controller("navbar", function($scope) {
+    
+});
+
+app.controller("reservation", function($scope) {
+    $scope.roomsData  = [
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:1
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:2
+        }
+    ];
+});
+
 /*
  * POST HOOKING UP WITH BACKEND
 var resApp = angular.module('resMod', []);
@@ -49,7 +69,6 @@ resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.firstName = "John";
  	$scope.lastName = "Doe";
 	//functions go in here...
-
   	$scope.editRoom = function(id) {
 		console.log("editting room id: " + id);
     	$http.get('/roomlist/' + id).success(function(response) {
