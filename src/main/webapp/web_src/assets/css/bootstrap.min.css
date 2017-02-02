@@ -8,32 +8,47 @@
   border-spacing: 0;
   border-collapse: collapse;   
   
-  background: #fff;
-  
+  background: #DEDEDE;
+  text-align: center;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .my-timetable th {
   font-size: 0.8em;
   color: #808080;
   cursor: pointer;
+  text-align: center;
 }
 
 .my-timetable td {
   border: 1px solid #ccc;
-  background: #fff;
   cursor: pointer;
 }
 
 .my-timetable td:hover {
-  background: orange;
+  background: black;
 }
 
 .my-timetable .selected {
-  background: #2cab54;
+  background: gold;
+}
+
+my-timetable.col-lg-4.shadowed.ng-isolate-scope {
+	background: #DEDEDE;
+}
+
+/*
+* hard coded height for col-lg-8
+*/
+
+.col-lg-8{
+	  margin-top: 5px;
+	  height: 523px;
 }
 /*# sourceMappingURL=bootstrap.min.css.map */

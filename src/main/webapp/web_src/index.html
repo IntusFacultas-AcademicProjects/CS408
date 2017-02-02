@@ -1,21 +1,107 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>AdminCP</title>
-  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-  <script src="//code.angularjs.org/snapshot/angular.min.js"></script>
-  <script src="script.js"></script>
-  
 
-  
-</head>
-<body ng-app="myApp">
-  	<div ng-controller="Controller">
-    	<h1>TIMETABLE</h1>
-    	<my-timetable slots="slots"></my-timetable>
-	</div>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<script src="//code.angularjs.org/snapshot/angular.min.js"></script>
+		<script src="script.js"></script>
+		<!-- Latest compiled and minified CSS -->
+		<link type="text/css" rel="stylesheet" href="assets/css/rsvp.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/material.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css">
+		 
+		<!-- Latest jQuery-->
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+		
+		<!-- Bootstrap Plugins needed for DateTimePicker-->
+		<script src="assets/js/moment.js"></script>
+		<script src="assets/js/collapse.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+		
+		<!-- ImageMapster -->
+		<script src="assets/js/jquery.imagemapster.js"></script>
+		<title>RSVP</title>
+		<link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
+	</head>
+	
+	<body ng-app="myApp">
+	<div ng-include src="'navbar.html'"></div>
+	  	<div ng-controller="Controller">
+	    	<div class="container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-5"></div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#datetimepicker1').datetimepicker({
+                                         format: 'MM/DD/YYYY',
+                                         minDate: new Date()
+                                    });
+                                });
+                            </script>
+                        </div>    
+                    </div>
+                    <div class="col-sm-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 shadowed">
+                        <img alt="HICKS" src="assets/img/HICKS.jpg" usemap="#map_map"  id="map">
+                        <map id="map_map" name="map_map">
+                            <!--Vertical Rooms-->
+                            <area href="#" room="1" id="room1" shape="rect" coords="72,373, 91,391">
+                            <area href="#" room="2" id="room2" shape="rect" coords="72,355, 91,370">
+                            <area href="#" room="3" id="room3" shape="rect" coords="72,337, 91,352">
+                            <area href="#" room="4" id="room4" shape="rect" coords="72,319, 91,334">
+                            <area href="#" room="5" id="room5" shape="rect" coords="72,298, 91,316">
+                            <area href="#" room="6" id="room6" shape="rect" coords="72,280, 91,296">
+                            <area href="#" room="7" id="room7" shape="rect" coords="72,262, 91,277">
+                            <area href="#" room="8" id="room8" shape="rect" coords="72,243, 91,259">
+                            <area href="#" room="9" id="room9" shape="rect" coords="72,225, 91,240">
+                            <area href="#" room="10" id="room10" shape="rect" coords="72,206, 91,222">
+                            <area href="#" room="11" id="room11" shape="rect" coords="72,188, 91,203">
+                            <area href="#" room="12" id="room12" shape="rect" coords="72,158, 91,185">
+                            
+                            <!--Horizontal Rooms-->
+                            <area href="#" room="13" id="room13" shape="rect" coords="53,95, 69,113">
+                            <area href="#" room="14" id="room14" shape="rect" coords="72,95, 86,113">
+                            <area href="#" room="15" id="room15" shape="rect" coords="88,95, 104,113">
+                            <area href="#" room="16" id="room16" shape="rect" coords="106,95, 122,113">
+                            <area href="#" room="17" id="room17" shape="rect" coords="124,95, 140,113">
+                            <area href="#" room="18" id="room18" shape="rect" coords="142,95, 156,113">
+                            <area href="#" room="19" id="room19" shape="rect" coords="160,95, 172,113">
+                        </map>
+                        <script type="text/javascript">
+                            var map = $('#map');
+                            map.mapster({
+                                mapKey: 'room',
+                                fillColor: 'ffffff',
+                                isSelectable: false
+                            });
+                        </script>
+                    </div>
+	    			<my-timetable class="col-lg-4 shadowed" slots="slots"></my-timetable>
+                </div>
+            </div>
+			<!-- Footer -->
+			<footer id="footer">
+                <br>
+                <p>Selectable Rooms are colored in <img class="shadowed" alt="color_swatch" src="assets/img/color_swatch.png"></p><br>
+				<p>&copy; RSVP. All rights reserved.</p>
+			</footer>
+		</div>
+		</div>
+	</body>
 </html>
 
 

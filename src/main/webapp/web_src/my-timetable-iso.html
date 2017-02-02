@@ -1,8 +1,7 @@
-{{slots}}
 <table class="my-timetable">
   <colgroup>
     <col span="1" width="9%">
-    <col data-ng-repeat="i in loop(0, 8, 1)" span="1" width="13%">
+    <col data-ng-repeat="i in loop(0, 4, 1)" span="1" width="13%">
   </colgroup>
   <thead>
     <th></th>
@@ -11,7 +10,7 @@
   <tbody>
     <tr data-ng-repeat="i in loop(0, 23, 1)">
       <th data-ng-click="toggle('hour', 0, i)">{{i + ':00'}}</th>
-      <td data-ng-repeat="j in loop(0, 6, 1)" data-ng-mousedown="select(true, j, i)" data-ng-mouseup="select(false)" data-ng-mouseover="toggle('slot', j, i)" data-ng-click="toggle('slot', j, i)" data-ng-class="{selected: slots[j][i]}"></td>
+      <td data-ng-repeat="j in loop(0, 2, 1)" data-ng-mousedown="select(true, j, i)" data-ng-mouseup="select(false)" data-ng-mouseover="toggle('slot', j, i)" data-ng-click="toggle('slot', j, i)" data-ng-class="{selected: slots[j][i]}"></td>
     </tr>
   </tbody>
 </table>

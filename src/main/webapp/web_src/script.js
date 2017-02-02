@@ -3,10 +3,6 @@ angular.module('myApp', [])
     var _slots = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ];
   function _init() {
@@ -23,10 +19,10 @@ angular.module('myApp', [])
       },
       templateUrl: 'my-timetable-iso.html',
       link: function (scope, element, attributes) {
-          var _days = ['Room 00', 'Room 01', 'Room 02', 'Room 03', 'Room 04', 'Room 05', 'Room 06'];
+          var _days = ['Room 00', 'Room 01', 'Room 02'];
           var _selection = {
             state: false,
-            day: [0, 0, 0, 0, 0, 0, 0],
+            day: [0, 0, 0],
             hour: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           };
           
@@ -42,7 +38,6 @@ angular.module('myApp', [])
           
           function _toggle(what, day, hour) {
             var i = 0;
-            
             switch (what) {
               case 'day':
                 _selection.day[day] = !_selection.day[day];
@@ -55,7 +50,7 @@ angular.module('myApp', [])
               case 'hour':
                 _selection.hour[hour] = !_selection.hour[hour];
                 
-                for (i = 0; i < 7; i++) {
+                for (i = 0; i < 3; i++) {
                   scope.slots[i][hour] = _selection.hour[hour];
                 }
               break;
