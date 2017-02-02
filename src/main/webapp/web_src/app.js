@@ -15,7 +15,7 @@ app.controller("index", function($scope) {
 		"admin": Boolean
 	};
 
-    $scope.user.username = "Sfellers";
+    $scope.user.username = "SFellers";
     $scope.user.password = "password";
 	$scope.user.userid = 0;
 	$scope.user.email = "sfellers@purdue.edu";
@@ -27,12 +27,12 @@ app.controller("index", function($scope) {
 
 
 	//functions go in here.
-  	$scope.addRoom = function(id, name, capacity) {
+  	$scope.addRoom = function(id, capacity, hours) {
 		var room = 
 		{
 			"id":id,
-			"name":name,
-			"capacity":capacity
+			"capacity":capacity,
+			"capacity":hours
 		};
 		$scope.roomsData.push(room);
 		$scope.roomData = "";
@@ -42,8 +42,6 @@ app.controller("index", function($scope) {
 });
 
 app.controller("navbar", function($scope) {});
-
-
 /*
  * POST HOOKING UP WITH BACKEND
 var resApp = angular.module('resMod', []);
