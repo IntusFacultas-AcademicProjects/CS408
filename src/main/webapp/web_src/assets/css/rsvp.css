@@ -70,10 +70,21 @@
 #tableView {
     background-color:#999999;
     height: 500px;
+    overflow-y:scroll;
+    overflow-x:hidden;
 }
 #map_column {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .shadowed {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.hiddenRow {
+    padding: 0 !important;
+}
+.room_table {
+    margin-top:10px;
+}
+.room_table *{
+    background-color:#ffffff;
 }

@@ -15,6 +15,7 @@
         <script src="assets/js/moment.js"></script>
         <script src="assets/js/collapse.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
         
 		<!-- Latest AngularJS lib -->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
@@ -28,7 +29,7 @@
     
 	<body ng-app="myApp">
         <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
-		<div class="container">
+		<div ng-controller="reservation" class="container">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-5"></div>
@@ -88,7 +89,69 @@
                             });
                         </script>
                     </div>
-                    <div class="col-lg-4 shadowed" id="tableView"></div>
+                    <div class="col-lg-4 shadowed" id="tableView">
+                        <table class="table table-condensed room_table">
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <div>
+                                    <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{$index}}" class="accordion-toggle">
+                                        <td>Room {{room.roomid}}</td>
+                                    </tr>
+                                    <tr ng-repeat-end >
+                                        
+                                        <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="room{{$index}}">
+                                            <ul class="list-group">
+                                            <li class="list-group-item" id="room{{$index}}.0" > 00:00-00:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.1"> 01:00-01:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.2"> 02:00-02:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.3"> 03:00-03:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.4"> 04:00-04:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.5"> 05:00-05:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.6"> 06:00-06:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.7"> 07:00-07:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.8"> 08:00-08:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.9"> 09:00-9:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.10"> 10:00-10:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.11"> 11:00-11:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.12"> 12:00-12:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.13"> 13:00-13:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.14"> 14:00-14:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.15"> 15:00-15:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.16"> 16:00-16:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.17"> 17:00-17:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.18"> 18:00-18:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.19"> 19:00-19:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.20"> 20:00-20:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.21"> 21:00-21:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.22"> 23:00-22:59</li>
+                                            <li class="list-group-item" id="room{{$index}}.23"> 23:00-23:59</li>
+                                                
+                                        </ul>    
+                                        </div> </td>
+                                    </tr>
+                                </div>
+                                
+<!--
+                                <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" class="hiddenRow"><div id="demo2" class="accordian-body collapse">Demo2</div></td>
+                                </tr>
+                                <tr data-toggle="collapse" data-target="#demo3" class="accordion-toggle">
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6"  class="hiddenRow"><div id="demo3" class="accordian-body collapse">Demo3</div></td>
+                                </tr>
+-->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 			<!-- Footer -->

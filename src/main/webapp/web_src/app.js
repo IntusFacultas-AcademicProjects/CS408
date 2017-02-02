@@ -41,8 +41,26 @@ app.controller("index", function($scope) {
 
 });
 
-app.controller("navbar", function($scope) {});
+app.controller("navbar", function($scope) {
+    
+});
 
+app.controller("reservation", function($scope) {
+    $scope.roomsData  = [
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:1
+        },
+        {
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:2
+        }
+    ];
+});
 
 /*
  * POST HOOKING UP WITH BACKEND
