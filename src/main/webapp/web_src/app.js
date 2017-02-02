@@ -160,6 +160,9 @@ app.controller("reservation", function($scope) {
     ];
 });
 
+app.controller("reservation-modal", function($scope) {
+    
+});
 /*
  * POST HOOKING UP WITH BACKEND
 var resApp = angular.module('resMod', []);
