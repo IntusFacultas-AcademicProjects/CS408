@@ -46,6 +46,20 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
+    $scope.log = function() {
+        console.log("hello");
+    }
+     $scope.groups = [
+    {
+      title: "Dynamic Group Header - 1",
+      items: [{"item-title": "item 1"}, {"item-title": "item 2"}]
+    },
+    {
+      title: "Dynamic Group Header - 2",
+      items: [{"item-title": "item 3"}, {"item-title": "item 4"}]
+    }
+  ];
+    $scope.isCollapsed = true;
     $scope.roomsData  = [
         {
             blocked:false,
@@ -58,6 +72,11 @@ app.controller("reservation", function($scope) {
             res: {},
             day: 1,
             roomid:2
+        },{
+            blocked:false,
+            res: {},
+            day: 1,
+            roomid:3
         }
     ];
 });

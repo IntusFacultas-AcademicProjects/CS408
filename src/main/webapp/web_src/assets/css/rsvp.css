@@ -88,3 +88,8 @@
 .room_table *{
     background-color:#ffffff;
 }
+.list-button {
+    padding: 0;
+    border: none;
+    background: none;
+}
