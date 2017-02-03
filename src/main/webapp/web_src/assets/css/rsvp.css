@@ -97,3 +97,7 @@
 .panel-group-none {
     margin-bottom:5px !important;
 }
+.modal-list {
+    height:500px;
+    overflow-y:scroll;
+}

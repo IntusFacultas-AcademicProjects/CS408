@@ -46,6 +46,7 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
+   
 
     $scope.isCollapsed = true;
     $scope.roomsData  = [
@@ -158,6 +159,18 @@ app.controller("reservation", function($scope) {
             roomid:19
         }
     ];
+    $scope.roomSelected;
+    $scope.openModal = function(event) {
+        var id = event.target.id;
+        $scope.roomSelected=id;
+        $scope.roomSelected=$scope.roomSelected.substring(0, id.length-1);
+        $("#reserve-modal").modal("toggle");
+        console.log($scope.roomSelected);
+    };
+    $scope.mouseOver = function(event) {
+        var id = event.target.id;
+        console.log(event);
+    }
 });
 
 app.controller("reservation-modal", function($scope) {
