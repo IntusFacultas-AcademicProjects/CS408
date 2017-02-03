@@ -51,7 +51,7 @@ app.controller("reservation", function($scope) {
     $scope.isCollapsed = true;
     $scope.roomsData  = [
         {
-            blocked:false,
+            blocked:true,
             res: {},
             day: 1,
             roomid:1
@@ -63,7 +63,7 @@ app.controller("reservation", function($scope) {
             roomid:2
         },
         {
-            blocked:false,
+            blocked:true,
             res: {},
             day: 1,
             roomid:3
@@ -170,20 +170,58 @@ app.controller("reservation", function($scope) {
         var id = event.target.id;
         $scope.roomSelected=id;
         $scope.roomSelected=$scope.roomSelected.substring(0, id.length-1);
-        $("#reserve-modal").modal("toggle");
-        console.log($scope.roomSelected);
+        var num = $scope.roomSelected.substring($scope.roomSelected.length -1);
+        console.log(num);
+        if ($scope.roomsData[num-1].blocked == false) {
+            $("#reserve-modal").modal("toggle");
+        }
+        else {
+            alert("This room is currently blocked");
+        }
+        
     };
     $scope.mouseOver = function(event) {
 
-//        console.log(event);
         var room = "#room"+event+"a";
         $(room).mapster('select');
     }
     $scope.mouseLeave = function(event) {
-
-//        console.log("leaving " + event);
         var room = "#room"+event+"a";
-        $(room).mapster('deselect');
+        if ($scope.roomsData[event-1].blocked == false) {
+            $(room).mapster('deselect');
+        }
+    }
+    $scope.disableBlockedRooms = function() {
+        angular.forEach($scope.roomsData, function(room, index) {
+            if (room.blocked) {
+                var roomName = "#room" + room.roomid + "a";
+                var roomTable = "#room"+room.roomid + "c";
+                
+                
+//                $(roomName).mapster('isSelectable',false);
+                $(roomName).mapster('set', true);
+                $(roomName).css("background-color", 'black');
+                $('#map').mapster('set_options',{
+                    areas:[
+                        {
+                            key: room.roomid,
+                            fillColor: '000000'
+                        }]
+                    });
+                console.log(roomTable);
+                
+            }
+        }
+                           
+    );
+    }
+    $scope.checkBlocked = function(id) {
+        if ($scope.roomsData[id-1].blocked) {
+            var name = "#room" + id;
+            
+            alert("This room is currently blocked");
+//            $(name).toggle();
+        }
     }
 });
 

@@ -97,3 +97,6 @@
 .panel-group-none {
     margin-bottom:5px !important;
 }
+.disabled-room {
+    background-color:#000000 !important;
+}
