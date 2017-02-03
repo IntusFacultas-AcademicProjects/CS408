@@ -217,6 +217,7 @@ app.controller("reservation", function($scope) {
     }
     $scope.checkBlocked = function(id) {
         if ($scope.roomsData[id-1].blocked) {
+            
             var name = "#room" + id;
             
             alert("This room is currently blocked");
