@@ -93,11 +93,13 @@
     border: none;
     background: none;
 }
-
+.modal-list {
+    height: 500px;
+    overflow-y:scroll;
+}
 .panel-group-none {
     margin-bottom:5px !important;
 }
-.modal-list {
-    height:500px;
-    overflow-y:scroll;
+.disabled-room {
+    background-color:#000000 !important;
 }

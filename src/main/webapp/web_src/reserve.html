@@ -59,13 +59,18 @@
                     </div>
                     <div class="col-sm-5"></div>
                 </div>
-                <div class="row">
+                <div class="row" ng-init="disableBlockedRooms()">
                     <div class="col-lg-8 shadowed">
                         <img alt="HICKS" src="assets/img/HICKS.jpg" usemap="#map_map"  id="map">
                         <map id="map_map" name="map_map">
                             <!--Vertical Rooms-->
+<<<<<<< HEAD
                             <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="72,355, 91,370">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="72,373, 91,391">
+=======
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="72,373, 91,391">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="72,355, 91,370">
+>>>>>>> origin/master
                             <area ng-click="openModal($event)" class="room_area" href="#" room="3" id="room3a" shape="rect" coords="72,337, 91,352">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="4" id="room4a" shape="rect" coords="72,319, 91,334">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="5" id="room5a" shape="rect" coords="72,298, 91,316">
@@ -105,7 +110,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+<<<<<<< HEAD
                                     <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{room.roomid}}" class="accordion-toggle room-select" id="room{{room.roomid}}c" ng-mouseover="mouseOver($event)">
+=======
+                                    <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{room.roomid}}" class="accordion-toggle room-select" id="room{{room.roomid}}c" ng-mouseover="mouseOver(room.roomid)" ng-mouseleave="mouseLeave(room.roomid)" ng-click="checkBlocked(room.roomid)">
+>>>>>>> origin/master
                                         <td>Room {{room.roomid}}</td>
                                     </tr>
                                     <tr ng-repeat-end >
