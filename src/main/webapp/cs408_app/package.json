@@ -1,0 +1,22 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "description": "All back-end files should go here",
+  "main": "connect.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spear99/CS408.git"
+  },
+  "author": "Ben Huemann, Michael Pike",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Spear99/CS408/issues"
+  },
+  "homepage": "https://github.com/Spear99/CS408#readme",
+  "dependencies": {
+    "mysql": "^2.13.0"
+  }
+}
