@@ -3,7 +3,7 @@ Visual Appearance:
 
 	Every single frontend file should use the same css and aesthetic javascript
 	found in the assests. If a seperate css modification needs to be made, create
-	a master css page and add it to the css files. 
+	a master css page (created: rsvp.css) and add it to the css files. 
 
 	This is to ensure visual consistency across all web pages.
 	

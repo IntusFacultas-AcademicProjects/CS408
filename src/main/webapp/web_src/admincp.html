@@ -8,24 +8,55 @@
 		<link rel="stylesheet" href="assets/css/material.min.css">
 		<!-- Latest AngularJS lib -->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+		<script data-require="angular-route@*" data-semver="1.2.12" src="http://code.angularjs.org/1.2.12/angular-route.js"></script>
+    	<script data-require="angular-touch@*" data-semver="1.2.12" src="http://code.angularjs.org/1.2.12/angular-touch.js"></script>
 		<!-- Our Angular Code -->
 		<script src="app.js"></script>
 		<title>RSVP</title>
 	</head>
 	<body>
+		<div ng-app="myApp" ng-controller="navbar" ng-include src="'navbar.html'"></div>
 		<div class="container">
-			<h1>ADMINCP</h1>
-			<div ng-app="myApp" ng-controller="myCtrl">
-				<p>Welcome {{ user.username }}</p>
-         		<p>Enter Room Name: <input class="form-control" ng-model="roomData.name"></p>
-				<p>Enter Room Id: <input class="form-control" ng-model="roomData.id"></p>
-				<p>Enter Room Capacity: <input class="form-control" ng-model="roomData.capacity"></p>
- 				<button ng-click="addRoom(roomData.id, roomData.name, roomData.capacity)"> Reserve Room </button>
-        		<ng-form  ng-repeat="room in roomsData">
-					<p> Name: {{room.name}}</p>
-					<p> Id: {{room.id}}</p>	
-					<p> Capacity: {{room.capacity}} </p>
-				</ng-form>
+			<h1>Admin Control Panel</h1>
+			<div data-ng-app="myApp" data-ng-controller="myCtrl">
+				<h4>Welcome {{ user.username }}</h4>
+ 				<table class="table">
+			      <thead>
+			        <tr>
+			          <th>Room Id</th>         
+			          <th>Room Capacity</th>
+			          <th>12 - 1</th>
+			          <th>1 - 2</th>
+			          <th>2 - 3</th>
+			          <th>3 - 4</th>
+			          <th>4 - 5</th>
+			          <th>5 - 6</th>
+			          <th>6 - 7</th>
+			          <th>7 - 8</th>
+			          <th>8 - 9</th>
+			          <th>9 - 10</th>
+			          <th>11 - 12</th>
+			        </tr>
+			      </thead>
+			      <tbody>
+			        <tr>
+			        	<td><input class="form-control" ng-model="roomData.id"></td>
+						<td><input class="form-control" ng-model="roomData.capacity"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[0]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[1]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[2]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[3]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[4]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[5]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[6]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[7]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[8]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[9]"></td>
+						<td><input type="checkbox" ng-model="roomData.hours[10]"></td>
+		 				<button ng-click="addRoom(roomData.id, roomData.capacity, roomData.hours)"> Reserve Room </button></td>
+		        	</tr>
+			      </tbody>
+			    </table>
 			</div>
 			<!-- Footer -->
 			<footer id="footer">

@@ -67,3 +67,39 @@
         color: #333;
     }
 }
+#tableView {
+    background-color:#999999;
+    height: 530px;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+#map_column {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.shadowed {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.hiddenRow {
+    padding: 0 !important;
+}
+.room_table {
+    margin-top:10px;
+}
+.room_table *{
+    background-color:#ffffff;
+}
+.list-button {
+    padding: 0;
+    border: none;
+    background: none;
+}
+.modal-list {
+    height: 500px;
+    overflow-y:scroll;
+}
+.panel-group-none {
+    margin-bottom:5px !important;
+}
+.disabled-room {
+    background-color:#000000 !important;
+}
