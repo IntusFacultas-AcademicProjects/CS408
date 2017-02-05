@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Spear99/CS408#readme",
   "dependencies": {
+    "express": "^4.14.1",
     "mysql": "^2.13.0"
   }
 }
