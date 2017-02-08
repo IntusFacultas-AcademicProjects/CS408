@@ -19,7 +19,7 @@ function getAllRooms(day)
 		console.log('Connection established');
     });
 	
-	con.query('SELECT room FROM rooms WHERE start_time > day AND end_time < day' 
+	con.query('SELECT * FROM reservations WHERE start_time > day AND end_time < day' 
 	[day], function(err,rows)
 	{
 		if(err) throw err;
