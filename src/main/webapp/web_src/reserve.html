@@ -110,11 +110,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-<<<<<<< HEAD
-                                    <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{room.roomid}}" class="accordion-toggle room-select" id="room{{room.roomid}}c" ng-mouseover="mouseOver($event)">
-=======
                                     <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{room.roomid}}" class="accordion-toggle room-select" id="room{{room.roomid}}c" ng-mouseover="mouseOver(room.roomid)" ng-mouseleave="mouseLeave(room.roomid)" ng-click="checkBlocked(room.roomid)">
->>>>>>> origin/master
                                         <td>Room {{room.roomid}}</td>
                                     </tr>
                                     <tr ng-repeat-end >
