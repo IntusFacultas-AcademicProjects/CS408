@@ -23,11 +23,19 @@ var port = process.env.PORT || 8080;        // set our port
 var con = mysql.createConnection({
   host: "mydb.itap.purdue.edu",
   user: "bhuemann",
-  password: "ben143037",
+  password: "ben408",
   database: "bhuemann"
 });
 
 console.log('Creating connection to mySQL server');
+
+con.connect(function(err){
+    if(err){
+	console.log('Error connecting to Db');
+	return;
+    }
+    console.log('Connection established');
+});
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -45,7 +53,33 @@ router.use(function(req, res, next) {
 
 router.route('/addAccount')
     .post(function(req, res) {
-	query.addAccount(req.body.email, req.body.pass, 0,con);
+	query.addAccount(req.body.email, req.body.pass, 0,con,function(result){
+	    console.log('result: ' + result);
+	});
+	res.json({ message: 'ACK' });
+	
+    });
+
+router.route('/authAccount')
+    .post(function(req, res) {
+	query.authAccount(req.body.email,req.body.pass,con,function(result){
+	    
+	    console.log('result: ' + result);
+
+	});
+
+	res.json({ message: 'ACK' });
+	
+    });
+
+router.route('/deleteAccount')
+    .delete(function(req, res) {
+	query.deleteAccount(req.body.email,req.body.pass,con,function(result){
+	    
+	    console.log('result: ' + result);
+
+	});
+
 	res.json({ message: 'ACK' });
 	
     });
