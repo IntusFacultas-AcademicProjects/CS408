@@ -25,6 +25,7 @@
         <script src="assets/js/jquery.imagemapster.js"></script>
 		<!-- Our Angular Code -->
 		<script src="app.js"></script>
+        
         <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
 		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
 		<title>RSVP</title>
@@ -64,13 +65,8 @@
                         <img alt="HICKS" src="assets/img/HICKS.jpg" usemap="#map_map"  id="map">
                         <map id="map_map" name="map_map">
                             <!--Vertical Rooms-->
-<<<<<<< HEAD
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="72,355, 91,370">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="72,373, 91,391">
-=======
                             <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="72,373, 91,391">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="72,355, 91,370">
->>>>>>> origin/master
                             <area ng-click="openModal($event)" class="room_area" href="#" room="3" id="room3a" shape="rect" coords="72,337, 91,352">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="4" id="room4a" shape="rect" coords="72,319, 91,334">
                             <area ng-click="openModal($event)" class="room_area" href="#" room="5" id="room5a" shape="rect" coords="72,298, 91,316">
@@ -101,59 +97,7 @@
                             });
                         </script>
                     </div>
-                    <div class="col-lg-4 shadowed" id="tableView">
-                        
-                        <table class="table table-condensed room_table">
-                            <thead>
-                                <tr>
-                                    <th>Room</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    <tr data-toggle="collapse" ng-repeat-start="room in roomsData" data-target="#room{{room.roomid}}" class="accordion-toggle room-select" id="room{{room.roomid}}c" ng-mouseover="mouseOver(room.roomid)" ng-mouseleave="mouseLeave(room.roomid)" ng-click="checkBlocked(room.roomid)">
-                                        <td>Room {{room.roomid}}</td>
-                                    </tr>
-                                    <tr ng-repeat-end >
-                                        
-                                        <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="room{{room.roomid}}">
-                                            <ul class="list-group">
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.0" > 00:00-00:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.1"> 01:00-01:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.2"> 02:00-02:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.3"> 03:00-03:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.4"> 04:00-04:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.5"> 05:00-05:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.6"> 06:00-06:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.7"> 07:00-07:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.8"> 08:00-08:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.9"> 09:00-9:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.10"> 10:00-10:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.11"> 11:00-11:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.12"> 12:00-12:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.13"> 13:00-13:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.14"> 14:00-14:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.15"> 15:00-15:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.16"> 16:00-16:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.17"> 17:00-17:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.18"> 18:00-18:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.19"> 19:00-19:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.20"> 20:00-20:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.21"> 21:00-21:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.22"> 23:00-22:59</button>
-                                                <button type="button" class="list-group-item" id="room{{room.roomid}}.23"> 23:00-23:59</button>
-                                            </ul>    
-                                        </div> </td>
-                                    </tr>
-                            </tbody>
-                        </table>
-                       <script>
-                            $(".room-select").hover(function() {
-                                console.log(this.id);
-                            }, function(){
-                                console.log("leaving");
-                            }); 
-                       </script>
-                    </div>
+                    <timetable class="col-lg-4 shadowed" slots="slots" ></timetable>
                 </div>
             </div>
             <div  ng-include src="'reserve-modal.html'"></div>
