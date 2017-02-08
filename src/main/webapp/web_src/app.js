@@ -229,14 +229,13 @@ app.controller("reservation", function($scope) {
                 var start = reservation.start;
                 var end = reservation.end;
                 for (var i = start; i <= end; i++) {
-                    var name = "#roomroom"+num+"." + i;
-                    var disableString = '<button type="button" class="list-group-item" id="' + name + '" disabled> modified ' + hour[i] + '</button>';
-                    angular.element(jQuery(name)).html(disableString);
-//                    $(name).html(disableString);
-//                    $(name).text("hello");
-                    //$(name).prop("disabled", true);
-//                    $(name).css("color","css");
-                    console.log(disableString);
+                    var name = "#roomModal." + i;
+                    var htmlName = "roomModal." + i;
+                    var disableString = '<button type="button" class="list-group-item" id="' + htmlName + '" disabled> modified ' + hour[i] + '</button>';
+//                    console.log(name);
+//                    $(name).addClass("disabled");
+
+//                    console.log(disableString);
                 }
 //                console.log(reservation);
             }
@@ -299,7 +298,7 @@ app.controller("reservation-modal", function($scope) {
 
 app.directive('timetable', function() {
     return {
-      restrict: 'E',
+      restrict: 'AE',
       scope: {
         slots: '='
       },
@@ -370,6 +369,18 @@ app.directive('timetable', function() {
       };
   });
 
+app.directive('reservationTable', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        slots: '='
+      },
+      templateUrl: 'reservation-table.html',
+      link: function (scope, element, attributes) {
+         
+        
+      }};
+})
 /*
  * POST HOOKING UP WITH BACKEND
 var resApp = angular.module('resMod', []);
