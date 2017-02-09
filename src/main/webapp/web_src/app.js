@@ -334,7 +334,7 @@ app.controller("reservation", function($scope) {
 //          $(name).toggle();
         }
     }
-}).directive('reservationTable', function($scope) {
+}).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
         restrict: 'E',
@@ -348,13 +348,10 @@ app.controller("reservation", function($scope) {
                     console.log(scope.roomData);
                     iElem.children().each(function () {
                         $(this).children().each(function () {
-                            console.log("scope roomdata: " + $scope.roomData);
-                            console.log("roomData: " + roomData);
-                            $(this).prop('disabled',true);
-                        }) // "this" is the current element in the loop
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
-                                
 //                            $(this).prop('disabled',true);
+                        }) 
+                                
                     });
                 },
                 post: function(scope, iElem, iAttrs){
