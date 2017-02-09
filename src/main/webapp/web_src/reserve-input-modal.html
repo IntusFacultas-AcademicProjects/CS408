@@ -8,8 +8,22 @@
                 </button>
             </div>
             <div class="modal-body">
+                <h1 class="header">Start Time</h1>
+                <div class="form-group">
+                    <label for="startTime">Reservation Start Time</label>
+                    <select id="startTime" class="form-control" ng-repeat="hour in hours">
+                          <option value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
+                    </select>
+                </div>
+                <br>
 
-                
+                <h1 class="header">End Time</h1>
+                <div class="form-group">
+                    <label for="endTime">Reservation End Time</label>
+                    <select id="endtTime" class="form-control" ng-repeat="hour in hours">
+                          <option value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
