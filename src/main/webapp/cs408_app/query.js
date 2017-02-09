@@ -21,7 +21,6 @@ exports.authAccount = function(email,password,connection,callback) {
     connection.query('SELECT * FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
 	if(error)
 	    throw error;
-
 	if(results.length == 1)
 	    callback(true);
 	else
@@ -35,7 +34,6 @@ exports.deleteAccount = function(email,password,connection,callback) {
     connection.query('DELETE FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
 	if(error)
 	    throw error;
-	
 	if(results.affectedRows == 1)
 	    callback(true);
 	else if(results.affectedRows == 0)

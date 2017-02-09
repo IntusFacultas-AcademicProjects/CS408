@@ -75,9 +75,7 @@ router.route('/authAccount')
 router.route('/deleteAccount')
     .delete(function(req, res) {
 	query.deleteAccount(req.body.email,req.body.pass,con,function(result){
-	    
 	    console.log('result: ' + result);
-
 	});
 
 	res.json({ message: 'ACK' });

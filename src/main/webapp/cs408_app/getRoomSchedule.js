@@ -6,16 +6,20 @@ function getRoomSchedule(room, week)
 	{
 		host: "mydb.itap.purdue.edu",
 		user: "bhuemann",
-		password: "ben143037",
+		password: "ben408",
 		database: "bhuemann"
 	});
 	
-	con.query("SELECT * FROM rooms WHERE room_id = ? AND start_time > ? AND end_time < end_time + 1_week_idk" [room, week],
+	end_date = week + 1_week_idk;
+	
+	con.query("SELECT * FROM rooms WHERE room_id = ? AND date > ? AND date < ?"
+	[room, week, end_date],
 	function(error,results,fields){
 		if(error)
 			throw error;
 
 	});
+	con.end(function(err){});
 }
 
 function getRoomSchedule(room, day)
@@ -24,17 +28,17 @@ function getRoomSchedule(room, day)
 	{
 		host: "mydb.itap.purdue.edu",
 		user: "bhuemann",
-		password: "ben143037",
+		password: "ben408",
 		database: "bhuemann"
 	});
 	
-	end = day + 1_day_idk;
-	
-	con.query("SELECT * FROM rooms WHERE room_id = ? AND start_time > ? AND end_time < ?"
-	[room, week, end],
+	con.query("SELECT * FROM rooms WHERE room_id = ? AND date = ?"
+	[room, day],
 	function(error,results,fields){
 		if(error)
 			throw error;
 
 	});
+	
+	con.end(function(err){});
 }
