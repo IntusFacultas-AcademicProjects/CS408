@@ -360,8 +360,9 @@ app.controller("reservation", function($scope) {
                             $(this).prop('disabled',true);
                         }) // "this" is the current element in the loop
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
-                                
 //                            $(this).prop('disabled',true);
+                        }) 
+                                
                     });
                 },
                 post: function(scope, iElem, iAttrs){
