@@ -11,7 +11,7 @@
                 <h1 class="header">Start Time</h1>
                 <div class="form-group">
                     <label for="startTime">Reservation Start Time</label>
-                    <select id="startTime" class="form-control" ng-repeat="hour in hours">
+                    <select id="startTime" class="form-control" ng-repeat="hour in availableHours">
                           <option value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                     </select>
                 </div>
@@ -20,7 +20,7 @@
                 <h1 class="header">End Time</h1>
                 <div class="form-group">
                     <label for="endTime">Reservation End Time</label>
-                    <select id="endtTime" class="form-control" ng-repeat="hour in hours">
+                    <select id="endtTime" class="form-control" ng-repeat="hour in availableHours">
                           <option value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                     </select>
                 </div>

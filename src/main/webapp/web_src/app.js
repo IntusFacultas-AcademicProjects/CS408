@@ -97,6 +97,7 @@ app.controller("reservation", function($scope) {
 
     ];
     $scope.isCollapsed = true;
+    // json information delivered from SQL database (currently disposable data)
     $scope.roomsData  = [
         {
             blocked:true,
@@ -241,7 +242,7 @@ app.controller("reservation", function($scope) {
       ];
     function _init() {
         $scope.slots = _slots;
-        $scope.roomData = [1,2,4];
+        
       }
     _init();
     
@@ -380,25 +381,22 @@ app.controller("reservation", function($scope) {
 					//access this data 
                     iElem.children().each(function () {
 							/*
-						if this.id = "roomModal." + array[0].id
+                            if this.id = "roomModal." + array[0].id
 							color red or yellow depending on shareable
-*/
+                            */
                         $(this).children().each(function () {
-//                            $(this).prop('disabled',true);
-                        }) // "this" is the current element in the loop
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
 //                            $(this).prop('disabled',true);
                         }) 
+                    }) 
                                 
-                    }
-                ,
+                }, // pre
                 post: function(scope, iElem, iAttrs){
                     
-                }
-            }
-        }
-        
-    };
+                } // post
+            } //return
+        } // compile
+    }; // return
 });
 
 // this is the directive for the tabular view to the right of the map
