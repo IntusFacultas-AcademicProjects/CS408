@@ -47,10 +47,28 @@ app.controller("navbar", function($scope) {
 
 app.controller("reservation", function($scope) {
    
+	$scope.user = { 
+		"username": String,
+		"password": String,
+		"userid": Number,
+		"email": String,
+		"budget": Number,
+		"admin": Boolean
+	};
+
+    $scope.user.username = "SFellers";
+    $scope.user.password = "password";
+	$scope.user.userid = 0;
+	$scope.user.email = "sfellers@purdue.edu";
+	$scope.user.budget = 3;
+	$scope.user.admin = true;
+
      var _slots = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       ];
       function _init() {
         $scope.slots = _slots;
@@ -221,7 +239,14 @@ app.controller("reservation", function($scope) {
             $("#reserve-modal").modal("toggle");
         }
         else {
-            alert("This room is currently blocked");
+			var room = $scope.roomsData[num-1];
+			console.log("attempting to open blocked room modal.")
+			if($scope.user.admin){
+				$("#reserve-block-modal").modal("toggle");
+			}else{
+				alert("This room is currently blocked");
+			}
+			console.log("roomselected: " + $scope.roomIndex);
         }
         
     };
@@ -265,15 +290,26 @@ app.controller("reservation", function($scope) {
             
             var name = "#room" + id;
             
-            alert("This room is currently blocked");
+			return "Blocked";
+            //alert("RoomID: " + id + " is currently blocked");
 //            $(name).toggle();
+        }
+    }
+
+    $scope.unblockRoom = function(id) {
+        if ($scope.roomsData[id-1].blocked) {
+            var name = "#room" + id;
+            alert("RoomID: " + id + " is currently blocked");
+			$scope.roomsData[id-1].blocked = false;
+			//need to add a refresh function to recolor unblocked rooms
+//          $(name).toggle();
         }
     }
 }).directive('reservationTable', function($scope) {
     return {
         restrict: 'E',
         scope: {
-            roomData: '@roomData'
+            roomData: '=roomData'
         },
         templateUrl: 'reservation-table.html',
         compile: function(tElem,attrs) {
@@ -281,8 +317,8 @@ app.controller("reservation", function($scope) {
                 pre: function(scope, iElem, iAttrs){
                     iElem.children().each(function () {
                         $(this).children().each(function () {
-                            console.log($scope.roomData);
-                                
+                            console.log("scope roomdata: " + $scope.roomData);
+                            console.log("roomData: " + roomData);
                             $(this).prop('disabled',true);
                         }) // "this" is the current element in the loop
                     });
@@ -306,10 +342,10 @@ app.directive('timetable', function() {
       },
       templateUrl: 'my-timetable-iso.html',
       link: function (scope, element, attributes) {
-          var _days = ['Room 00', 'Room 01', 'Room 02'];
+          var _days = ['Room 00', 'Room 01', 'Room 02', 'Room 03'];
           var _selection = {
             state: false,
-            day: [0, 0, 0],
+            day: [0, 0, 0, 0],
             hour: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           };
           
@@ -337,7 +373,7 @@ app.directive('timetable', function() {
               case 'hour':
                 _selection.hour[hour] = !_selection.hour[hour];
                 
-                for (i = 0; i < 3; i++) {
+                for (i = 0; i < 4; i++) {
                   scope.slots[i][hour] = _selection.hour[hour];
                 }
               break;

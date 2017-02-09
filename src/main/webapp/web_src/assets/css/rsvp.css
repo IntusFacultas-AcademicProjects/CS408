@@ -116,3 +116,7 @@
 .shareable:hover {
     background-color: #B1810B !important;
 }
+
+.my-timetable {
+	height: 500px;
+}

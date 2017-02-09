@@ -1,8 +1,8 @@
 <!DOCTYPE>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<!-- Latest compiled and minified CSS -->
- 		<meta charset="UTF-8">
         <link type="text/css" rel="stylesheet" href="assets/css/rsvp.css">
 		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
@@ -37,7 +37,9 @@
 		<div ng-controller="reservation" class="container">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-5"></div>
+                    <div class="col-sm-5">
+						<p>Welcome to the Admin Control Panel, {{user.username}}</p>
+					</div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <div class='input-group date' id='datetimepicker1'>
@@ -102,6 +104,7 @@
                 </div>
             </div>
             <div  ng-include src="'reserve-modal.html'"></div>
+			<div  ng-include src="'reserve-block-modal.html'"></div>
 			<!-- Footer -->
 			<footer id="footer">
                 <br>
