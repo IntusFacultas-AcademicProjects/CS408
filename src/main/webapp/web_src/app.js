@@ -46,7 +46,10 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
-   
+
+   $scope.naomi = { name: 'Naomi', address: '1600 Amphitheatre' };
+   $scope.igor = { name: 'Igor', address: '123 Somewhere' };
+
 	$scope.user = { 
 		"username": String,
 		"password": String,
@@ -361,21 +364,28 @@ app.controller("reservation", function($scope) {
 			$scope.roomsData[id-1].blocked = false;
 			//need to add a refresh function to recolor unblocked rooms
         }
-    }
+    };
+
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
         restrict: 'E',
         scope: {
-            roomData: '=roomData'
+            roomData: '=info'
         },
         templateUrl: 'reservation-table.html',
         compile: function(tElem,attrs) {
             return {
                 pre: function(scope, iElem, iAttrs){
-                    
+					//access this data 
                     iElem.children().each(function () {
+							/*
+						if this.id = "roomModal." + array[0].id
+							color red or yellow depending on shareable
+*/
                         $(this).children().each(function () {
+                            $(this).prop('disabled',true);
+                        }) // "this" is the current element in the loop
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
 //                            $(this).prop('disabled',true);
                         }) 
