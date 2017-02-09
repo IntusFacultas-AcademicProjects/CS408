@@ -72,7 +72,6 @@ app.controller("reservation", function($scope) {
       ];
       function _init() {
         $scope.slots = _slots;
-        $scope.roomData = [1,2,4];
       }
     
     // variables
@@ -95,7 +94,6 @@ app.controller("reservation", function($scope) {
 
     ];
     $scope.isCollapsed = true;
-    $scope.roomData = [1,2,4];
     $scope.roomsData  = [
         {
             blocked:true,
@@ -225,8 +223,14 @@ app.controller("reservation", function($scope) {
             roomid:19
         }
     ];
+    // name displayed at top of modal
     $scope.roomSelected;
+    // index of room data in array
     $scope.roomIndex;
+    // hour selected from reserve-modal serves as start time
+    $scope.hourSelected;
+    // available hours from selected start time
+    $scope.availableHours;
     var _slots = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -241,11 +245,11 @@ app.controller("reservation", function($scope) {
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
         var id = event.target.id;
-        $scope.roomSelected=id;
+        $scope.roomSelected = id;
         var num=$scope.roomSelected.substring(4, id.length-1);
         $scope.roomSelected = $scope.roomSelected.substring(0, id.length-1);
-        console.log(num);
         $scope.roomIndex = num;
+        console.log("Modal Open roomIndex" +$scope.roomIndex);
         if ($scope.roomsData[num-1].blocked == false) {
             
             var room = $scope.roomsData[num-1];
@@ -259,6 +263,7 @@ app.controller("reservation", function($scope) {
                 }
             }
             $("#reserve-modal").modal("toggle");
+            console.log("Modal Open roomSelected" + $scope.roomSelected)
         }
         else {
 			var room = $scope.roomsData[num-1];
@@ -316,13 +321,37 @@ app.controller("reservation", function($scope) {
             var name = "#room" + id;
             
 			return "Blocked";
-            //alert("RoomID: " + id + " is currently blocked");
-//            $(name).toggle();
+            
+
         }
     };
     
-    $scope.openHours = function(event) {
-        console.log(event.target.id);
+    // opens second reservation modal
+    $scope.openHours = function(event, roomSelected) {
+        console.log("open second modal " + roomSelected);
+        var startTime = event.target.id.substring(10,event.target.id.length);
+        $scope.hourSelected = startTime;
+        var room = $scope.roomsData[$scope.roomIndex];
+        console.log("room index " + $scope.roomIndex);
+        console.log("room selected " + $scope.roomSelected);
+        
+        console.log(room);
+        var roomReservations = room.res;
+        var takenHours = [];
+        for (var i = 0; i < roomReservations.length; i++) {
+            var reservationSlot = roomReservations[i];
+            var start = reservationSlot.start;
+            for (start; start <= reservationSlot.end; start++) {
+                takenHours.push(start);
+            }
+        }
+        var availableHours = [startTime];
+        for (var i = startTime; takenHours.includes(i) == false && i < 24; i++) {
+            availableHours.push(i);
+        }
+        $scope.availableHours = availableHours;
+        console.log(number);
+        console.log(availableHours);
     }
 
     $scope.unblockRoom = function(id) {
@@ -331,7 +360,6 @@ app.controller("reservation", function($scope) {
             alert("RoomID: " + id + " is currently blocked");
 			$scope.roomsData[id-1].blocked = false;
 			//need to add a refresh function to recolor unblocked rooms
-//          $(name).toggle();
         }
     }
 }).directive('reservationTable', function() {
@@ -345,7 +373,7 @@ app.controller("reservation", function($scope) {
         compile: function(tElem,attrs) {
             return {
                 pre: function(scope, iElem, iAttrs){
-                    console.log(scope.roomData);
+                    
                     iElem.children().each(function () {
                         $(this).children().each(function () {
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
