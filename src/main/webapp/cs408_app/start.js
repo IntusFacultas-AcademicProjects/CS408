@@ -15,7 +15,7 @@ var query      = require('./query');          // our defined api calls
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;        // set our port
+var port = process.env.PORT || 8888;        // set our port
 
 //In order to connect to the database you will need node installed on your machine.
 //Once Node's installed, run command 'npm install' in 'CS408/src/main/webapp/cs408_app' dir.
