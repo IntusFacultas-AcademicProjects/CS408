@@ -384,7 +384,7 @@ app.controller("reservation", function($scope) {
 							color red or yellow depending on shareable
 */
                         $(this).children().each(function () {
-                            $(this).prop('disabled',true);
+//                            $(this).prop('disabled',true);
                         }) // "this" is the current element in the loop
                             // used to block hours that are taken. Needs outside data that is not being passed properly.
 //                            $(this).prop('disabled',true);
