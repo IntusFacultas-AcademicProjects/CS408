@@ -103,3 +103,20 @@
 .disabled-room {
     background-color:#000000 !important;
 }
+.list-group-item:disabled {
+    background-color: #990000;
+}
+
+.list-group-item:disabled:hover {
+    background-color: #990000;
+}
+.shareable {
+    background-color: #B1810B !important;
+}
+.shareable:hover {
+    background-color: #B1810B !important;
+}
+
+.my-timetable {
+	height: 500px;
+}
