@@ -54,10 +54,12 @@ app.controller("reservation", function($scope) {
       ];
       function _init() {
         $scope.slots = _slots;
+        $scope.roomData = [1,2,4];
       }
 
       _init();
     $scope.isCollapsed = true;
+    $scope.roomData = [1,2,4];
     $scope.roomsData  = [
         {
             blocked:true,
@@ -188,6 +190,7 @@ app.controller("reservation", function($scope) {
         }
     ];
     $scope.roomSelected;
+    $scope.roomIndex;
     $scope.openModal = function(event) {
 //        console.log($scope.roomsData);
         var id = event.target.id;
@@ -196,33 +199,9 @@ app.controller("reservation", function($scope) {
         var num=$scope.roomSelected.substring(4, id.length-1);
         $scope.roomSelected = $scope.roomSelected.substring(0, id.length-1);
         console.log(num);
+        $scope.roomIndex = num;
         if ($scope.roomsData[num-1].blocked == false) {
-            var hour = [
-                "00:00-00:59",
-                "01:00-01:59",
-                "02:00-02:59",
-                "03:00-03:59",
-                "04:00-04:59",
-                "05:00-05:59",
-                "06:00-06:59",
-                "07:00-07:59",
-                "08:00-08:59",
-                "09:00-09:59",
-                "10:00-10:59",
-                "11:00-11:59",
-                "12:00-12:59",
-                "13:00-13:59",
-                "14:00-14:59",
-                "15:00-15:59",
-                "16:00-16:59",
-                "17:00-17:59",
-                "18:00-18:59",
-                "19:00-19:59",
-                "20:00-20:59",
-                "21:00-21:59",
-                "23:00-22:59",
-                "23:00-23:59"
-            ]
+            
             var room = $scope.roomsData[num-1];
             for (var resSlot = 0; resSlot < room.res.length; resSlot++) {
                 var reservation = room.res[resSlot];
@@ -231,7 +210,7 @@ app.controller("reservation", function($scope) {
                 for (var i = start; i <= end; i++) {
                     var name = "#roomModal." + i;
                     var htmlName = "roomModal." + i;
-                    var disableString = '<button type="button" class="list-group-item" id="' + htmlName + '" disabled> modified ' + hour[i] + '</button>';
+//                    var disableString = '<button type="button" class="list-group-item" id="' + htmlName + '" disabled> modified ' + hour[i] + '</button>';
 //                    console.log(name);
 //                    $(name).addClass("disabled");
 
@@ -290,11 +269,34 @@ app.controller("reservation", function($scope) {
 //            $(name).toggle();
         }
     }
+}).directive('reservationTable', function($scope) {
+    return {
+        restrict: 'E',
+        scope: {
+            roomData: '@roomData'
+        },
+        templateUrl: 'reservation-table.html',
+        compile: function(tElem,attrs) {
+            return {
+                pre: function(scope, iElem, iAttrs){
+                    iElem.children().each(function () {
+                        $(this).children().each(function () {
+                            console.log($scope.roomData);
+                                
+                            $(this).prop('disabled',true);
+                        }) // "this" is the current element in the loop
+                    });
+                },
+                post: function(scope, iElem, iAttrs){
+                    
+                }
+            }
+        },
+        
+    };
 });
 
-app.controller("reservation-modal", function($scope) {
-    
-});
+
 
 app.directive('timetable', function() {
     return {
@@ -369,18 +371,7 @@ app.directive('timetable', function() {
       };
   });
 
-app.directive('reservationTable', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        slots: '='
-      },
-      templateUrl: 'reservation-table.html',
-      link: function (scope, element, attributes) {
-         
-        
-      }};
-})
+
 /*
  * POST HOOKING UP WITH BACKEND
 var resApp = angular.module('resMod', []);
