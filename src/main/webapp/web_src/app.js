@@ -390,8 +390,8 @@ app.controller("reservation", function($scope) {
 //                            $(this).prop('disabled',true);
                         }) 
                                 
-                    });
-                },
+                    }
+                ,
                 post: function(scope, iElem, iAttrs){
                     
                 }
