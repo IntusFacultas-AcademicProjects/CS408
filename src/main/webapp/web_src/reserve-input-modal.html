@@ -1,4 +1,4 @@
-<div class="modal fade" id="reserve-input-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div ng-controller="reservation" class="modal fade" id="reserve-input-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,7 +8,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h1 class="header">Start Time</h1>
+                {{availableHours}}
+                <h6 class="header">Start Time</h6>
                 <div class="form-group">
                     <label for="startTime">Reservation Start Time</label>
                     <select id="startTime" class="form-control" ng-repeat="hour in availableHours">
@@ -17,7 +18,7 @@
                 </div>
                 <br>
 
-                <h1 class="header">End Time</h1>
+                <h6 class="header">End Time</h6>
                 <div class="form-group">
                     <label for="endTime">Reservation End Time</label>
                     <select id="endtTime" class="form-control" ng-repeat="hour in availableHours">

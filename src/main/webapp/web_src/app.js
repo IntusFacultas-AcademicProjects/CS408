@@ -234,7 +234,7 @@ app.controller("reservation", function($scope) {
     // hour selected from reserve-modal serves as start time
     $scope.hourSelected;
     // available hours from selected start time
-    $scope.availableHours;
+    $scope.availableHours = [];
     var _slots = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -253,7 +253,6 @@ app.controller("reservation", function($scope) {
         var num=$scope.roomSelected.substring(4, id.length-1);
         $scope.roomSelected = $scope.roomSelected.substring(0, id.length-1);
         $scope.roomIndex = num;
-        console.log("Modal Open roomIndex" +$scope.roomIndex);
         if ($scope.roomsData[num-1].blocked == false) {
             
             var room = $scope.roomsData[num-1];
@@ -329,17 +328,12 @@ app.controller("reservation", function($scope) {
 
         }
     };
-    
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
-        console.log("open second modal " + roomSelected);
+        var hourTemplate = ["00:00-00:59","01:00-01:59","02:00-02:59","03:00-03:59","04:00-04:59","05:00-05:59","06:00-06:59","07:00-07:59","08:00-08:59","09:00-09:59","10:00-10:59","11:00-11:59","12:00-12:59","13:00-13:59","14:00-14:59","15:00-15:59","16:00-16:59","17:00-17:59","18:00-18:59","19:00-19:59","20:00-20:59","21:00-21:59","23:00-22:59","23:00-23:59"];
         var startTime = event.target.id.substring(10,event.target.id.length);
         $scope.hourSelected = startTime;
-        var room = $scope.roomsData[$scope.roomIndex];
-        console.log("room index " + $scope.roomIndex);
-        console.log("room selected " + $scope.roomSelected);
-        
-        console.log(room);
+        var room = roomSelected;
         var roomReservations = room.res;
         var takenHours = [];
         for (var i = 0; i < roomReservations.length; i++) {
@@ -349,13 +343,18 @@ app.controller("reservation", function($scope) {
                 takenHours.push(start);
             }
         }
-        var availableHours = [startTime];
-        for (var i = startTime; takenHours.includes(i) == false && i < 24; i++) {
-            availableHours.push(i);
+        var first = 0;
+        for (var i = parseInt(startTime); takenHours.includes(i) == false && i < 24; i++) {
+            if (first == 0) {
+                $scope.availableHours.push({id:i, name:hourTemplate[i], selected:"selected"});
+                first++;
+            }
+            else {
+                $scope.availableHours.push({id:i, name:hourTemplate[i], selected:""});
+            }
         }
-        $scope.availableHours = availableHours;
-        console.log(number);
-        console.log(availableHours);
+        console.log($scope.availableHours);
+        $("#reserve-input-modal").modal("toggle");
     }
 
     $scope.unblockRoom = function(id) {
@@ -378,6 +377,39 @@ app.controller("reservation", function($scope) {
         compile: function(tElem,attrs) {
             return {
                 pre: function(scope, iElem, iAttrs){
+					//access this data 
+                    iElem.children().each(function () {
+							/*
+                            if this.id = "roomModal." + array[0].id
+							color red or yellow depending on shareable
+                            */
+                        $(this).children().each(function () {
+                            // used to block hours that are taken. Needs outside data that is not being passed properly.
+//                            $(this).prop('disabled',true);
+                        }) 
+                    }) 
+                                
+                }, // pre
+                post: function(scope, iElem, iAttrs){
+                    
+                } // post
+            } //return
+        } // compile
+    }; // return
+});
+
+app.directive('reservationHours', function() {
+    // handles the hour by hour modal body for the modal opened on map click
+    return {
+        restrict: 'E',
+        scope: {
+            availableHours: '=info'
+        },
+        templateUrl: 'reserve-input-modal.html',
+        compile: function(tElem,attrs) {
+            return {
+                pre: function(scope, iElem, iAttrs){
+                    console.log(scope.availableHours);
 					//access this data 
                     iElem.children().each(function () {
 							/*
