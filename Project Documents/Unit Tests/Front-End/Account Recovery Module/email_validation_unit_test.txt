@@ -1,0 +1,12 @@
+Input: axrg
+
+Step 1: navigate to forget.html
+Step 2: Click on 'Enter a valid Purdue email.'
+Step 3: Enter input
+Step 4: Click [Create Account] button
+
+Output: "Please include an '@' in the email address.'axrg' is missing an '@'."
+
+Success Case: Output is displayed
+Fail Case: Output is not displayed and input is accepted
+Severity: 1/4

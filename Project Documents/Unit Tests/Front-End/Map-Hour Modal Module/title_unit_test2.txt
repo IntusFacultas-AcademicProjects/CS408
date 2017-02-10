@@ -1,0 +1,10 @@
+
+Step 1: Navigate to reserve.html
+Step 2: Mouse over to the fourth room from the bottom left hand corner.
+Step 3: Click on the room.
+Step 4: Assert modal title says "room4 Reservation"
+
+Success Case: title says "room4 Reservation"
+Fail Case: title says anything other than "room4 Reservation"
+
+Severity: 2/4

@@ -1,0 +1,25 @@
+Step 1: Navigate to admin.html
+Step 2: Click on Calendar Icon
+Step 3: Click on tomorrow's date
+Step 4: Assert date has changed to tomorrow's date
+	If: date has not changed or is erroneous
+		Test Case Failed
+	Else: 
+Step 5: Click on the first non-highlighted room from the left-hand corner.
+Step 6: Click on the block room check mark.
+Step 7: Click submit.
+Step 8: Click on Calendar Icon
+Step 9: Click on today's date
+Step 10: Assert date has changed to tomorrow's date
+	If: date has not changed or is erroneous
+		Test Case Failed
+	Else: 
+Step 11: Assert room is no longer highlighted.
+	If: room is highlighted
+		Test Case Failed
+
+Success Case: date has changed and room is blocked and highlighted for tomorrow but not today.
+Fail Case: date does not change.
+		   Room is blocked today.
+
+Severity: 1

@@ -1,0 +1,18 @@
+Step 1: Navigate to reserve.html
+Step 2: Click on the first non-highlighted room from the left-hand corner. Take note of what hours are marked red.
+Step 3: Click on Calendar Icon
+Step 4: Click on tomorrow's date
+Step 5: Assert date has changed to tomorrow's date
+	If: date has not changed or is erroneous
+		Test Case Failed
+	Else: 
+Step 6: Click on the same as before room as before.
+Step 7: Assert red hours have changed.
+	If: hours have not changed
+		Test Case Failed
+
+Success Case: date has changed and hours have changed for room.
+Fail Case: date does not change.
+		   hours do not change.
+
+Severity: 1
