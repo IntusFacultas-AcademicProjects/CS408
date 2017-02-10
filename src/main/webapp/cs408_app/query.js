@@ -1,6 +1,7 @@
 
 //All mySQL api queries here
 
+var util = require('util');
 
 var usernameExists = function(username,connection,callback) 
 {
@@ -135,18 +136,36 @@ var getRoomSchedule = function(room, day)
 
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
+
+    //TODO: Async issue...execution does not stop here.
+    if(startTime < 0 || startTime > 23)
+	callback(new Error("startTime out of acceptable range [0,23]"));
+    else if(endTime < 0 || endTime > 23)
+	callback(new Error("endTime out of acceptable range [0,23]"));
+    else if(startTime >= endTime)
+	callback(new Error("startTime must be less than endTime"));
+		 
+
+    //We dont want these values 0-indexed
+    startTime += 1;
+    endTime +=1;
+
+    //Change params to format we need
+    startTime = util.format("0%d:00:00",startTime);
+    endTime = util.format("0%d:00:00",endTime);
+    shareable = shareable ? 1 : 0;
+    
     
     connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
 
-
-	    
-	console.log('Added reservation: ' + result.insertID + '\n');
 	
-	if(error)
+	if(error){
 	    callback(error);
-	else
-	    callback(null, results);
-	
+	}
+	else{
+	    console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",results.insertId,user,date,startTime,endTime));
+	    callback(null, results.insertId);
+	}
 
     });
     
@@ -160,14 +179,16 @@ var cancelReservation = function(reservationID, connection, callback)
     connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
 
 	if(error)
-	    callback(error);
+	    callback(error)
+	if(results.affectedRows == 0)
+	    callback(new Error("reservation doesn't exist"));
+	else if(results.affectedRows == 1)
+	    callback(null, true);
 	else
-	    callback(null);
-
+	    throw new Error('Illegal state');
+	
     });
 
-    return true;
-    
 };
 
 

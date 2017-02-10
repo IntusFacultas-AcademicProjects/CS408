@@ -129,7 +129,7 @@ router.route('/addReservation')
 		res.json({ err: err.message });
 	    }
 	    else{
-		res.json({message: 'Success' });
+		res.json({message: 'Success',reservationID: result});
 	    }
 
 	});
@@ -138,7 +138,7 @@ router.route('/addReservation')
 
 router.route('/cancelReservation')
     .post(function(req, res) {
-	query.cancelReservation(req.body.room,req.body.username,req.body.day,req.body.start_time,con,function(err){
+	query.cancelReservation(req.body.reservationID,con,function(err){
 	    if(err){
 		res.json({ err: err.message });
 	    }
