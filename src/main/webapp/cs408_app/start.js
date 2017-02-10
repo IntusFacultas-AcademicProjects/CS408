@@ -53,11 +53,13 @@ router.use(function(req, res, next) {
 
 router.route('/addAccount')
     .post(function(req, res) {
-	query.addAccount(req.body.email, req.body.pass, 0,con,function(err){
-	    if(err)
+	query.addAccount(req.body.email,req.body.username,req.body.pass,con,function(err){
+	    if(err){
 		res.json({ err: err.message });
-	    else
-		res.json({ msg: 'Success' });
+	    }
+	    else{
+		res.json({message: 'Success' });
+	    }
 
 	});
 	

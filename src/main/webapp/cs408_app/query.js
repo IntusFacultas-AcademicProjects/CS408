@@ -5,20 +5,22 @@
 var usernameExists = function(username,connection,callback) {
 
    connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username] ,function(error,results,fields){
-	if(error)
-	    throw error;
-
-	if(results.length == 1)
-	    callback(true);
-	else
-	    callback(false);
+       if(error){
+	   callback(error);
+	   return;
+       }
+       
+       if(results.length == 1)
+	   callback(true);
+       else
+	   callback(false);
 	
     });
 };
 
 var emailExists = function(email,connection,callback) {
 
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [username] ,function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
 	if(error)
 	    throw error;
 
@@ -33,25 +35,36 @@ var emailExists = function(email,connection,callback) {
 
 var addAccount = function(email,username,password,connection,callback) {
 
-
-    emailExists(email,connection,function(result){
+    
+    emailExists(email,connection,function(err, result){
 	if(result){
 	    callback(new Error("Email already exists"));
+	    console.log("Failed to add account: Email already exists");
+	    return;
 	}
+
+
+	usernameExists(username,connection,function(err, result){
+	    if(result){
+		callback(new Error("Username already exists"));
+		return;
+	    }
+
+	    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
+		if(error)
+		    callback(error);
+		else
+		    callback(null);
+
+		console.log('Added account: ' + email + ', password: ' + password + '\n');
+	    });
+
+	});
+	
     });
+
     
-    usernameExists(username,connection,function(result){
-	if(result){
-	    callback(new Error("Username already exists"));
-	}
-    });
     
-    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
-	if(error)
-	    callback(error);
-	else
-	    console.log('Added account: ' + email + ', password: ' + password + '\n');
-    });
 
 };
 
@@ -119,7 +132,7 @@ var getRoomSchedule = function(room, day)
 *     end_time:     HH:MM:SS
 *     shareable:    "TRUE" || "FALSE"
 */
-
+/*
 var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) {
 
 
@@ -140,7 +153,7 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
     return true;
     
 };
-
+*/
 
 /*
 
