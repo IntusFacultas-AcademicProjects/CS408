@@ -169,5 +169,5 @@ exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getAllRooms = getAllRooms;
-//exports.setReservation = setReservation;
-//exports.cancelReservation = cancelReservation;
+exports.setReservation = setReservation;
+exports.cancelReservation = cancelReservation;
