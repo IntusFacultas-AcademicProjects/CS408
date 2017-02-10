@@ -133,13 +133,32 @@ var getRoomSchedule = function(room, day)
 *     shareable:    "TRUE" || "FALSE"
 */
 
-var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
+var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
-    connection.query('INSERT INTO `reservations` (`username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);',
-    [user,room,day,start_time,end_time,shareable] ,function(error,results,fields){
+    
+    connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
 
-	console.log('Added reservation room: ' + room + ', date: \n');
+
+	    
+	console.log('Added reservation: ' + result.insertID + '\n');
 	
+	if(error)
+	    callback(error);
+	else
+	    callback(null, results);
+	
+
+    });
+    
+    return true;
+    
+};
+
+var cancelReservation = function(reservationID, connection, callback) 
+{
+    
+    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+
 	if(error)
 	    callback(error);
 	else
@@ -151,23 +170,6 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
     
 };
 
-var cancelReservation = function cancelReservation(room, user, day, time) 
-{
-	connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND user LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,user,start_time,end_time], function(error,results,fields){
-	if(error)
-		callback(true);
-
-	console.log('removed reservation from room: ' + room + ', day: ' + day + '\n');
-	
-	if(error)
-	    callback(error);
-	else
-	    callback(null);
-
-    });
-
-    return true;
-};
 
 
 exports.usernameExists = usernameExists;
@@ -176,5 +178,5 @@ exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getAllRooms = getAllRooms;
-exports.setReservation = setReservation;
+exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;

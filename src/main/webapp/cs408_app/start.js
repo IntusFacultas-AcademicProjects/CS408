@@ -44,18 +44,22 @@ var router = express.Router();              // get an instance of the express Ro
 // middleware to use for all requests
 router.use(function(req, res, next) {
 
+
+    
     if ('OPTIONS' == req.method) {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-      res.sendStatus(200);
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+	res.sendStatus(200);
+
     }
     else {
-      next();
+	
+	// do logging and validation here
+	console.log('Recieved request with data ' + JSON.stringify(req.body));
+	next();
     }
-    
-    // do logging and validation here
-    console.log('Recieved request with data ' + JSON.stringify(req.body));
+
 
 
 });
@@ -64,7 +68,6 @@ router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
 	    if(err){
-		console.log(err.message);
 		res.json({ err: err.message });
 	    }
 	    else{
@@ -82,7 +85,6 @@ router.route('/authAccount')
 		res.json({ Err: err.message });
 
 	    if(result){
-		console.log('good');
 		res.json({ msg: "authenticated" });
 	    }
 	    else
@@ -120,9 +122,9 @@ router.route('/getAllRooms')
 	    res.json({message: 'ACK'});
     });
 
-router.route('/setReservation')
+router.route('/addReservation')
     .post(function(req, res) {
-	query.setReservation(req.body.room,req.body.username,req.body.day,req.body.start_time, req.body.end_time,req.body.shareable,con,function(err){
+	query.addReservation(req.body.roomID, req.body.username, req.body.date, req.body.startTime, req.body.endTime, req.body.shareable, con,function(err,result){
 	    if(err){
 		res.json({ err: err.message });
 	    }
