@@ -14,7 +14,7 @@ app.controller("index", function($scope) {
 		"budget": Number,
 		"admin": Boolean
 	};
-
+    $scope.lastButtonPressed;
     $scope.user.username = "Sfellers";
     $scope.user.password = "password";
 	$scope.user.userid = 0;
@@ -266,7 +266,7 @@ app.controller("reservation", function($scope) {
                 }
             }
             $("#reserve-modal").modal("toggle");
-            console.log("Modal Open roomSelected" + $scope.roomSelected)
+            
         }
         else {
 			var room = $scope.roomsData[num-1];
@@ -310,8 +310,7 @@ app.controller("reservation", function($scope) {
                             key: room.roomid,
                             fillColor: '000000'
                         }]
-                    });
-                
+                    }); 
             }
         }
                            
@@ -328,13 +327,15 @@ app.controller("reservation", function($scope) {
 
         }
     };
+    
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         var hourTemplate = ["00:00-00:59","01:00-01:59","02:00-02:59","03:00-03:59","04:00-04:59","05:00-05:59","06:00-06:59","07:00-07:59","08:00-08:59","09:00-09:59","10:00-10:59","11:00-11:59","12:00-12:59","13:00-13:59","14:00-14:59","15:00-15:59","16:00-16:59","17:00-17:59","18:00-18:59","19:00-19:59","20:00-20:59","21:00-21:59","23:00-22:59","23:00-23:59"];
         var startTime = event.target.id.substring(10,event.target.id.length);
+        $scope.lastButtonPressed = startTime;
         $scope.hourSelected = startTime;
         var room = roomSelected;
-        var roomReservations = room.res;
+        var roomReservations =  room.res;
         var takenHours = [];
         for (var i = 0; i < roomReservations.length; i++) {
             var reservationSlot = roomReservations[i];
@@ -353,10 +354,13 @@ app.controller("reservation", function($scope) {
                 $scope.availableHours.push({id:i, name:hourTemplate[i], selected:""});
             }
         }
-        console.log($scope.availableHours);
+        
         $("#reserve-input-modal").modal("toggle");
     }
-
+    $scope.closeSecondModal = function() {
+        console.log("closing");
+        $("#reserve-input-modal").modal("toggle");
+    }
     $scope.unblockRoom = function(id) {
         if ($scope.roomsData[id-1].blocked) {
             var name = "#room" + id;
@@ -365,7 +369,7 @@ app.controller("reservation", function($scope) {
 			//need to add a refresh function to recolor unblocked rooms
         }
     };
-
+    
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
@@ -398,38 +402,6 @@ app.controller("reservation", function($scope) {
     }; // return
 });
 
-app.directive('reservationHours', function() {
-    // handles the hour by hour modal body for the modal opened on map click
-    return {
-        restrict: 'E',
-        scope: {
-            availableHours: '=info'
-        },
-        templateUrl: 'reserve-input-modal.html',
-        compile: function(tElem,attrs) {
-            return {
-                pre: function(scope, iElem, iAttrs){
-                    console.log(scope.availableHours);
-					//access this data 
-                    iElem.children().each(function () {
-							/*
-                            if this.id = "roomModal." + array[0].id
-							color red or yellow depending on shareable
-                            */
-                        $(this).children().each(function () {
-                            // used to block hours that are taken. Needs outside data that is not being passed properly.
-//                            $(this).prop('disabled',true);
-                        }) 
-                    }) 
-                                
-                }, // pre
-                post: function(scope, iElem, iAttrs){
-                    
-                } // post
-            } //return
-        } // compile
-    }; // return
-});
 
 // this is the directive for the tabular view to the right of the map
 app.directive('timetable', function() {
