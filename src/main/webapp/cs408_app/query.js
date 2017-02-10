@@ -2,8 +2,8 @@
 //All mySQL api queries here
 
 
-var usernameExists = function(username,connection,callback) {
-
+var usernameExists = function(username,connection,callback) 
+{
    connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username] ,function(error,results,fields){
 	if(error)
 	    throw error;
@@ -16,8 +16,8 @@ var usernameExists = function(username,connection,callback) {
     });
 };
 
-var emailExists = function(email,connection,callback) {
-
+var emailExists = function(email,connection,callback) 
+{
    connection.query('SELECT * FROM accounts WHERE email LIKE ?', [username] ,function(error,results,fields){
 	if(error)
 	    throw error;
@@ -31,9 +31,8 @@ var emailExists = function(email,connection,callback) {
 };
 
 
-var addAccount = function(email,username,password,connection,callback) {
-
-
+var addAccount = function(email,username,password,connection,callback) 
+{
     emailExists(email,connection,function(result){
 	if(result){
 	    callback(new Error("Email already exists"));
@@ -55,8 +54,8 @@ var addAccount = function(email,username,password,connection,callback) {
 
 };
 
-var authAccount = function(email,password,connection,callback) {
-
+var authAccount = function(email,password,connection,callback) 
+{
     connection.query('SELECT * FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
@@ -69,8 +68,8 @@ var authAccount = function(email,password,connection,callback) {
     });
 };
 
-var deleteAccount = function(email,password,connection,callback) {
-
+var deleteAccount = function(email,password,connection,callback) 
+{
     connection.query('DELETE FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
 	if(error)
 	    throw error;
@@ -94,7 +93,7 @@ var getAllRooms = function(day)
 		console.log('Data received from Db:\n');
 		console.log(rows);
 	});
-}
+};
 
 var getRoomSchedule = function(room, day)
 {
@@ -107,7 +106,7 @@ var getRoomSchedule = function(room, day)
 		console.log('Data received from Db:\n');
 		console.log(rows);
 	});
-}
+};
 
 /*
 *     Database requires data to be inserted in the folling format:
@@ -120,9 +119,8 @@ var getRoomSchedule = function(room, day)
 *     shareable:    "TRUE" || "FALSE"
 */
 
-var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) {
-
-
+var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
+{
     usernameExists(user,connection,function(
 	
     ));
@@ -130,7 +128,8 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
     
     
     
-    connection.query('INSERT INTO `reservations` (`reservation_id`, `username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);', [user,start_time,end_time] ,function(error,results,fields){
+    connection.query('INSERT INTO `reservations` (`username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);',
+    [user,room,day,start_time,end_time,shareable] ,function(error,results,fields){
 	if(error)
 	    throw error;
 
@@ -141,23 +140,21 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
     
 };
 
-
-/*
-
-exports.cancelReservation = function cancelReservation(room, user, day, time) {
-
-    connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,start_time,end_time] ,function(error,results,fields){
+var cancelReservation = function cancelReservation(room, user, day, time) 
+{
+    usernameExists(user, connection, function(result){
+    
+    
+    });
+    connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND user LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,user,start_time,end_time], function(error,results,fields){
 	if(error)
 	    throw error;
 
-	console.log('Added account: ' + email + ', password: ' + password + '\n');
+	console.log('removed reservation from room: ' + room + ', day: ' + day + '\n');
     });
 
     return true;
-    
 };
-
-*/
 
 
 exports.usernameExists = usernameExists;
@@ -166,5 +163,5 @@ exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getAllRooms = getAllRooms;
-
-//exports.setReservation = setReservation;
+exports.setReservation = setReservation;
+exports.cancelReservation = cancelReservation;
