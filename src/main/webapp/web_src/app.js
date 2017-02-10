@@ -22,7 +22,7 @@ app.controller("index", function($scope) {
     $scope.firstName = "Sam";
     $scope.lastName = "Fellers";
     $scope.roomsData = [];
-
+    $scope.roomData = [];
 
     //functions go in here.
     $scope.addRoom = function(id, name, capacity) {
@@ -329,6 +329,7 @@ app.controller("reservation", function($scope) {
 
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
+        $scope.availableHours = [];
         var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", "03:00-03:59", "04:00-04:59", "05:00-05:59", "06:00-06:59", "07:00-07:59", "08:00-08:59", "09:00-09:59", "10:00-10:59", "11:00-11:59", "12:00-12:59", "13:00-13:59", "14:00-14:59", "15:00-15:59", "16:00-16:59", "17:00-17:59", "18:00-18:59", "19:00-19:59", "20:00-20:59", "21:00-21:59", "23:00-22:59", "23:00-23:59"];
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.lastButtonPressed = startTime;
@@ -344,7 +345,7 @@ app.controller("reservation", function($scope) {
             }
         }
         var first = 0;
-        for (var i = parseInt(startTime); takenHours.includes(i) == false && i < 24; i++) {
+        for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
             if (first == 0) {
                 $scope.availableHours.push({
                     id: i,
@@ -360,11 +361,10 @@ app.controller("reservation", function($scope) {
                 });
             }
         }
-
+//        $scope.roomData = [{start:0,end:4, shareable: false}]
         $("#reserve-input-modal").modal("toggle");
     }
     $scope.closeSecondModal = function() {
-        console.log("closing");
         $("#reserve-input-modal").modal("toggle");
     }
     $scope.unblockRoom = function(id) {
@@ -375,13 +375,36 @@ app.controller("reservation", function($scope) {
             //need to add a refresh function to recolor unblocked rooms
         }
     };
-
+    $scope.validate = function(roomData, hour) {
+        var room = roomData.res;
+        for (var i = 0; i < room.length; i++) {
+            if (room[i].start <= hour && room[i].end >= hour){
+                return true;
+            }
+        }
+        return false;
+    }
+    $scope.validateShareable = function(roomData, hour) {
+        var room = roomData.res;
+        for (var i = 0; i < room.length; i++) {
+            if (room[i].start <= hour && room[i].end >= hour){
+                console.log("validate hour shareable:", room.shareable);
+                if (room.shareable == true) {
+                    return true
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+   
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
         restrict: 'E',
         scope: {
-            roomData: '=info'
+            roomData: '=info',
+            roomIndex: '=index'
         },
         templateUrl: 'reservation-table.html',
         compile: function(tElem, attrs) {
@@ -401,7 +424,7 @@ app.controller("reservation", function($scope) {
 
                 }, // pre
                 post: function(scope, iElem, iAttrs) {
-
+                    $.material.init();
                 } // post
             } //return
         } // compile

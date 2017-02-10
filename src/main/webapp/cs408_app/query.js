@@ -135,15 +135,16 @@ var getRoomSchedule = function(room, day)
 
 var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
 {
-
-    usernameExists(user,connection,function(result){});
-    
     connection.query('INSERT INTO `reservations` (`username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);',
     [user,room,day,start_time,end_time,shareable] ,function(error,results,fields){
-	if(error)
-	    throw error;
 
-	console.log('Added account: ' + email + ', password: ' + password + '\n');
+	console.log('Added reservation room: ' + room + ', date: \n');
+	
+	if(error)
+	    callback(error);
+	else
+	    callback(null);
+
     });
 
     return true;
@@ -152,14 +153,17 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
 
 var cancelReservation = function cancelReservation(room, user, day, time) 
 {
-    usernameExists(user, connection, function(result){});
-
-    connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND user LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,user,start_time,end_time], function(error,results,fields){
-	
+	connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND user LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,user,start_time,end_time], function(error,results,fields){
 	if(error)
-	    throw error;
+		callback(true);
 
 	console.log('removed reservation from room: ' + room + ', day: ' + day + '\n');
+	
+	if(error)
+	    callback(error);
+	else
+	    callback(null);
+
     });
 
     return true;
