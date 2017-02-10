@@ -3,11 +3,15 @@
 	<head>
         <!-- Latest jQuery-->
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        
         <!-- Material Design-->
         <script src="assets/js/material.js"></script>
         <script src="assets/js/ripples.js"></script>
+<!--        <script src="assets/js/mdb.js"></script>-->
         <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
         <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">
+        <script src="assets/js/tether.min.js"></script>
             
 		<!-- Latest compiled and minified CSS -->
  		<meta charset="UTF-8">
@@ -111,8 +115,23 @@
                     <timetable class="col-lg-4 shadowed" slots="slots"  ></timetable>
                 </div>
             </div>
-            <div  ng-include src="'reserve-modal.html'"></div>
-            <reservation-hours info="availableHours"></reservation-hours>
+            <div  class="modal fade" id="reserve-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reserveRoomModal">Reservation</h5>
+                        </div>
+                        <div class="modal-body">
+                            <reservation-table info='roomsData[roomIndex - 1]'></reservation-table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 			<!-- Footer -->
 			<footer id="footer">
