@@ -130,7 +130,7 @@ var getRoomSchedule = function(room, day)
 *     shareable:    "TRUE" || "FALSE"
 */
 
-var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
+/*var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
 {
 
     usernameExists(user,connection,function(
@@ -147,7 +147,7 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
 
     return true;
     
-};
+});
 
 var cancelReservation = function cancelReservation(room, user, day, time) 
 {
@@ -162,8 +162,8 @@ var cancelReservation = function cancelReservation(room, user, day, time)
     });
 
     return true;
-};
-
+});
+*/
 
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
@@ -171,5 +171,5 @@ exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getAllRooms = getAllRooms;
-exports.setReservation = setReservation;
-exports.cancelReservation = cancelReservation;
+//exports.setReservation = setReservation;
+//exports.cancelReservation = cancelReservation;
