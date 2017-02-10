@@ -16,30 +16,55 @@ var usernameExists = function(username,connection,callback) {
     });
 };
 
+var emailExists = function(email,connection,callback) {
 
-var addAccount = function(email,password,isAdmin,connection,callback) {
-
-    connection.query('INSERT INTO accounts(email,password,is_admin) VALUE (?,?,?)', [email,password,isAdmin] ,function(error,results,fields){
-	if(error){
+   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [username] ,function(error,results,fields){
+	if(error)
 	    throw error;
+
+	if(results.length == 1)
+	    callback(true);
+	else
 	    callback(false);
+	
+    });
+};
+
+
+var addAccount = function(email,username,password,connection,callback) {
+
+
+    emailExists(email,connection,function(result){
+	if(result){
+	    callback(new Error("Email already exists"));
 	}
-	console.log('Added account: ' + email + ', password: ' + password + '\n');
+    });
+    
+    usernameExists(username,connection,function(result){
+	if(result){
+	    callback(new Error("Username already exists"));
+	}
+    });
+    
+    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
+	if(error)
+	    callback(error);
+	else
+	    console.log('Added account: ' + email + ', password: ' + password + '\n');
     });
 
-    callback(true);
-    
 };
 
 var authAccount = function(email,password,connection,callback) {
 
     connection.query('SELECT * FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
 	if(error)
-	    throw error;
+	    callback(error)
+	    
 	if(results.length == 1)
-	    callback(true);
+	    callback(null, true);
 	else
-	    callback(false);
+	    callback(null, false);
 	
     });
 };
@@ -105,7 +130,7 @@ getRoomSchedule function(room, day)
 *     end_time:     HH:MM:SS
 *     shareable:    "TRUE" || "FALSE"
 */
-/*
+
 var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) {
 
 
@@ -126,7 +151,7 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
     return true;
     
 };
-*/
+
 
 /*
 

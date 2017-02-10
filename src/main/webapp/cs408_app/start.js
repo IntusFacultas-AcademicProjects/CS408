@@ -53,28 +53,34 @@ router.use(function(req, res, next) {
 
 router.route('/addAccount')
     .post(function(req, res) {
-	query.addAccount(req.body.email, req.body.pass, 0,con,function(result){
-	    console.log('result: ' + result);
+	query.addAccount(req.body.email, req.body.pass, 0,con,function(err){
+	    if(err)
+		res.json({ err: err.message });
+	    else
+		res.json({ msg: 'Success' });
+
 	});
-	res.json({ message: 'ACK' });
 	
     });
 
 router.route('/authAccount')
     .post(function(req, res) {
-	query.authAccount(req.body.email,req.body.pass,con,function(result){
-	    
-	    console.log('result: ' + result);
+	query.authAccount(req.body.email,req.body.pass,con,function(err,result){
+	    if(err)
+		res.json({ Err: err.message });
+
+	    if(result)
+		res.json({ msg: "authenticated" });
+	    else
+		res.json({ msg: "invalid" });
 
 	});
-
-	res.json({ message: 'ACK' });
 	
     });
 
 router.route('/deleteAccount')
     .delete(function(req, res) {
-	query.deleteAccount(req.body.email,req.body.pass,con,function(result){
+	query.deleteAccount(req.body.email,req.body.pass,con,function(err,result){
 	    console.log('result: ' + result);
 	});
 
