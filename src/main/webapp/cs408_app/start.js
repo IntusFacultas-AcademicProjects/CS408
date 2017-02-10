@@ -108,6 +108,35 @@ router.route('/getAllRooms')
 	    res.json({message: 'ACK'});
     });
 
+router.route('/setReservation')
+    .post(function(req, res) {
+	query.setReservation(req.body.room,req.body.username,req.body.day,req.body.start_time, req.body.end_time,req.body.shareable,con,function(err){
+	    if(err){
+		res.json({ err: err.message });
+	    }
+	    else{
+		res.json({message: 'Success' });
+	    }
+
+	});
+	
+    });
+
+router.route('/cancelReservation')
+    .post(function(req, res) {
+	query.cancelReservation(req.body.room,req.body.username,req.body.day,req.body.start_time,con,function(err){
+	    if(err){
+		res.json({ err: err.message });
+	    }
+	    else{
+		res.json({message: 'Success' });
+	    }
+
+	});
+	
+    });
+
+
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 
