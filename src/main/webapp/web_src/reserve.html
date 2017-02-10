@@ -10,7 +10,7 @@
 <!--        <script src="assets/js/mdb.js"></script>-->
         <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
         <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
-        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">
+<!--        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">-->
         <script src="assets/js/tether.min.js"></script>
             
 		<!-- Latest compiled and minified CSS -->
@@ -142,7 +142,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="reserveRoomModal">Reservation</h5>
+                            <h5 class="modal-title" id="reserveRoomModal">{{roomSelected}} Reservation</h5>
                         </div>
                         <div class="modal-body">
                             <reservation-table info='roomsData[roomIndex - 1]' index='roomIndex'></reservation-table>

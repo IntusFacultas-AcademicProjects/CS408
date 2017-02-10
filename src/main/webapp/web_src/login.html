@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <!-- Latest jQuery-->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        
+        <!-- Material Design-->
+        <script src="assets/js/material.js"></script>
+        <script src="assets/js/ripples.js"></script>
+<!--        <script src="assets/js/mdb.js"></script>-->
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
+<!--        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">-->
+        <script src="assets/js/tether.min.js"></script>
+            
+		<!-- Latest compiled and minified CSS -->
+ 		<meta charset="UTF-8">
+        <link type="text/css" rel="stylesheet" href="assets/css/rsvp.css">
+		<link title="compact" type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/material.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-datetimepicker-standalone.min.css">
+        
+        
+        <!-- Bootstrap Plugins needed for DateTimePicker-->
+        <script src="assets/js/moment.js"></script>
+        <script src="assets/js/collapse.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/datepicker.js"></script>
+        
+		<!-- Latest AngularJS lib -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+        
+        <!-- ImageMapster -->
+        <script src="assets/js/jquery.imagemapster.js"></script>
+		<!-- Our Angular Code -->
+		<script src="app.js"></script>
+        
+        <!-- Dropdown-->
+        <script src="assets/js/dropdown.js"></script>
+        <link type="text/css" rel="stylesheet" href="assets/css/dropdown.css">
+        
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
+    </head>
+    <body ng-app="myApp" style="background-color:#60553F">
+        <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
+        <div class="row">
+            <div class="col-lg-4">
+            </div>
+            <div class="col-lg-4 shadowed" style="background-color:white">
+                <form ng-controller="login">
+                    <div class="username" style="height:350px">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>Welcome to RSVP</h4><br>
+                                <div class="form-group label-floating">
+                                    <label for="email" class="control-label">Enter a valid Purdue email address.</label>
+                                    <input type="email" class="form-control" id="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
+                                    <span class="help-block">This should be the same email as your Purdue Career Account</span>
+                                    
+                                </div>
+                                <div class="form-group label-floating">
+                                    <label for="password" class="control-label">Enter Password</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6" style="margin-bottom:10px">
+                                <button class="btn btn-primary btn-raised" style="width:100%" type="submit">Login</button>    
+                            </div>
+                            <div class="col-sm-6">
+                                 <div class="checkbox">
+                                    <label> <input type="checkbox"> Remember Me </label>
+                                </div>
+                            </div>
+                            <script>
+                                $.material.init();
+                            </script>
+                        </div>
+                        <div class="row" style="background-color:#f1f1f1">
+                            <div class="col-sm-6">
+                                <a class="btn btn-danger btn-block" href="forget.html">Forget password?</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a  class="btn btn-info btn-block" href="register.html">Register an account</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4">
+            </div>
+        </div>
+    </body>
+    <footer>
+        <p>&copy; RSVP. All rights reserved.</p>
+    </footer>
+</html>
