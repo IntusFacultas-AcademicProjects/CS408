@@ -1,5 +1,6 @@
 
 <ul ng-controller="reservation" class="list-group modal-list">
+    
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.0" ng-disabled="validate(roomData, 0)"> 00:00-00:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.1" ng-disabled="validate(roomData, 1)"> 01:00-01:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.2" ng-disabled="validate(roomData, 2)"> 02:00-02:59</button>
@@ -31,16 +32,30 @@
                             <h5 class="modal-title" id="reserveHoursModal">Make Reservation</h5>
                         </div>
                         <div class="modal-body">
-                                    <label for="startTime">Reservation Start Time</label>
-                                    <select id="startTime" class="mdb-select form-control floating-label" >
+                                    <label for="startTime" style="margin-left:3%">Reservation Start Time</label>
+                                    <select id="startTime" class="mdb-select form-control" onchange="changeFunc()">
                                             <option ng-repeat="hour in availableHours|limitTo:1" value="{{hour.id}}" selected="selected">{{hour.name}}</option>
                                     </select>
                             <br>
-                                <label for="endTime">Reservation End Time</label>
-                                <select id="endtTime" class="mdb-select form-control floating-label">
+                                <label for="endTime" style="margin-left:3%">Reservation End Time</label>
+                                <select id="endtTime" class="mdb-select form-control" onchange="changeFunc()">
                                       <option ng-repeat="hour in availableHours" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                                 </select>
+                            <br>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label> <input type="checkbox"> Mark Shareable </label>
+                                </div>
+                                <p class="help-block">Allow other students to share the space with you</p>
+                            </div>
                         </div>
+                        <script>
+                            function changeFunc() {
+                                console.log("removing focus");
+                                $('#startTime').removeClass("is-focused");
+                                $('#endTime').removeClass("is-focused");
+                            }
+                        </script>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-target="#reserve-input-modal" ng-click="closeSecondModal()">Close</button>
                             <button type="button" class="btn btn-primary">Save changes</button>

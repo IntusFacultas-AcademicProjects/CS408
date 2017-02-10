@@ -361,7 +361,7 @@ app.controller("reservation", function($scope) {
                 });
             }
         }
-        $scope.roomData = [{start:0,end:4, shareable: false}]
+//        $scope.roomData = [{start:0,end:4, shareable: false}]
         $("#reserve-input-modal").modal("toggle");
     }
     $scope.closeSecondModal = function() {
@@ -385,7 +385,6 @@ app.controller("reservation", function($scope) {
         return false;
     }
     $scope.validateShareable = function(roomData, hour) {
-        console.log("validate hour: ", hour);
         var room = roomData.res;
         for (var i = 0; i < room.length; i++) {
             if (room[i].start <= hour && room[i].end >= hour){
@@ -398,7 +397,9 @@ app.controller("reservation", function($scope) {
         }
         return false;
     }
-    
+    $scope.$watch("roomsData", function() {
+       alert("changed!" + $scope.roomsData); 
+    });
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
@@ -425,6 +426,7 @@ app.controller("reservation", function($scope) {
 
                 }, // pre
                 post: function(scope, iElem, iAttrs) {
+                    $.material.init();
                 } // post
             } //return
         } // compile
