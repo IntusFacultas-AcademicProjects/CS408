@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Spear99/CS408#readme",
   "dependencies": {
     "body-parser": "^1.16.0",
+    "dateformat": "^2.0.0",
     "express": "^4.14.1",
     "mysql": "^2.13.0"
   }
