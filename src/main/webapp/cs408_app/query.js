@@ -22,13 +22,14 @@ var emailExists = function(email,connection,callback) {
 
    connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
 
-	if(error)
-	    throw error;
+       if(error){
+	   throw error;
+       }
 
-	if(results.length == 1)
-	    callback(true);
-	else
-	    callback(false);
+       if(results.length == 1)
+	   callback(null, true);
+       else
+	   callback(null, false);
 	
     });
 };
@@ -52,8 +53,10 @@ var addAccount = function(email,username,password,connection,callback) {
 	    }
 
 	    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
-		if(error)
+		if(error){
 		    callback(error);
+		    return;
+		}
 		else
 		    callback(null);
 
