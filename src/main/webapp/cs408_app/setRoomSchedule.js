@@ -6,17 +6,17 @@ function setRoomSchedule(room, day)
 	{
 		host: "mydb.itap.purdue.edu",
 		user: "bhuemann",
-		password: "ben143037",
+		password: "ben408",
 		database: "bhuemann"
 	});
 	
-	con.query("INSERT INTO reservations (...) VALUES (?,... "
-	[... , ...])
+	con.query("INSERT INTO reservations (date, end_time, reservation_id, room_id, shareable, start_time, username) VALUES (?,?,?,?,?,?)"
+	[day, unused, unused, newID, room, unused, unused, unused])
 	function(error, results, fields)
 	{
 		if(error)
 			throw error;
 	}
 	
-	
+	con.end(function(err){});
 }

@@ -6,7 +6,7 @@ function getAllRooms(day)
 	{
 		host: "mydb.itap.purdue.edu",
 		user: "bhuemann",
-		password: "ben143037",
+		password: "ben408",
 		database: "bhuemann"
 	});
 	
@@ -19,8 +19,8 @@ function getAllRooms(day)
 		console.log('Connection established');
     });
 	
-	con.query('SELECT * FROM reservations WHERE start_time > day AND end_time < day' 
-	[day], function(err,rows)
+	con.query('SELECT * FROM reservations WHERE start_time > ? AND end_time < ?' 
+	[day, day], function(err,rows)
 	{
 		if(err) throw err;
 		
@@ -34,5 +34,4 @@ function getAllRooms(day)
 	// Ensures all previously enqueued queries are still
 	// before sending a COM_QUIT packet to the MySQL server.
     });
-	
 }
