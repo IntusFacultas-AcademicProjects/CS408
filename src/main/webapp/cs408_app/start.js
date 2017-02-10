@@ -68,6 +68,7 @@ router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
 	    if(err){
+		console.error('Request generated an error: ' + err.message);
 		res.json({ err: err.message });
 	    }
 	    else{
@@ -81,9 +82,11 @@ router.route('/addAccount')
 router.route('/authAccount')
     .post(function(req, res) {
 	query.authAccount(req.body.email,req.body.password,con,function(err,result){
-	    if(err)
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
 		res.json({ Err: err.message });
-
+	    }
+		
 	    if(result){
 		res.json({ msg: "authenticated" });
 	    }
@@ -126,6 +129,7 @@ router.route('/addReservation')
     .post(function(req, res) {
 	query.addReservation(req.body.roomID, req.body.username, req.body.date, req.body.startTime, req.body.endTime, req.body.shareable, con,function(err,result){
 	    if(err){
+		console.error('Request generated an error: ' + err.message);
 		res.json({ err: err.message });
 	    }
 	    else{

@@ -2,6 +2,7 @@
 //All mySQL api queries here
 
 var util = require('util');
+var moment = require('moment');
 
 var usernameExists = function(username,connection,callback) 
 {
@@ -42,10 +43,8 @@ var addAccount = function(email,username,password,connection,callback) {
     emailExists(email,connection,function(err, result){
 	if(result){
 	    callback(new Error("Email already exists"));
-	    console.log("Failed to add account: Email already exists");
 	    return;
 	}
-
 
 	usernameExists(username,connection,function(err, result){
 	    if(result){
@@ -137,15 +136,23 @@ var getRoomSchedule = function(room, day)
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
 
-    //TODO: Async issue...execution does not stop here.
-    if(startTime < 0 || startTime > 23)
+    if(startTime < 0 || startTime > 23){
 	callback(new Error("startTime out of acceptable range [0,23]"));
-    else if(endTime < 0 || endTime > 23)
+	return;
+    }
+    else if(endTime < 0 || endTime > 23){
 	callback(new Error("endTime out of acceptable range [0,23]"));
-    else if(startTime >= endTime)
+	return;
+    }
+    else if(startTime >= endTime){
 	callback(new Error("startTime must be less than endTime"));
-		 
-
+	return;
+    }	 
+    else if(!moment(date, "YY-MM-DD", true).isValid()){
+	callback(new Error("Invalid date"));
+	return;
+    }
+    
     //We dont want these values 0-indexed
     startTime += 1;
     endTime +=1;
