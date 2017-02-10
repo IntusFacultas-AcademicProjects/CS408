@@ -130,12 +130,10 @@ var getRoomSchedule = function(room, day)
 *     shareable:    "TRUE" || "FALSE"
 */
 
-/*var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
+var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
 {
 
-    usernameExists(user,connection,function(
-	
-    ));
+    usernameExists(user,connection,function(result){});
     
     connection.query('INSERT INTO `reservations` (`username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);',
     [user,room,day,start_time,end_time,shareable] ,function(error,results,fields){
@@ -147,7 +145,7 @@ var getRoomSchedule = function(room, day)
 
     return true;
     
-});
+};
 
 var cancelReservation = function cancelReservation(room, user, day, time) 
 {
@@ -162,8 +160,8 @@ var cancelReservation = function cancelReservation(room, user, day, time)
     });
 
     return true;
-});
-*/
+};
+
 
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
