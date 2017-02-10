@@ -138,20 +138,15 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
     
     connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
 
-
-	    
-	console.log('Added reservation: ' + result.insertID + '\n');
-	
-	if(error)
-	    callback(error);
-	else
-	    callback(null, results);
-	
-
+		console.log('Added reservation: ' + result.insertID + '\n');
+		
+		if(error)
+			callback(error);
+		else
+			callback(null, results);
     });
     
     return true;
-    
 };
 
 var cancelReservation = function(reservationID, connection, callback) 
@@ -159,18 +154,14 @@ var cancelReservation = function(reservationID, connection, callback)
     
     connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
 
-	if(error)
-	    callback(error);
-	else
-	    callback(null);
-
+		if(error)
+			callback(error);
+		else
+			callback(null);
     });
 
     return true;
-    
 };
-
-
 
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
