@@ -84,10 +84,9 @@ var deleteAccount = function(email,password,connection,callback) {
     });
 };
 
-
 var getAllRooms = function(day)
 {
-	con.query('SELECT * FROM reservations WHERE date = ?' 
+	connection.query('SELECT * FROM reservations WHERE date = ?' 
 	[day], function(err,rows)
 	{
 		if(err) throw err;
@@ -97,26 +96,16 @@ var getAllRooms = function(day)
 	});
 }
 
-var getRoomSchedule function (room, week)
+var getRoomSchedule = function(room, day)
 {
-	end_date = week + 1_week_idk;
-	
-	con.query("SELECT * FROM rooms WHERE room_id = ? AND date > ? AND date < ?"
-	[room, week, end_date],
-	function(error,results,fields)
-	{
-		if(error) throw error;
-	});
-}
-
-
-getRoomSchedule function(room, day)
-{
-	con.query("SELECT * FROM rooms WHERE room_id = ? AND date = ?"
+	connection.query("SELECT * FROM rooms WHERE room_id = ? AND date = ?"
 	[room, day],
 	function(error,results,fields)
 	{
 		if(error) throw error;
+		
+		console.log('Data received from Db:\n');
+		console.log(rows);
 	});
 }
 
@@ -175,4 +164,7 @@ exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
+exports.getRoomSchedule = getRoomSchedule;
+exports.getAllRooms = getAllRooms;
+
 //exports.setReservation = setReservation;

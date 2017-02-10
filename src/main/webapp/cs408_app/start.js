@@ -88,7 +88,23 @@ router.route('/deleteAccount')
 	
     });
 
+router.route('/getRoom')
+	.get(function(req, res) {
+	    query.getRoom(req.body.room,req.body.date,function(result){
+	    	console.log('result: ' + result);
+	    });
 
+	    res.json({message: 'ACK'});
+    });
+
+router.route('/getAllRooms')
+	.get(function(req, res) {
+	    query.getAllRooms(req.body.date,function(result){
+	    	console.log('result: ' + result);
+	    });
+
+	    res.json({message: 'ACK'});
+    });
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
