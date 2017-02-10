@@ -1,0 +1,12 @@
+Input: axrg
+
+Step 1: navigate to login.htLoginml
+Step 2: Click on 'Enter a valid Purdue email.'
+Step 3: Enter input
+Step 4: Click [Recover] button
+
+Output: "Please include an '@' in the email address.'axrg' is missing an '@'."
+
+Success Case: Output is displayed
+Fail Case: Output is not displayed and input is accepted
+Severity: 4
