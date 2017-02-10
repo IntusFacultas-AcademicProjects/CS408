@@ -1,6 +1,5 @@
 var resApp = angular.module('resMod', []);
 resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.send = {username: "John", email: "uiweh", password: "fuck this"};
 
 	$scope.user = {
         username: String,
@@ -12,16 +11,6 @@ resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.user.password = "passpass123";
 	$scope.user.email = "email@aol.com";
 
-var req = {
- method: 'POST',
- url: 'http://data.cs.purdue.edu:8888/api/addAccount',
- headers: {
-    'Content-Type': 'application/json',
-	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Allow-Headers': 'Content-Type'
- },
- data: { username: "John", email: "uiweh", password: "fuck this" }
-}
 
 	
 	//functions go in here...
