@@ -56,7 +56,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <div class="datepicker input-group date" data-provide="datepicker">
-                                <input id="dp" type="text" class="datepicker form-control">
+                                <input id="dp" type="text" class="datepicker form-control" required>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
@@ -90,7 +90,8 @@
                                 var val =  monthNames[monthIndex] + '/' + days[day] + '/' + year;
 
                                 $("#dp").val(val);
-                                })
+                               
+                                });
                                 
                             </script>
                         </div>    

@@ -397,9 +397,7 @@ app.controller("reservation", function($scope) {
         }
         return false;
     }
-    $scope.$watch("roomsData", function() {
-       alert("changed!" + $scope.roomsData); 
-    });
+   
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
     return {
