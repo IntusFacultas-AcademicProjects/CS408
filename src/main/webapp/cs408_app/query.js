@@ -5,6 +5,23 @@
 var usernameExists = function(username,connection,callback) 
 {
    connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username] ,function(error,results,fields){
+       if(error){
+	   callback(error);
+	   return;
+       }
+       
+       if(results.length == 1)
+	   callback(true);
+       else
+	   callback(false);
+	
+    });
+};
+
+var emailExists = function(email,connection,callback) {
+
+   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
+
 	if(error)
 	    throw error;
 
@@ -16,42 +33,36 @@ var usernameExists = function(username,connection,callback)
     });
 };
 
-var emailExists = function(email,connection,callback) 
-{
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [username] ,function(error,results,fields){
-	if(error)
-	    throw error;
 
-	if(results.length == 1)
-	    callback(true);
-	else
-	    callback(false);
-	
-    });
-};
+var addAccount = function(email,username,password,connection,callback) {
 
-
-var addAccount = function(email,username,password,connection,callback) 
-{
-    emailExists(email,connection,function(result){
+    
+    emailExists(email,connection,function(err, result){
 	if(result){
 	    callback(new Error("Email already exists"));
+	    console.log("Failed to add account: Email already exists");
+	    return;
 	}
-    });
-    
-    usernameExists(username,connection,function(result){
-	if(result){
-	    callback(new Error("Username already exists"));
-	}
-    });
-    
-    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
-	if(error)
-	    callback(error);
-	else
-	    console.log('Added account: ' + email + ', password: ' + password + '\n');
-    });
 
+
+	usernameExists(username,connection,function(err, result){
+	    if(result){
+		callback(new Error("Username already exists"));
+		return;
+	    }
+
+	    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
+		if(error)
+		    callback(error);
+		else
+		    callback(null);
+
+		console.log('Added account: ' + email + ', password: ' + password + '\n');
+	    });
+
+	});
+	
+    });
 };
 
 var authAccount = function(email,password,connection,callback) 
@@ -121,12 +132,10 @@ var getRoomSchedule = function(room, day)
 
 var setReservation = function(room, user, day, timeStart, timeEnd, shareable, connection, callback) 
 {
+
     usernameExists(user,connection,function(
 	
     ));
-    
-    
-    
     
     connection.query('INSERT INTO `reservations` (`username`, `room_id`, `date`, `start_time`, `end_time`, `shareable`) VALUES (NULL, ?, ?, ?, ?, ?, ?);',
     [user,room,day,start_time,end_time,shareable] ,function(error,results,fields){
@@ -142,11 +151,10 @@ var setReservation = function(room, user, day, timeStart, timeEnd, shareable, co
 
 var cancelReservation = function cancelReservation(room, user, day, time) 
 {
-    usernameExists(user, connection, function(result){
-    
-    
-    });
+    usernameExists(user, connection, function(result){});
+
     connection.query('DELETE FROM reservations WHERE room_id LIKE ? AND user LIKE ? AND start_time LIKE ? AND end_time LIKE ?', [room,user,start_time,end_time], function(error,results,fields){
+	
 	if(error)
 	    throw error;
 
