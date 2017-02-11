@@ -56,22 +56,22 @@ var pass_3 = "lmao";
 /////////////////////
 ///Add Account
 /////////////////////
-addAccount("foo1@purdue.edu", "foo1", "password1", con, function()
+query.addAccount("foo1@purdue.edu", "foo1", "password1", con, function()
 {
 	
 });//should succeed
 
-addAccount("foo2@purdue.edu", "foo2", " ", con, function()
+query.addAccount("foo2@purdue.edu", "foo2", " ", con, function()
 {
 	
 });//should fail
 
-addAccount("ayy", "foo3", "password1", con, function()
+query.addAccount("ayy", "foo3", "password1", con, function()
 {
 	
 });//should fail
 
-addAccount("ayy", "foo1", "lmao", con, function()
+query.addAccount("ayy", "foo1", "lmao", con, function()
 {
 	
 });//should fail
@@ -81,12 +81,12 @@ addAccount("ayy", "foo1", "lmao", con, function()
 /////////////////////
 ///Add Username Exists
 /////////////////////
-usernameExists(username_1, con, function()
+query.usernameExists(username_1, con, function()
 {
 	
 }); //assert true
 
-usernameExists(username_1, con, function()
+query.usernameExists(username_1, con, function()
 {
 	
 }); //assert false
@@ -95,12 +95,12 @@ usernameExists(username_1, con, function()
 /////////////////////
 ///Email Exists
 /////////////////////
-emailExists(email_1, con, function()
+query.emailExists(email_1, con, function()
 {
 	
 }); //assert true
 
-emailExists(email_2, con, function()
+query.emailExists(email_2, con, function()
 {
 	
 }); //assert false
@@ -110,25 +110,25 @@ emailExists(email_2, con, function()
 /////////////////////
 
 //log in to valid account with valid credentials
-authAccount(email_1, pass_1, con, function()
+query.authAccount(email_1, pass_1, con, function()
 {
 	
 }); //assert success
 
 //log in to valid account with invalid credentials
-authAccount(email_1, pass_2, con, function()
+query.authAccount(email_1, pass_2, con, function()
 {
 	
 }); //assert failure
 
 //log in to account that could not be created
-authAccount(email_2, pass_2, con, function()
+query.authAccount(email_2, pass_2, con, function()
 {
 	
 }); //assert failure
 
 //log in to non-existent account
-authAccount("foo34@purdue.edu", "password1", con, function()
+query.authAccount("foo34@purdue.edu", "password1", con, function()
 {
 	
 }); //assert failure
@@ -139,98 +139,97 @@ authAccount("foo34@purdue.edu", "password1", con, function()
 /////////////////////
 
 //Make 2 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
 {
 	
 }); //Assert success
 
-
 //Make an invalid reservation overlapping with previous one
 //Are we only allowing reservations starting on the hour?
-addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
 {
 	
 }); //Assert failure, room already reserved for specified time
 
 //Make 4 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 10, 15, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 10, 15, "true", con, function()
 {
 	
 }); //Assert success
 
 //Attempt to make 7th hour of reservations
-addReservation("G101", "foo1", "02/10/2017", 15, 16, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 15, 16, "true", con, function()
 {
 	
 }); //Assert failure, too many reservations
 
 
-getRoomSchedule("G101", "02/10/2017", con, function()
+query.getRoomSchedule("G101", "02/10/2017", con, function()
 {
 	
 }); //Assert 2 reservations returned
 
-getRoomSchedule("G101", "02/11/2017", con, function()
+query.getRoomSchedule("G101", "02/11/2017", con, function()
 {
 	
 }); //Assert 0 reservations returned
 
-getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function()
 {
 	
 }); //Assert 2 reservations returned
 
-getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function()
 {
 	
 }); //Assert 0 reervations returned
 
 //Cancel the first reservation
-cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function()
 {
 	
 }); //Assert success
 
 //Cancel the second reservation
-cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function()
 {
 	
 }); //Assert success
 
 //Attempt to cancel a nonexistent reservation
-cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function()
 {
 	
 }); //Assert failure
 
 //Make 2 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
 {
 	
 }); //Assert success
 
 //Make 2 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
 {
 	
 }); //Assert success
 
-getRoomSchedule("G101", "02/10/2017", con, function()
+query.getRoomSchedule("G101", "02/10/2017", con, function()
 {
 	
 }); //Assert 2 reservations returned
 
-getRoomSchedule("G101", "02/11/2017", con, function()
+query.getRoomSchedule("G101", "02/11/2017", con, function()
 {
 	
 }); //Assert 0 reservations returned
 
-getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function()
 {
 	
 }); //Assert 2 reservations returned
 
-getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function()
 {
 	
 }); //Assert 0 reervations returned
