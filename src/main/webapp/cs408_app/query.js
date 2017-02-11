@@ -20,7 +20,7 @@ var usernameExists = function(username,connection,callback)
     });
 };
 
-var emailExists = function(email,connection,callback) {
+var emailExists = function(email,connection) {
 
    connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
 
@@ -35,6 +35,31 @@ var emailExists = function(email,connection,callback) {
 	
     });
 };
+
+var isConflictingTimeSlot = function(date, startTime, endTime, connection, callback){
+
+    connection.query("SELECT * FROM reservations " +
+		     "WHERE date = ? " +
+		     "AND ((HOUR(start_time) > ? AND HOUR(start_time) < ?) " +
+		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?))",
+		     [date, startTime, endTime, startTime, endTime],
+		     function(err, res, fields){
+			 
+			 if(res.length == 0){
+			     callback(null, true);
+			 }
+			 else if(res.length == 1){
+			     callback(null, false);
+			 }
+			 else{
+			     callback(new Error("Invalid state"));
+			 }
+			     
+
+		     });
+
+
+}
 
 
 var addAccount = function(email,username,password,connection,callback) {
@@ -136,9 +161,11 @@ var getRoomSchedule = function(room, day)
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
 
+    //usernameExists(user,connection,function()
+    
     //TODO check username exists
     //TODO check if timeslot is taken
-    
+		   
     if(startTime < 0 || startTime > 23){
 	callback(new Error("startTime out of acceptable range [0,23]"));
 	return;
@@ -155,7 +182,20 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	callback(new Error("invalid date"));
 	return;
     }
-    
+    // else if(isConflictTimeSlot(date,startTime, endTime, function(err, res){
+
+
+
+
+
+
+    // })){
+    // 	callback(new Error("Conflicting timeslot"));
+    // 	return;
+		
+    // }
+
+    		   
     //We dont want these values 0-indexed
     startTime += 1;
     endTime +=1;
