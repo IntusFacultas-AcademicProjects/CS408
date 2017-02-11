@@ -1,8 +1,0 @@
-Step 1: navigate to login.html
-Step 2: Click on the RSVP logo in the top left corner of the page
-Step 3: Assert that the page has now changed to the reserve.html page.
-
-Success: The page is now the reserve.html page.
-Failure: The page has remained on login.html
-
-Severity: 4
