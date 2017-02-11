@@ -136,6 +136,9 @@ var getRoomSchedule = function(room, day)
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
 
+    //TODO check username exists
+    //TODO check if timeslot is taken
+    
     if(startTime < 0 || startTime > 23){
 	callback(new Error("startTime out of acceptable range [0,23]"));
 	return;
@@ -148,8 +151,8 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	callback(new Error("startTime must be less than endTime"));
 	return;
     }	 
-    else if(!moment(date, "YY-MM-DD", true).isValid()){
-	callback(new Error("Invalid date"));
+    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
+	callback(new Error("invalid date"));
 	return;
     }
     
