@@ -271,13 +271,13 @@ app.controller("reservation", function($scope) {
 
         } else {
             var room = $scope.roomsData[num - 1];
-            console.log("attempting to open blocked room modal.")
+//            console.log("attempting to open blocked room modal.")
             if ($scope.user.admin) {
                 $("#reserve-block-modal").modal("toggle");
             } else {
                 alert("This room is currently blocked");
             }
-            console.log("roomselected: " + $scope.roomIndex);
+//            console.log("roomselected: " + $scope.roomIndex);
         }
 
     };
@@ -388,7 +388,7 @@ app.controller("reservation", function($scope) {
         var room = roomData.res;
         for (var i = 0; i < room.length; i++) {
             if (room[i].start <= hour && room[i].end >= hour){
-                console.log("validate hour shareable:", room.shareable);
+//                console.log("validate hour shareable:", room.shareable);
                 if (room.shareable == true) {
                     return true
                 }
