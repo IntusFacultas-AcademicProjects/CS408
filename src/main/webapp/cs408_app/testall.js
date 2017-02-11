@@ -41,83 +41,66 @@ con.connect(function(err){
     console.log('Connection established');
 });
 
-var email_1 = "foo1@purdue.edu";
-var username_1 = "foo1";
-var pass_1 = "password1";
-
-var email_2 = "foo2@purdue.edu";
-var username_2 = "foo2";
-var pass_2 = " ";
-
-
-var email_3 = "ayy";
-var username_3 = "foo3";
-var pass_3 = "lmao";
-
-query.query("DELETE FROM test_users");
-query.query("DELETE FROM test_reservations");
+//query.query("DELETE FROM test_users");
+//query.query("DELETE FROM test_reservations");
 
 /////////////////////
 ///Add Account
 /////////////////////
 //TEST 0 TRUE
-query.addAccount("foo1@purdue.edu", "foo1", "password1", con, function()
+query.addAccount("foo1@purdue.edu", "foo1", "password1", con, function(err, res)
 {
 	
 });
 
 //TEST 1 TRUE
-addAccount("test1@purdue.edu", "test1", "test1", con, function(err, res)
+query.addAccount("test1@purdue.edu", "test1", "test1", con, function(err, res)
 {
     assert.ok(!err);
+	console.log('added');
 });
 
 //TEST 2 ERR - bad password
-query.addAccount("foo2@purdue.edu", "foo2", " ", con, function()
+query.addAccount("foo2@purdue.edu", "foo2", " ", con, function(err, res)
 {
 	
 });
 
 //TEST 3 ERR - duplicate email
-addAccount("test1@purdue.edu", "test2", "test2", con, function(err, res)
+query.addAccount("test1@purdue.edu", "test2", "test2", con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'Email already exists');
 });
 
 //TEST 4 ERR - bad username
-query.addAccount("ayy", "foo3", "password1", con, function()
+query.addAccount("ayy", "foo3", "password1", con, function(err, res)
 {
 	assert(!err);
 });
 
 //TEST 5 ERR - duplicate username
-addAccount("test3@purdue.edu", "test1", "test3", con, function()
+query.addAccount("test3@purdue.edu", "test1", "test3", con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'Username already exists');
 });
 
 //TEST 6 ERR - bad username, bad password
-query.addAccount("ayy", "foo1", "lmao", con, function()
+query.addAccount("ayy", "foo1", "lmao", con, function(err, res)
 {
-	
-});
-
-//TEST 7 ERR - bad connection
-addAccount("ayy", "foo3", "password1", null, function()
-{
-    assert.ok(!err);
+	assert.ok(err);
+    assert.equals(err.message, 'Username already exists');
 });
 
 //TEST 8 TRUE - username exists
-usernameExists('test1', con, function(res)
+query.usernameExists('test1', con, function(res)
 {
     assert.ok(res);
 });
 
 //TEST 9 FALSE - username does not exist
-usernameExists('test10', con, function(res)
+query.usernameExists('test10', con, function(res)
 {
     assert.ok(!res);
 });
@@ -133,7 +116,7 @@ query.usernameExists(username_1, con, function(err, res)
 });
 
 //TEST 11 TRUE - email exists
-emailExists('test1@purdue.edu', con, function(err, res)
+query.emailExists('test1@purdue.edu', con, function(err, res)
 {
     assert.ok(!err);
     assert.ok(res);
@@ -146,7 +129,7 @@ query.usernameExists(username_1, con, function(err, res)
 });
 
 //TEST 13 FALSE - email does not exist
-emailExists('IUSucks@purdue.edu', con, function(err,res)
+query.emailExists('IUSucks@purdue.edu', con, function(err,res)
 {
     assert.ok(!err);
     assert.ok(!res);
@@ -164,7 +147,7 @@ query.emailExists(email_1, con, function(err, res)
 });
 
 //TEST 15 TRUE - valid credentials
-authAccount('test1@purdue.edu', 'test1', con, function(err, res)
+query.authAccount('test1@purdue.edu', 'test1', con, function(err, res)
 {
     assert.ok(!err);
     assert.ok(res);
@@ -178,26 +161,27 @@ query.emailExists(email_2, con, function(err, res)
 });
 
 //TEST 17 FALSE - invalid credentials
-authAccount('pete@purdue.edu', 'boilerUP', con, function(err,res)
+query.authAccount('pete@purdue.edu', 'boilerUP', con, function(err,res)
 {
     assert.ok(!err);
 	assert.equals(res, "wrong email or password");
 });
 
 //TEST 18 TRUE - successful login
-query.authAccount(email_1, pass_1, con, function(err, res)
+query.authAccount('test1@purdue.edu', 'test1', con, function(err, res)
 {
 	assert.ok(!err);
 });
 
 //TEST 19 PASS - reservation added
-addReservation(12, "test1", "02-10-17", 8, 10, true, con, function(err, res)
+query.addReservation(12, "test1", "2000-10-17", 8, 10, true, con, function(err, res)
 {
     assert.ok(!err);
 });
 
+/*
 //TEST 20 ERR - bad password
-query.authAccount(email_1, pass_2, con, function()
+query.authAccount(email_1, pass_2, con, function(err, res)
 {
 	assert.ok(!err);
 	assert.ok(err.message, 'wrong email or password');
@@ -211,7 +195,7 @@ query.authAccount(email_2, pass_2, con, function(err, res)
 });
 
 //ERR - reservation slot taken
-addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function(err, res)
 {
 	assert.ok(!err);
 	assert.ok(err.message, 'room is already reserved for this time slot');
@@ -225,21 +209,21 @@ query.authAccount("foo34@purdue.edu", "password1", con, function(err, res)
 });
 
 //ERR - startTime out of acceptable range [0,23]
-addReservation(12, "test1", "2002-10-17", -1, 10, true, con, function(err, res)
+query.addReservation(12, "test1", "2002-10-17", -1, 10, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'startTime out of acceptable range [0,23]');
 });
 
 //ERR - endTime out of acceptable range [0,23]
-addReservation(12, "test1", "2002-10-17", 8, 24, true, con, function(err, res)
+query.addReservation(12, "test1", "2002-10-17", 8, 24, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'endTime out of acceptable range [0,23]');
 });
 
 //TEST 15 FAIL - startTime must be less than endTime
-addReservation(12, "test1", "2002-10-17", 8, 8, true, con, function(err, res)
+query.addReservation(12, "test1", "2002-10-17", 8, 8, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'startTime must be less than endTime');
@@ -252,7 +236,7 @@ query.addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function(
 });
 
 //TEST 16 FAIL - startTime must be less than endTime
-addReservation(12, "test1", "2002-10-17", 12, 10, true, con, function(err, res)
+query.addReservation(12, "test1", "2002-10-17", 12, 10, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'startTime must be less than endTime');
@@ -266,14 +250,14 @@ query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function(
 });
 
 //ERR - invalid date
-addReservation(12, "test1", "2002-13-17", 8, 10, true, con, function(err, res)
+query.addReservation(12, "test1", "2002-13-17", 8, 10, true, con, function(err, res)
 {
     assert.ok(!err);
     assert.equals(err.message, 'invalid date');
 });
 
 //ERR - invalid date
-addReservation(12, "test1", "ayy LMAO", 8, 10, true, con, function(err, res)
+query.addReservation(12, "test1", "ayy LMAO", 8, 10, true, con, function(err, res)
 {
     assert.ok(!err);
     assert.equals(err.message, 'invalid date');
@@ -286,85 +270,85 @@ query.addReservation("G101", "foo1", "02/10/2017", 10, 15, "true", con, function
 });
 
 //ERR - invalid username
-addReservation(12, "LAWL", "2002-10-17", 8, 10, true, con, function(err, res)
+query.addReservation(12, "LAWL", "2002-10-17", 8, 10, true, con, function(err, res)
 {
     assert.ok(!err);
     assert.equals(err.message, 'invalid username');
 });
 
 //ERR - Attempt to make 7th hour of reservations
-query.addReservation("G101", "foo1", "02/10/2017", 15, 16, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 15, 16, "true", con, function(err, res)
 {
 	assert.ok(!err);
 	assert.equals(err.message, 'too many reservations');
 });
 
 //GOOD - Get reservation from first day for G101
-query.getRoomSchedule("G101", "02/10/2017", con, function()
+query.getRoomSchedule("G101", "02/10/2017", con, function(err, res)
 {
 	assert.ok(err);
 	assert.ok(res.length == 2);
 });
 
 //GOOD - Get reservation from second day for G101
-query.getRoomSchedule("G101", "02/11/2017", con, function()
+query.getRoomSchedule("G101", "02/11/2017", con, function(err, res)
 {
 	assert.ok(err);
 	assert.ok(res.length == 0);
 });
 
 //GOOD - Get all reservation from first day
-query.getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function(err, res)
 {
 	assert.ok(err);
 	assert.ok(res.length == 2);
 });
 
 //GOOD - Get reservation from first day
-query.getAllRooms("02/10/2017", con, function()
+query.getAllRooms("02/10/2017", con, function(err, res)
 {
 	assert.ok(err);
 	assert.ok(res.length == 0);
 });
 
 //GOOD - cancel first reservation
-query.cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function(err, res)
 {
 	assert.ok(err);
 });
 
 //GOOD - cancel second reservation
-query.cancelReservation(rsvp_ID_2, con, function()
+query.cancelReservation(rsvp_ID_2, con, function(err, res)
 {
 	assert.ok(err);
 });
 
 //ERR - cancel first reservation again
-query.cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function(err, res)
 {
 	assert.ok(!err);
 });
 
 //ERR - cancel non-existent reservation
-query.cancelReservation(rsvp_ID_1, con, function()
+query.cancelReservation(rsvp_ID_1, con, function(err, res)
 {
 	assert.ok(!err);
 });
 
 //GOOD - Make 2 hours of valid reservations
-query.addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function(err, res)
 {
 	assert.ok(err);
 });
 
 //GOOD - Make 2 hours of valid reservations
-query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
+query.addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function(err, res)
 {
 	assert.ok(err);
 });
 
 //GOOD - get schedule for G101 on first day
-query.getRoomSchedule("G101", "02/10/2017", con, function()
+query.getRoomSchedule("G101", "02/10/2017", con, function(err, res)
 {
 	assert.ok(err);
 	assert.ok(res.length == 2);
@@ -390,3 +374,5 @@ query.getAllRooms("02/10/2017", con, function(err, res)
 	assert.ok(err);
 	assert.ok(res.length == 0);
 });
+
+*/

@@ -20,7 +20,7 @@ var usernameExists = function(username,connection,callback)
     });
 };
 
-var emailExists = function(email,connection) {
+var emailExists = function(email,connection,callback) {
 
    connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
 
@@ -238,6 +238,7 @@ var cancelReservation = function(reservationID, connection, callback)
 
 };
 
+exports.emailExists = emailExists;
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
