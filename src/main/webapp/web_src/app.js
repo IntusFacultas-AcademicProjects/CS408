@@ -319,11 +319,16 @@ app.controller("reservation", function($scope) {
 
     // checks blocked status
     $scope.checkBlocked = function(id) {
+       if(id <= 0 || id >= 20){
+        	console.log("tried to check a room that doesnt exist");
+        	return false;
+        }
         if ($scope.roomsData[id - 1].blocked) {
-            var name = "#room" + id;
-            return "Blocked";
-
-
+            //var name = "#room" + id;
+            return true;
+        }
+        else{
+       		return false;
         }
     };
 
@@ -368,11 +373,32 @@ app.controller("reservation", function($scope) {
         $("#reserve-input-modal").modal("toggle");
     }
     $scope.unblockRoom = function(id) {
-        if ($scope.roomsData[id - 1].blocked) {
-            var name = "#room" + id;
-            alert("RoomID: " + id + " is currently blocked");
+    		//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	console.log("checked unblock on a room that is not defined");
+        	return false;
+        }
+        if ($scope.checkBlocked(id)) {
             $scope.roomsData[id - 1].blocked = false;
-            //need to add a refresh function to recolor unblocked rooms
+            return true;
+        }else{
+        	console.log("admin attempt to unblock room; room is already unblocked");
+          return false;
+        }
+    };
+	
+	$scope.blockRoom = function(id) {
+  			//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	console.log("checked block on a room that is not defined");
+        	return false;
+        }
+        if (!$scope.checkBlocked(id)) {
+            $scope.roomsData[id - 1].blocked = true;
+            return true;
+        }else{
+        	console.log("admin attempt to block room; room is already blocked");
+          return false;
         }
     };
     $scope.validate = function(roomData, hour) {
@@ -383,7 +409,8 @@ app.controller("reservation", function($scope) {
             }
         }
         return false;
-    }
+    };
+	
     $scope.validateShareable = function(roomData, hour) {
         var room = roomData.res;
         for (var i = 0; i < room.length; i++) {
@@ -396,7 +423,22 @@ app.controller("reservation", function($scope) {
             }
         }
         return false;
-    }
+    };
+	
+	$scope.toggleShareable = function(resId, roomId) {
+     		//int id : reservationId
+    		if(id <= 0 || id >= 20){
+        	console.log("checked block on a room that is not defined");
+        	return false;
+        }
+        if (!$scope.checkBlocked(id)) {
+            $scope.roomsData[id - 1].blocked = true;
+            return true;
+        }else{
+        	console.log("room is already blocked");
+          return false;
+        }
+    };
    
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
