@@ -12,7 +12,6 @@ app.controller("index", function($scope) {
         "budget": Number,
         "admin": Boolean
     };
-    $scope.lastButtonPressed;
     $scope.user.username = "Sfellers";
     $scope.user.password = "password";
     $scope.user.userid = 0;
@@ -43,17 +42,7 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
-
-    $scope.naomi = {
-        name: 'Naomi',
-        address: '1600 Amphitheatre'
-    };
-    $scope.igor = {
-        name: 'Igor',
-        address: '123 Somewhere'
-    };
-
-    $scope.user = {
+	$scope.user = {
         "username": String,
         "password": String,
         "userid": Number,
@@ -61,14 +50,14 @@ app.controller("reservation", function($scope) {
         "budget": Number,
         "admin": Boolean
     };
-
-    $scope.user.username = "SFellers";
+ 	$scope.user.username = "Sfellers";
     $scope.user.password = "password";
     $scope.user.userid = 0;
     $scope.user.email = "sfellers@purdue.edu";
     $scope.user.budget = 3;
     $scope.user.admin = true;
-
+    $scope.firstName = "Sam";
+    $scope.lastName = "Fellers";
     var _slots = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -77,11 +66,11 @@ app.controller("reservation", function($scope) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    function _init() {
+    $scope._init = function() {
         $scope.slots = _slots;
     }
-
-    // variables
+    $scope._init();
+    // fake variables for development time testing
     $scope.hours = [{
             id: 0,
             selected: "selected",
@@ -100,12 +89,14 @@ app.controller("reservation", function($scope) {
 
     ];
     $scope.isCollapsed = true;
+    
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [{
             blocked: true,
             res: {},
             day: 1,
-            roomid: 1
+            roomid: 0,
+            roomName: "Room1"
         },
         {
             blocked: false,
@@ -123,109 +114,127 @@ app.controller("reservation", function($scope) {
                 }
             ],
             day: 1,
-            roomid: 2
+            roomid: 1,
+            roomName: "Room2"
         },
         {
             blocked: true,
             res: [],
             day: 1,
-            roomid: 3
+            roomid: 2,
+            roomName: "Room3"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 4
+            roomid: 3,
+            roomName: "Room4"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 5
+            roomid: 4,
+            roomName: "Room5"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 6
+            roomid: 5,
+            roomName: "Room6"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 7
+            roomid: 6,
+            roomName: "Room7"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 8
+            roomid: 7,
+            roomName: "Room8"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 9
+            roomid: 8,
+            roomName: "Room9"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 10
+            roomid: 9,
+            roomName: "Room10"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 11
+            roomid: 10,
+            roomName: "Room11"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 12
+            roomid: 11,
+            roomName: "Room12"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 13
+            roomid: 12,
+            roomName: "Room13"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 14
+            roomid: 13,
+            roomName: "Room14"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 15
+            roomid: 14,
+            roomName: "Room15"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 16
+            roomid: 15,
+            roomName: "Room16"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 17
+            roomid: 16,
+            roomName: "Room17"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 18
+            roomid: 17,
+            roomName: "Room18"
         },
         {
             blocked: false,
             res: [],
             day: 1,
-            roomid: 19
+            roomid: 18,
+            roomName: "Room19"
         }
     ];
     // name displayed at top of modal
@@ -236,48 +245,27 @@ app.controller("reservation", function($scope) {
     $scope.hourSelected;
     // available hours from selected start time
     $scope.availableHours = [];
-    var _slots = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
 
-    function _init() {
-        $scope.slots = _slots;
 
-    }
-    _init();
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
         var id = event.target.id;
-        $scope.roomSelected = id;
-        var num = $scope.roomSelected.substring(4, id.length - 1);
-        $scope.roomSelected = $scope.roomSelected.substring(0, id.length - 1);
+        var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
-        if ($scope.roomsData[num - 1].blocked == false) {
-
-            var room = $scope.roomsData[num - 1];
-            for (var resSlot = 0; resSlot < room.res.length; resSlot++) {
-                var reservation = room.res[resSlot];
-                var start = reservation.start;
-                var end = reservation.end;
-                for (var i = start; i <= end; i++) {
-                    var name = "#roomModal." + i;
-                    var htmlName = "roomModal." + i;
-                }
-            }
+        $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
+        if ($scope.roomsData[num].blocked == false) {
             $("#reserve-modal").modal("toggle");
-
-        } else {
-            var room = $scope.roomsData[num - 1];
-//            console.log("attempting to open blocked room modal.")
+        } 
+        else {
+            var room = $scope.roomsData[num];
+            console.log("attempting to open blocked room modal.")
             if ($scope.user.admin) {
                 $("#reserve-block-modal").modal("toggle");
-            } else {
+            } 
+            else {
                 alert("This room is currently blocked");
             }
-//            console.log("roomselected: " + $scope.roomIndex);
         }
 
     };
@@ -291,7 +279,7 @@ app.controller("reservation", function($scope) {
     // handles mouseover for rooms on the map
     $scope.mouseLeave = function(event) {
         var room = "#room" + event + "a";
-        if ($scope.roomsData[event - 1].blocked == false) {
+        if ($scope.roomsData[event].blocked == false) {
             $(room).mapster('deselect');
         }
     };
@@ -302,7 +290,6 @@ app.controller("reservation", function($scope) {
                 if (room.blocked) {
                     var roomName = "#room" + room.roomid + "a";
                     var roomTable = "#room" + room.roomid + "c";
-                    //                $(roomName).mapster('isSelectable',false);
                     $(roomName).mapster('set', true);
                     $(roomName).css("background-color", 'black');
                     $('#map').mapster('set_options', {
@@ -319,20 +306,32 @@ app.controller("reservation", function($scope) {
 
     // checks blocked status
     $scope.checkBlocked = function(id) {
-        if ($scope.roomsData[id - 1].blocked) {
-            var name = "#room" + id;
-            return "Blocked";
-
-
-        }
+    	if (typeof $scope.roomsData == "undefined") {
+    		if(id <= 0 || id >= 20){
+		    	return false;
+		    }
+		    if ($scope.roomsData[id].blocked) {
+		        //var name = "#room" + id;
+		        return true;
+		    }
+		    else{
+		   		return false;
+		    }
+    	}
     };
 
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
-        var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", "03:00-03:59", "04:00-04:59", "05:00-05:59", "06:00-06:59", "07:00-07:59", "08:00-08:59", "09:00-09:59", "10:00-10:59", "11:00-11:59", "12:00-12:59", "13:00-13:59", "14:00-14:59", "15:00-15:59", "16:00-16:59", "17:00-17:59", "18:00-18:59", "19:00-19:59", "20:00-20:59", "21:00-21:59", "23:00-22:59", "23:00-23:59"];
+        var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", 
+        					"03:00-03:59", "04:00-04:59", "05:00-05:59", 
+        					"06:00-06:59", "07:00-07:59", "08:00-08:59", 
+        					"09:00-09:59", "10:00-10:59", "11:00-11:59", 
+        					"12:00-12:59", "13:00-13:59", "14:00-14:59", 
+        					"15:00-15:59", "16:00-16:59", "17:00-17:59", 
+        					"18:00-18:59", "19:00-19:59", "20:00-20:59", 
+        					"21:00-21:59", "23:00-22:59", "23:00-23:59"];
         var startTime = event.target.id.substring(10, event.target.id.length);
-        $scope.lastButtonPressed = startTime;
         $scope.hourSelected = startTime;
         var room = roomSelected;
         var roomReservations = room.res;
@@ -361,42 +360,93 @@ app.controller("reservation", function($scope) {
                 });
             }
         }
-//        $scope.roomData = [{start:0,end:4, shareable: false}]
         $("#reserve-input-modal").modal("toggle");
     }
+    
+    // closes second modal. overrides normal modal close to avoid double closure
     $scope.closeSecondModal = function() {
         $("#reserve-input-modal").modal("toggle");
     }
+    
     $scope.unblockRoom = function(id) {
-        if ($scope.roomsData[id - 1].blocked) {
-            var name = "#room" + id;
-            alert("RoomID: " + id + " is currently blocked");
-            $scope.roomsData[id - 1].blocked = false;
-            //need to add a refresh function to recolor unblocked rooms
+    		//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	return false;
+        }
+        if ($scope.checkBlocked(id)) {
+            $scope.roomsData[id].blocked = false;
+            return true;
+        }else{
+          return false;
         }
     };
+	
+	$scope.blockRoom = function(id) {
+  			//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	return false;
+        }
+        if (!$scope.checkBlocked(id)) {
+            $scope.roomsData[id].blocked = true;
+            return true;
+        }else{
+          return false;
+        }
+    };
+    
+    // used to block hours that are already reserved by someone else
     $scope.validate = function(roomData, hour) {
-        var room = roomData.res;
-        for (var i = 0; i < room.length; i++) {
-            if (room[i].start <= hour && room[i].end >= hour){
-                return true;
-            }
-        }
-        return false;
-    }
+    	// roomData is temporarily undefined on page load
+    	if (typeof roomData != 'undefined') {
+    		var room = roomData.res;
+		    for (var i = 0; i < room.length; i++) {
+		        if (room[i].start <= hour && room[i].end >= hour){
+		            return true;
+		        }
+		    }
+		    return false;
+    	}
+    };
+	
+	// used to color hours as shareable if hours are shareable (DOM not updating)
     $scope.validateShareable = function(roomData, hour) {
-        var room = roomData.res;
-        for (var i = 0; i < room.length; i++) {
-            if (room[i].start <= hour && room[i].end >= hour){
-//                console.log("validate hour shareable:", room.shareable);
-                if (room.shareable == true) {
-                    return true
-                }
-                return false;
-            }
+    	// roomData is temporarily undefined on page load
+    	if (typeof roomData != 'undefined') {
+    		var room = roomData.res;
+		    for (var i = 0; i < room.length; i++) {
+		        if (room[i].start <= hour && room[i].end >= hour){
+		            if (room[i].shareable == true) {
+		                return true
+		            }
+		        }
+		    }
+		    return false;
+    	}
+    };
+	
+     $scope.toggleShareable = function(resId, roomId) {
+     		//int resId : reservationId
+    		if(roomId <= 0 || roomId >= 20){
+        	return false;
         }
-        return false;
-    }
+        if ($scope.checkBlocked(roomId)) {
+            //cant toggle a blocked room
+            return false;
+        }
+        $scope.reservationData.forEach(function(element){
+        	if(element.reservationId == resId){
+          	if(element.shareable){
+            	element.shareable = false;
+              return true;
+            }else{
+            	element.shareable = true;
+              return true;
+            }
+          }
+          return false;
+        });
+	return false;
+    };
    
 }).directive('reservationTable', function() {
     // handles the hour by hour modal body for the modal opened on map click
@@ -412,13 +462,7 @@ app.controller("reservation", function($scope) {
                 pre: function(scope, iElem, iAttrs) {
                     //access this data 
                     iElem.children().each(function() {
-                        /*
-                            if this.id = "roomModal." + array[0].id
-							color red or yellow depending on shareable
-                            */
                         $(this).children().each(function() {
-                            // used to block hours that are taken. Needs outside data that is not being passed properly.
-                            //                            $(this).prop('disabled',true);
                         })
                     })
 

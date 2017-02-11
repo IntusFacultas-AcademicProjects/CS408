@@ -36,15 +36,15 @@
                                     <select id="startTime" class="mdb-select form-control" onchange="changeFunc()">
                                             <option ng-repeat="hour in availableHours|limitTo:1" value="{{hour.id}}" selected="selected">{{hour.name}}</option>
                                     </select>
-                            <br>
+                            <br />
                                 <label for="endTime" style="margin-left:3%">Reservation End Time</label>
                                 <select id="endtTime" class="mdb-select form-control" onchange="changeFunc()">
                                       <option ng-repeat="hour in availableHours" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                                 </select>
-                            <br>
+                            <br />
                             <div class="form-group">
                                 <div class="checkbox">
-                                    <label> <input type="checkbox"> Mark Shareable </label>
+                                    <label> <input type="checkbox"> Mark Shareable </input></label>
                                 </div>
                                 <p class="help-block">Allow other students to share the space with you</p>
                             </div>
