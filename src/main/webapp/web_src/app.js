@@ -42,7 +42,22 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
-
+	$scope.user = {
+        "username": String,
+        "password": String,
+        "userid": Number,
+        "email": String,
+        "budget": Number,
+        "admin": Boolean
+    };
+ 	$scope.user.username = "Sfellers";
+    $scope.user.password = "password";
+    $scope.user.userid = 0;
+    $scope.user.email = "sfellers@purdue.edu";
+    $scope.user.budget = 3;
+    $scope.user.admin = true;
+    $scope.firstName = "Sam";
+    $scope.lastName = "Fellers";
     var _slots = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -291,16 +306,18 @@ app.controller("reservation", function($scope) {
 
     // checks blocked status
     $scope.checkBlocked = function(id) {
-       if(id <= 0 || id >= 20){
-        	return false;
-        }
-        if ($scope.roomsData[id].blocked) {
-            //var name = "#room" + id;
-            return true;
-        }
-        else{
-       		return false;
-        }
+    	if (typeof $scope.roomsData == "undefined") {
+    		if(id <= 0 || id >= 20){
+		    	return false;
+		    }
+		    if ($scope.roomsData[id].blocked) {
+		        //var name = "#room" + id;
+		        return true;
+		    }
+		    else{
+		   		return false;
+		    }
+    	}
     };
 
     // opens second reservation modal
