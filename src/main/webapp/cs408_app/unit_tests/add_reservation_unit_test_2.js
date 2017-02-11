@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -49,25 +49,28 @@ var res1 = {"username": "test1",
     			 {
     			     assert.ok(err);
     			     assert.equal(err.message, 'startTime out of acceptable range [0,23]');
+    			     console.log("Passed Reservation Test 3");
+									 //ERR - endTime out of acceptable range [0,23]
+					query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res)
+								 {
+									 assert.ok(err);
+									 assert.equal(err.message, 'endTime out of acceptable range [0,23]');
+									 console.log("Passed Reservation Test 4");
+									 //ERR - endTime out of acceptable range [0,23]
+									query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res)
+												 {
+													 assert.ok(err);
+									 			     assert.equal(err.message, 'endTime out of acceptable range [0,23]');
+									 			     console.log("Passed Reservation Test 5");
+									 			     con.end(function(err) {
+													// The connection is terminated gracefully
+													// Ensures all previously enqueued queries are still
+													// before sending a COM_QUIT packet to the MySQL server.
+													console.log("Quitting");
+													process.exit();
+													});
+												 });
+								 });
      			 });
 
-    //ERR - endTime out of acceptable range [0,23]
-    query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res)
-    			 {
-    			     assert.ok(err);
-    			     assert.equal(err.message, 'endTime out of acceptable range [0,23]');
-    			 });
-
-    //ERR - endTime out of acceptable range [0,23]
-    query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res)
-    			 {
-    			     assert.ok(err);
-     			     assert.equal(err.message, 'endTime out of acceptable range [0,23]');
-    			 });
-   
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
+    

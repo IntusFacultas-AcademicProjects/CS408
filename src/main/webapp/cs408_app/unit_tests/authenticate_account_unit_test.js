@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -49,18 +49,23 @@ var res1 = {"username": "test1",
     		      {
     			  assert.ok(!err);
      			  assert.ok(res);
+     			  console.log("Passed Authenticate Account Test 1");
+     			  //TEST 17 FALSE - invalid credentials
+					query.authAccount(account1.email, account1.password, con, function(err,res)
+					 		      {
+					 			  assert.ok(!err);
+					 			  //assert.equal(res, "wrong email or password");
+					 			  console.log("Passed Authenticate Account Test 2");
+					 			  con.end(function(err) {
+									// The connection is terminated gracefully
+									// Ensures all previously enqueued queries are still
+									// before sending a COM_QUIT packet to the MySQL server.
+									console.log("Quitting");
+									process.exit();
+									});
+					 		      });
+					
      		      }); 
 
 
-    //TEST 17 FALSE - invalid credentials
-    query.authAccount(account1.email, account1.password, con, function(err,res)
-     		      {
-     			  assert.ok(!err);
-     			  //assert.equal(res, "wrong email or password");
-     		      });
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
+    

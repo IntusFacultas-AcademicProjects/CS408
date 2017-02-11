@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -48,14 +48,24 @@ var res1 = {"username": "test1",
     			 {
      			     assert.ok(err);
      			     assert.equal(err.message, 'invalid date');
+     			     console.log("Passed Reservation Test 9");
+     			     //ERR - invalid date
+					query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
+								 {
+									 assert.ok(err);
+									 assert.equal(err.message, 'invalid date');
+									 console.log("Passed Reservation Test 10");
+									  con.end(function(err) {
+										// The connection is terminated gracefully
+										// Ensures all previously enqueued queries are still
+										// before sending a COM_QUIT packet to the MySQL server.
+										console.log("Quitting");
+										process.exit();
+										});
+								 });
     			 });
 
-    //ERR - invalid date
-    query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
-    			 {
-    			     assert.ok(err);
-    			     assert.equal(err.message, 'invalid date');
-    			 });
+    
 
 
     //ERR - make overlapping reservation
@@ -67,9 +77,4 @@ var res1 = {"username": "test1",
       assert.equal(err.message, 'room is already reserved for this time slot');
       });
     */
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
+   
