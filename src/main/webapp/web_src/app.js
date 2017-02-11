@@ -77,10 +77,10 @@ app.controller("reservation", function($scope) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    function _init() {
+    $scope._init = function() {
         $scope.slots = _slots;
     }
-
+    $scope._init();
     // variables
     $scope.hours = [{
             id: 0,
@@ -236,17 +236,7 @@ app.controller("reservation", function($scope) {
     $scope.hourSelected;
     // available hours from selected start time
     $scope.availableHours = [];
-    var _slots = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
 
-    function _init() {
-        $scope.slots = _slots;
-
-    }
-    _init();
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
@@ -272,13 +262,13 @@ app.controller("reservation", function($scope) {
 
         } else {
             var room = $scope.roomsData[num - 1];
-//            console.log("attempting to open blocked room modal.")
+            console.log("attempting to open blocked room modal.")
             if ($scope.user.admin) {
                 $("#reserve-block-modal").modal("toggle");
             } else {
                 alert("This room is currently blocked");
             }
-//            console.log("roomselected: " + $scope.roomIndex);
+            console.log("roomselected: " + $scope.roomIndex);
         }
 
     };
@@ -420,7 +410,6 @@ app.controller("reservation", function($scope) {
                 if (room[i].shareable == true) {
                     return true
                 }
-                return false;
             }
         }
         return false;
