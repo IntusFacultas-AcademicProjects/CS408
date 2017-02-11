@@ -53,7 +53,7 @@ var res1 = {"username": "test1",
 					query.usernameExists("BADUSER", con, function(res)
 					 			 {
 					 			     assert.ok(!res);
-					 			     console.log("Passed Username Existence Test 2');
+					 			     console.log("Passed Username Existence Test 2");
 					 			     con.end(function(err) {
 									// The connection is terminated gracefully
 									// Ensures all previously enqueued queries are still
