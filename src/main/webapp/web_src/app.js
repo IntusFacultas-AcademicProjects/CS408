@@ -379,8 +379,8 @@ app.controller("reservation", function($scope) {
     };
 	
 	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    		if(id <= 0 || id >= 20){
+  		//int id : roomId
+    	if(id <= 0 || id >= 20){
         	console.log("checked block on a room that is not defined");
         	return false;
         }
@@ -394,6 +394,9 @@ app.controller("reservation", function($scope) {
     };
     $scope.validate = function(roomData, hour) {
         var room = roomData.res;
+		if(room == undefined){
+			return false;
+		}
         for (var i = 0; i < room.length; i++) {
             if (room[i].start <= hour && room[i].end >= hour){
                 return true;
@@ -404,6 +407,9 @@ app.controller("reservation", function($scope) {
 	
     $scope.validateShareable = function(roomData, hour) {
         var room = roomData.res;
+		if(room == undefined){
+			return false;
+		}
         for (var i = 0; i < room.length; i++) {
             if (room[i].start <= hour && room[i].end >= hour){
 //                console.log("validate hour shareable:", room.shareable);
@@ -417,7 +423,7 @@ app.controller("reservation", function($scope) {
 	
      $scope.toggleShareable = function(resId, roomId) {
      		//int resId : reservationId
-    		if(roomId <= 0 || roomId >= 20){
+    	if(roomId <= 0 || roomId >= 20){
         	console.log("toggleshareable() on a room that is not defined");
         	return false;
         }
