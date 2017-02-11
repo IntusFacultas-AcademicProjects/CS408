@@ -48,14 +48,14 @@ var res1 = {"username": "test1",
     query.addReservation(res1.roomID, res1.username, res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
     			 {
     			     assert.ok(!err);
-			     console.log("Passed addreservation 1")
+			     console.log("Passed Reservation Test 1")
 			     
 			     //ERR - startTime out of acceptable range [0,23]
 			     query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res)
      						  {
     						      assert.ok(err);
     						      assert.equal(err.message, 'startTime out of acceptable range [0,23]');
-						      console.log("Passed addreservation 1")
+						      console.log("Passed Reservation Test 2")
 						      
 						      con.end(function(err) {
 							  // The connection is terminated gracefully
