@@ -158,28 +158,28 @@ addReservation(12, "test1", "2002-10-17", 8, 8, true, con, function(err, res)
     assert.equals(err.message, 'startTime must be less than endTime');
 });
 
-//TEST 15 FAIL - startTime must be less than endTime
+//TEST 16 FAIL - startTime must be less than endTime
 addReservation(12, "test1", "2002-10-17", 12, 10, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'startTime must be less than endTime');
 });
 
-//TEST 16 FAIL - invalid date
+//TEST 17 FAIL - invalid date
 addReservation(12, "test1", "2002-13-17", 8, 10, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'invalid date');
 });
 
-//TEST 17 FAIL - invalid date
+//TEST 18 FAIL - invalid date
 addReservation(12, "test1", "ayy LMAO", 8, 10, true, con, function(err, res)
 {
     assert.ok(err);
     assert.equals(err.message, 'invalid date');
 });
 
-//TEST 18 FAIL - invalid username
+//TEST 19 FAIL - invalid username
 //NEEDS IMPLEMENTING
 addReservation(12, "LAWL", "2002-10-17", 8, 10, true, con, function(err, res)
 {
