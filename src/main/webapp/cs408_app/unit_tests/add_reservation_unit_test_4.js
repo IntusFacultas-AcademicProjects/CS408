@@ -48,13 +48,13 @@ var res1 = {"username": "test1",
     			 {
      			     assert.ok(err);
      			     assert.equal(err.message, 'invalid date');
-     			     console.log("Passed Reservation Test");
+     			     console.log("Passed Reservation Test 9");
      			     //ERR - invalid date
 					query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
 								 {
 									 assert.ok(err);
 									 assert.equal(err.message, 'invalid date');
-									 console.log("Passed Reservation Test");
+									 console.log("Passed Reservation Test 10");
 									  con.end(function(err) {
 										// The connection is terminated gracefully
 										// Ensures all previously enqueued queries are still
