@@ -9,6 +9,7 @@ var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
+var assert     = require('assert');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -52,111 +53,146 @@ var pass_3 = "lmao";
 
 //TODO - kill database
 
-
-/////////////////////
-///Add Account
-/////////////////////
-addAccount("foo1@purdue.edu", "foo1", "password1", con, function()
+//TEST 1 TRUE
+addAccount("test1@purdue.edu", "test1", "test1", con, function(err, res)
 {
-	
-});//should succeed
+    assert.ok(!err);
+});
 
-addAccount("foo2@purdue.edu", "foo2", " ", con, function()
+//TEST 2 ERR - duplicate email
+addAccount("test1@purdue.edu", "test2", "test2", con, function(err, res)
 {
-	
-});//should fail
+    assert.ok(err);
+    assert.equals(err.message, 'Email already exists');
+ 
+});
 
-addAccount("ayy", "foo3", "password1", con, function()
+//TEST 3 ERR - duplicate username
+addAccount("test3@purdue.edu", "test1", "test3", con, function()
 {
-	
-});//should fail
+    assert.ok(err);
+    assert.equals(err.message, 'Username already exists');
 
-addAccount("ayy", "foo1", "lmao", con, function()
+});
+
+//TEST 4 ERR - bad connection
+addAccount("ayy", "foo3", "password1", null, function()
 {
-	
-});//should fail
+    assert.ok(!err);
+    
+});
 
-
-
-/////////////////////
-///Add Username Exists
-/////////////////////
-usernameExists(username_1, con, function()
+//TEST 5 TRUE - username exists
+usernameExists('test1', con, function(res)
 {
-	
-}); //assert true
+    assert.ok(res);
+});
 
-usernameExists(username_1, con, function()
+//TEST 6 FALSE - username does not exist
+usernameExists('test10', con, function(res)
 {
-	
-}); //assert false
+    assert.ok(!res);
+});
 
-
-/////////////////////
-///Email Exists
-/////////////////////
-emailExists(email_1, con, function()
+//TEST 7 TRUE - email exists
+emailExists('test1@purdue.edu', con, function(err, res)
 {
-	
-}); //assert true
+    assert.ok(!err);
+    assert.ok(res);
+});
 
-emailExists(email_2, con, function()
+//TEST 8 FALSE - email does not exist
+emailExists('IUSucks@purdue.edu', con, function(err,res)
 {
-	
-}); //assert false
+    assert.ok(!err);
+    assert.ok(!res);
+});
 
-/////////////////////
-///Auth Account
-/////////////////////
 
-//log in to valid account with valid credentials
-authAccount(email_1, pass_1, con, function()
+//TEST 9 TRUE - valid credentials
+authAccount('test1@purdue.edu', 'test1', con, function(err, res)
 {
-	
-}); //assert success
+    assert.ok(!err);
+    assert.ok(res);
+}); 
 
-//log in to valid account with invalid credentials
-authAccount(email_1, pass_2, con, function()
+//TEST 10 FALSE - invalid credentials
+authAccount('pete@purdue.edu', 'boilerUP', con, function(err,res)
 {
-	
-}); //assert failure
+    assert.ok(!err);
+    assert.ok(!res);
+});
 
-//log in to account that could not be created
-authAccount(email_2, pass_2, con, function()
+//TEST 11 PASS - reservation added
+addReservation(12, "test1", "02-10-17", 8, 10, true, con, function(err, res)
 {
-	
-}); //assert failure
-
-//log in to non-existent account
-authAccount("foo34@purdue.edu", "password1", con, function()
-{
-	
-}); //assert failure
+    assert.ok(!err);
+});
 
 
-/////////////////////
-///Add Reservation
-/////////////////////
-
-//Make 2 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 8, 10, "true", con, function()
-{
-	
-}); //Assert success
-
-
-//Make an invalid reservation overlapping with previous one
-//Are we only allowing reservations starting on the hour?
+//TEST 12 FAIL - reservation slot taken
+//NEEDS IMPLEMENTING!
 addReservation("G101", "foo1", "02/10/2017", 9, 10, "true", con, function()
 {
-	
-}); //Assert failure, room already reserved for specified time
+	//TODO
+});
 
-//Make 4 hours of valid reservations
-addReservation("G101", "foo1", "02/10/2017", 10, 15, "true", con, function()
+//TEST 13 FAIL - startTime out of acceptable range [0,23]
+addReservation(12, "test1", "2002-10-17", -1, 10, true, con, function(err, res)
 {
-	
-}); //Assert success
+    assert.ok(err);
+    assert.equals(err.message, 'startTime out of acceptable range [0,23]');
+});
+
+//TEST 14 FAIL - endTime out of acceptable range [0,23]
+addReservation(12, "test1", "2002-10-17", 8, 24, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'endTime out of acceptable range [0,23]');
+});
+
+//TEST 15 FAIL - startTime must be less than endTime
+addReservation(12, "test1", "2002-10-17", 8, 8, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'startTime must be less than endTime');
+});
+
+//TEST 15 FAIL - startTime must be less than endTime
+addReservation(12, "test1", "2002-10-17", 12, 10, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'startTime must be less than endTime');
+});
+
+//TEST 16 FAIL - invalid date
+addReservation(12, "test1", "2002-13-17", 8, 10, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'invalid date');
+});
+
+//TEST 17 FAIL - invalid date
+addReservation(12, "test1", "ayy LMAO", 8, 10, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'invalid date');
+});
+
+//TEST 18 FAIL - invalid username
+//NEEDS IMPLEMENTING
+addReservation(12, "LAWL", "2002-10-17", 8, 10, true, con, function(err, res)
+{
+    assert.ok(err);
+    assert.equals(err.message, 'TODO');
+});
+
+
+
+
+
+
+
 
 //Attempt to make 7th hour of reservations
 addReservation("G101", "foo1", "02/10/2017", 15, 16, "true", con, function()
