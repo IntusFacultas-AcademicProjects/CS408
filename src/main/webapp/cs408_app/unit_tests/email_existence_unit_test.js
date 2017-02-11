@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -49,19 +49,22 @@ var res1 = {"username": "test1",
      		      {
      			  assert.ok(!err);
      			  assert.ok(res);
+     			  console.log("Passed Email Existence Test 1");
+     			  //TEST 13 FALSE - email does not exist
+				query.emailExists("BADEMAIL", con, function(err,res)
+							  {
+							  assert.ok(!err);
+				 			  assert.ok(!res);
+				 			  console.log("Passed Email Existence Test 2");
+				 			   con.end(function(err) {
+								// The connection is terminated gracefully
+								// Ensures all previously enqueued queries are still
+								// before sending a COM_QUIT packet to the MySQL server.
+								console.log("Quitting");
+								process.exit();
+								});
+				 		      });
      		      });
 
 
-    //TEST 13 FALSE - email does not exist
-    query.emailExists("BADEMAIL", con, function(err,res)
-    		      {
-    			  assert.ok(!err);
-     			  assert.ok(!res);
-     		      });
-   con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
-
+    

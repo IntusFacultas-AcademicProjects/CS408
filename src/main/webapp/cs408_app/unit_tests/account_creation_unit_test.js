@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -48,27 +48,27 @@ var res1 = {"username": "test1",
     query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
 		     {
 			 assert.ok(!err);
-			 console.log("Passed Test 1");
+			 console.log("Passed Account Creation Test 1");
 			 // TEST 3 ERR - duplicate email
 			 query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
 			 		     {
 			 			 assert.ok(err);
 			 			 assert.equal(err.message, 'Email already exists');
-			 			 console.log("Passed Test 2");
+			 			 console.log("Passed Account Creation Test 2");
 			 			 //TEST 5 ERR - duplicate username
 						 query.addAccount(account2.email, account1.username, account1.password, con, function(err, res)
 						 		     {
 						 			 assert.ok(err);
 						 			 assert.equal(err.message, 'Username already exists');
-						 			 console.log("Passed Test 3");
+						 			 console.log("Passed Account Creation Test 3");
 						 			 con.end(function(err) {
 												// The connection is terminated gracefully
 												// Ensures all previously enqueued queries are still
 												// before sending a COM_QUIT packet to the MySQL server.
 												console.log("Quitting");
 												process.exit();
-												);
-			 		     			);
+												});
+			 		     			});
 			 		     });
 		     });
 
