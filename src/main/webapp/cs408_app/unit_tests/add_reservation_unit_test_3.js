@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
