@@ -38,7 +38,6 @@ var res1 = {"username": "test1",
 	    console.log('Error connecting to Db');
 	    return;
 	}
-	console.log('Connection established');
     });
     /////////////////////
     ///Add reservation
@@ -66,7 +65,7 @@ var res1 = {"username": "test1",
 													// The connection is terminated gracefully
 													// Ensures all previously enqueued queries are still
 													// before sending a COM_QUIT packet to the MySQL server.
-													console.log("Quitting");
+													
 													process.exit();
 													});
 												 });

@@ -38,7 +38,6 @@ var res1 = {"username": "test1",
 	    console.log('Error connecting to Db');
 	    return;
 	}
-	console.log('Connection established');
     });
 	
 	query.deleteAccount(account1.email, account1.password,con,function(res){
@@ -51,8 +50,6 @@ var res1 = {"username": "test1",
 			process.exit();
 			});
 		  });
-	});
-
 
 
 	 

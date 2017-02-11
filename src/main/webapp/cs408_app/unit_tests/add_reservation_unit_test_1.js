@@ -38,7 +38,7 @@ var res1 = {"username": "test1",
 	    console.log('Error connecting to Db');
 	    return;
 	}
-	console.log('Connection established');
+	console.log('Reservation Creation and Modification Unit Tests Starting...');
     });
     /////////////////////
     ///Add reservation

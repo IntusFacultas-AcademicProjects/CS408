@@ -6,3 +6,4 @@ node add_reservation_unit_test_1.js
 node add_reservation_unit_test_2.js
 node add_reservation_unit_test_3.js
 node add_reservation_unit_test_4.js
+node delete_test_1.js

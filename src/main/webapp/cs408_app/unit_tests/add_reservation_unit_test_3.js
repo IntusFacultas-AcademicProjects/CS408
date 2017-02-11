@@ -38,7 +38,6 @@ var res1 = {"username": "test1",
 	    console.log('Error connecting to Db');
 	    return;
 	}
-	console.log('Connection established');
     });
     /////////////////////
     ///Add reservation
@@ -49,20 +48,20 @@ var res1 = {"username": "test1",
     			 {
     			     assert.ok(err);
     			     assert.equal(err.message, 'startTime must be less than endTime');
-			     console.log("Passed addReservation 6")
+			     console.log("Passed Reservation Test 6")
 			     //TEST 15 FAIL - startTime must be less than endTime
 			     query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res)
     						  {
     						      assert.ok(err);
     						      assert.equal(err.message, 'startTime must be less than endTime');
-						      console.log("Passed addReservation 7")
+						      console.log("Passed Reservation Test 7")
 						      
 						      //ERR - invalid date
 						      query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
     									   {
     									       assert.ok(err);
     									       assert.equal(err.message, 'invalid date');
-									       console.log("Passed addReservation 8")
+									       console.log("Passed Reservation Test 8")
 									       con.end(function(err) {
 										   // The connection is terminated gracefully
 										   // Ensures all previously enqueued queries are still
