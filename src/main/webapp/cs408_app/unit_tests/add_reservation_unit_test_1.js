@@ -1,5 +1,5 @@
 var mysql      = require("mysql");
-var query      = require('./query');          // our defined api calls
+var query      = require('../query');          // our defined api calls
 var assert     = require('assert');
 var async      = require('async');
 
@@ -48,27 +48,25 @@ var res1 = {"username": "test1",
     query.addReservation(res1.roomID, res1.username, res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
     			 {
     			     assert.ok(!err);
+			     console.log("Passed addreservation 1")
+			     
+			     //ERR - startTime out of acceptable range [0,23]
+			     query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res)
+     						  {
+    						      assert.ok(err);
+    						      assert.equal(err.message, 'startTime out of acceptable range [0,23]');
+						      console.log("Passed addreservation 1")
+						      
+						      con.end(function(err) {
+							  // The connection is terminated gracefully
+							  // Ensures all previously enqueued queries are still
+							  // before sending a COM_QUIT packet to the MySQL server.
+							  process.exit();
+						      });
+						      
+						  });
+			    			     
     			 });
 
-    //ERR - username doesnt exist
-    //TODO NEEDS IMPLEMENTING
-    /*
-      query.addReservation(res1.roomID, "BADUSER", res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
-      {
-      assert.ok(!err);
-      assert.ok(err.message, 'room is already reserved for this time slot');
-      });
-    */
 
-    //ERR - startTime out of acceptable range [0,23]
-    query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res)
-     			 {
-    			     assert.ok(err);
-    			     assert.equal(err.message, 'startTime out of acceptable range [0,23]');
-     			 });
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
+

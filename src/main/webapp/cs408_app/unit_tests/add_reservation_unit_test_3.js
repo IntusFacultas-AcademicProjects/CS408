@@ -49,25 +49,35 @@ var res1 = {"username": "test1",
     			 {
     			     assert.ok(err);
     			     assert.equal(err.message, 'startTime must be less than endTime');
-    			 });
+			     console.log("Passed addReservation 6")
+			     //TEST 15 FAIL - startTime must be less than endTime
+			     query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res)
+    						  {
+    						      assert.ok(err);
+    						      assert.equal(err.message, 'startTime must be less than endTime');
+						      console.log("Passed addReservation 7")
+						      
+						      //ERR - invalid date
+						      query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
+    									   {
+    									       assert.ok(err);
+    									       assert.equal(err.message, 'invalid date');
+									       console.log("Passed addReservation 8")
+									       con.end(function(err) {
+										   // The connection is terminated gracefully
+										   // Ensures all previously enqueued queries are still
+										   // before sending a COM_QUIT packet to the MySQL server.
+										   process.exit();
+									       });
+									       
+									   });
 
-    //TEST 15 FAIL - startTime must be less than endTime
-    query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res)
-    			 {
-    			     assert.ok(err);
-    			     assert.equal(err.message, 'startTime must be less than endTime');
-    			 });
+
+						  });
+
+			     
+			     
+			 });
 
 
-    //ERR - invalid date
-    query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
-    			 {
-    			     assert.ok(err);
-    			     assert.equal(err.message, 'invalid date');
-     			 });
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    });
+
