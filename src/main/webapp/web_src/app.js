@@ -417,7 +417,7 @@ app.controller("reservation", function($scope) {
         for (var i = 0; i < room.length; i++) {
             if (room[i].start <= hour && room[i].end >= hour){
 //                console.log("validate hour shareable:", room.shareable);
-                if (room.shareable == true) {
+                if (room[i].shareable == true) {
                     return true
                 }
                 return false;
