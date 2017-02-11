@@ -267,7 +267,8 @@ app.controller("reservation", function($scope) {
                     var htmlName = "roomModal." + i;
                 }
             }
-            $("#reserve-modal").modal("toggle");
+            $("#reserve-modal").modal("S
+				      ");
 
         } else {
             var room = $scope.roomsData[num - 1];
@@ -425,19 +426,29 @@ app.controller("reservation", function($scope) {
         return false;
     };
 	
-	$scope.toggleShareable = function(resId, roomId) {
-     		//int id : reservationId
-    		if(id <= 0 || id >= 20){
-        	console.log("checked block on a room that is not defined");
+     $scope.toggleShareable = function(resId, roomId) {
+     		//int resId : reservationId
+    		if(roomId <= 0 || roomId >= 20){
+        	console.log("toggleshareable() on a room that is not defined");
         	return false;
         }
-        if (!$scope.checkBlocked(id)) {
-            $scope.roomsData[id - 1].blocked = true;
-            return true;
-        }else{
-        	console.log("room is already blocked");
-          return false;
+        if ($scope.checkBlocked(roomId)) {
+            //cant toggle a blocked room
+            return false;
         }
+        $scope.reservationData.forEach(function(element){
+        	if(element.reservationId == resId){
+          	if(element.shareable){
+            	element.shareable = false;
+              return true;
+            }else{
+            	element.shareable = true;
+              return true;
+            }
+          }
+          return false;
+        });
+	return false;
     };
    
 }).directive('reservationTable', function() {
