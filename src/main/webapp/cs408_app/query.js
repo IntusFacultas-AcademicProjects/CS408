@@ -36,27 +36,23 @@ var emailExists = function(email,connection,callback) {
 };
 
 var isConflictingTime = function(date, startTime, endTime, connection, callback){
-
+    
     connection.query("SELECT * FROM reservations " +
 		     "WHERE date = ? " +
 		     "AND ((HOUR(start_time) > ? AND HOUR(start_time) < ?) " +
-		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?))",
-		     [date, startTime, endTime, startTime, endTime],
+		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) " +
+		     "OR (HOUR(start_time) = ? AND HOUR(end_time) = ?))",
+		     [date, startTime, endTime, startTime, endTime, startTime, endTime],
 		     function(err, res, fields){
-			 
+
 			 if(res.length == 0){
+			     callback(null, false);
+			 }
+			 else if(res.length >= 1){
 			     callback(null, true);
 			 }
-			 else if(res.length == 1){
-			     callback(false);
-			 }
-			 else{
-			     callback(new Error("Invalid state"));
-			 }
 			     
-
 		     });
-
 
 }
 
@@ -90,7 +86,6 @@ var addAccount = function(email,username,password,connection,callback) {
 	    callback(new Error("email already exists"));
 	    return;
 	}
-	console.log('bad');
 	
 	connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
     	    if(error){
@@ -178,61 +173,88 @@ var getRoomSchedule = function(room, day)
 
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
+    //We need synchronous execution here because we need to make sure 
+    //input for isConflictingTime() is valid. So we do checking here...
+    async.series({
 
-    //usernameExists(user,connection,function()
-    
-    //TODO check username exists
-    //TODO check if timeslot is taken
-		   
-    if(startTime < 0 || startTime > 23){
-	callback(new Error("startTime out of acceptable range [0,23]"));
-	return;
-    }
-    else if(endTime < 0 || endTime > 23){
-	callback(new Error("endTime out of acceptable range [0,23]"));
-	return;
-    }
-    else if(startTime >= endTime){
-	callback(new Error("startTime must be less than endTime"));
-	return;
-    }	 
-    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
-	callback(new Error("invalid date"));
-	return;
-    }
+	
+	formatcheck: function(callback) {
+	    
+	    if(startTime < 0 || startTime > 23){
+		callback(new Error("startTime out of acceptable range [0,23]"));
+		return;
+	    }
+	    else if(endTime < 0 || endTime > 23){
+		callback(new Error("endTime out of acceptable range [0,23]"));
+		return;
+	    }
+	    else if(startTime >= endTime){
+		callback(new Error("startTime must be less than endTime"));
+		return;
+	    }	 
+	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
+		callback(new Error("invalid date"));
+		return;
+	    }
+	    else{
+		callback(null, true);
+	    }
+	    
+	},
+
+	conflictcheck: function(callback) {
+
+	    //database is not zero indexed
+	    isConflictingTime(date,startTime+1, endTime+1, connection, function(err, res){
+		if(err)
+		    callback(err)
+		else if(res)
+		    callback(new Error("conflicting reservation time"));
+		else
+		    callback(null,true);
+	    });
+
+	}
+	    
+    },
+    // ...and get the results here
+    function(err, results) {
 
 
-    isConflictingTime(date,startTime, endTime, connection, function(err, res){
-	if(res){
-	    callback(new Error("conflicting reservation time"));
+	//Since we only callback with errors above, they should
+	//be caught here where we then forward them back to the callee
+	if(err){
+	    callback(err);
 	    return;
 	}
+
+	//We dont want these values 0-indexed
+	startTime += 1;
+	endTime += 1;
+
+	//Change params to format we need
+	startTime = util.format("0%d:00:00",startTime);
+	endTime = util.format("0%d:00:00",endTime);
+	shareable = shareable ? 1 : 0;
+
+
+	connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);',
+			 [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
+
+	    if(error){
+		callback(error);
+		return;
+	    }
+            else{
+		console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",results.insertId,user,date,startTime,endTime));
+		callback(null, results.insertId);
+	    }
+
+	});
+	
     });
 
 
-
-    		   
-    //We dont want these values 0-indexed
-    startTime += 1;
-    endTime +=1;
-
-    //Change params to format we need
-    startTime = util.format("0%d:00:00",startTime);
-    endTime = util.format("0%d:00:00",endTime);
-    shareable = shareable ? 1 : 0;
-    
-    
-    connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
-
-	if(error){
-	    callback(error);
-	}
-	else{
-	    console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",results.insertId,user,date,startTime,endTime));
-	    callback(null, results.insertId);
-	}
-
-    });
 
 };
 
