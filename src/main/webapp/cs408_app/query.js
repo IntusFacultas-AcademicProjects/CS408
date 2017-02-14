@@ -3,29 +3,28 @@
 
 var util = require('util');
 var moment = require('moment');
+var async = require('async');
 
-var usernameExists = function(username,connection,callback) 
-{
-   connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username] ,function(error,results,fields){
+var usernameExists = function(username,connection,callback) {
+   connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username], function(error,results,fields){
        if(error){
-	   callback(error);
-	   return;
+	   callback(error)
        }
-       
+
        if(results.length == 1)
-	   callback(true);
+	   callback(null,true);
        else
-	   callback(false);
+	   callback(null,false);
 	
     });
 };
 
 var emailExists = function(email,connection,callback) {
 
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email] ,function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
 
        if(error){
-	   throw error;
+	   callback(error);
        }
 
        if(results.length == 1)
@@ -36,7 +35,7 @@ var emailExists = function(email,connection,callback) {
     });
 };
 
-var isConflictingTimeSlot = function(date, startTime, endTime, connection, callback){
+var isConflictingTime = function(date, startTime, endTime, connection, callback){
 
     connection.query("SELECT * FROM reservations " +
 		     "WHERE date = ? " +
@@ -49,7 +48,7 @@ var isConflictingTimeSlot = function(date, startTime, endTime, connection, callb
 			     callback(null, true);
 			 }
 			 else if(res.length == 1){
-			     callback(null, false);
+			     callback(false);
 			 }
 			 else{
 			     callback(new Error("Invalid state"));
@@ -64,33 +63,52 @@ var isConflictingTimeSlot = function(date, startTime, endTime, connection, callb
 
 var addAccount = function(email,username,password,connection,callback) {
 
-    
-    emailExists(email,connection,function(err, result){
-	if(result){
-	    callback(new Error("Email already exists"));
+    //We do all error checking in parallel here...
+    async.parallel({
+
+	usercheck: function(callback) {
+	    usernameExists(username,connection,function(err,res){
+		callback(err, res);
+	    });
+	},
+	
+	emailcheck: function(callback) {
+	    emailExists(email,connection,function(err,res){
+		callback(err, res);
+	    });
+	}
+	    
+    },
+    // ...and get the results here
+    function(err, results) {
+		     
+	if(results.usercheck){
+	    callback(new Error("username already exists"));
 	    return;
 	}
-
-	usernameExists(username,connection,function(err, result){
-	    if(result){
-		callback(new Error("Username already exists"));
-		return;
-	    }
-
-	    connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
-		if(error){
-		    callback(error);
-		    return;
-		}
-		else
-		    callback(null);
-
-		console.log('Added account: ' + email + ', password: ' + password + '\n');
-	    });
-
+	else if(results.emailcheck){
+	    callback(new Error("email already exists"));
+	    return;
+	}
+	console.log('bad');
+	
+	connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
+    	    if(error){
+    		callback(error);
+    		return;
+    	    }
+    	    else
+    		callback(null);
+	    
+    	    console.log('Added account: ' + email + ', password: ' + password + '\n');
 	});
 	
+	
     });
+
+    
+    
+    
 };
 
 var authAccount = function(email,password,connection,callback) 
@@ -182,18 +200,16 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	callback(new Error("invalid date"));
 	return;
     }
-    // else if(isConflictTimeSlot(date,startTime, endTime, function(err, res){
 
 
+    isConflictingTime(date,startTime, endTime, connection, function(err, res){
+	if(res){
+	    callback(new Error("conflicting reservation time"));
+	    return;
+	}
+    });
 
 
-
-
-    // })){
-    // 	callback(new Error("Conflicting timeslot"));
-    // 	return;
-		
-    // }
 
     		   
     //We dont want these values 0-indexed
