@@ -9,6 +9,18 @@ app.controller("user",function($scope) {
         console.log($scope.email);
         console.log($scope.password);
     }
+    $scope.recover = function()
+    {
+        console.log($scope.email);
+    }
+    $scope.register = function()
+    {
+        if ($scope.password == $scope.confirmpassword)
+        {
+               console.log($scope.email);
+               console.log($scope.password);
+        }
+    }
 
 })
 app.controller("index", function($scope) {
