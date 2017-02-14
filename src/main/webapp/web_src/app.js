@@ -1,7 +1,28 @@
 //app.js, handles frontend functionality.
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
+//collective data controller
+app.controller("user",function($scope) {
+    $scope.message = "fuck";
+    $scope.login = function()
+    {
+        console.log($scope.email);
+        console.log($scope.password);
+    }
+    $scope.recover = function()
+    {
+        console.log($scope.email);
+    }
+    $scope.register = function()
+    {
+        if ($scope.password == $scope.confirmpassword)
+        {
+               console.log($scope.email);
+               console.log($scope.password);
+        }
+    }
 
+})
 app.controller("index", function($scope) {
 
     $scope.user = {

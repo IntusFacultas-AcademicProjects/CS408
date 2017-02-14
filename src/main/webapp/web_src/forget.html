@@ -1,4 +1,4 @@
-<html>
+﻿<html>
     <head>
         <!-- Latest jQuery-->
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -50,22 +50,22 @@
             <div class="col-lg-4">
             </div>
             <div class="col-lg-4 shadowed" style="background-color:white">
-                <form ng-controller="accountRecovery" action="action_page.php">
-                    <div class="username">
+                <form  >
+                    <div class="username"  ng-controller="user">
                         <div class="row">
                             <div class="col-lg-12">
                                 <h4>Recover Account</h4>
                                 <div class="form-group label-floating">
                                     <label for="email" class="control-label">Enter a valid Purdue email address.</label>
-                                    <input type="email" class="form-control" id="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
+                                    <input type="email" class="form-control" ng-model="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid=""  >
                                     <span class="help-block">This should be the email associated with the account you want to recover</span>
 
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12">
-                                <button style="width:100%" class="btn btn-primary btn-raised" type="submit" href="login.html">Recover</button>
+                            <div class="col-sm-12" ng-controller="user">
+                                <button style="width:100%" class="btn btn-primary btn-raised" type="submit"  ng-click="recover()">Recover</button>
                             </div>
                         </div>
                     </div>
