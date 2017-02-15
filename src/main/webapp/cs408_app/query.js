@@ -1,6 +1,8 @@
-
-//All mySQL api queries here
-
+/*
+* This file should contain all api calls that query the database.
+* All functions should include a connection argument. This is 
+* the database connection in which to be used in querying.
+*/
 var util = require('util');
 var moment = require('moment');
 var async = require('async');
@@ -8,7 +10,8 @@ var async = require('async');
 var usernameExists = function(username,connection,callback) {
    connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username], function(error,results,fields){
        if(error){
-	   callback(error)
+	   callback(error);
+	   return;
        }
 
        if(results.length == 1)
@@ -25,6 +28,7 @@ var emailExists = function(email,connection,callback) {
 
        if(error){
 	   callback(error);
+	   return;
        }
 
        if(results.length == 1)
@@ -48,7 +52,7 @@ var isConflictingTime = function(date, startTime, endTime, connection, callback)
 			 if(res.length == 0){
 			     callback(null, false);
 			 }
-			 else if(res.length >= 1){
+			 else {
 			     callback(null, true);
 			 }
 			     
@@ -98,11 +102,7 @@ var addAccount = function(email,username,password,connection,callback) {
     	    console.log('Added account: ' + email + ', password: ' + password + '\n');
 	});
 	
-	
     });
-
-    
-    
     
 };
 
@@ -122,37 +122,81 @@ var authAccount = function(email,password,connection,callback)
 
 var deleteAccount = function(email,password,connection,callback) 
 {
-    connection.query('DELETE FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
+    connection.query('DELETE FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password], function(error,results,fields){
 	if(error)
 	    throw error;
 	if(results.affectedRows == 1)
-	    callback(true);
+	    callback(null, true);
 	else if(results.affectedRows == 0)
-	    callback(false);
+	    callback(null, false);
 	else
-	    throw new Error('Illegal state');
+	    callback(new Error('Illegal state'));
 	
     });
 };
 
-var getAllRooms = function(day)
-{
-	connection.query('SELECT * FROM reservations WHERE date = ?' 
-	[day], function(err,rows)
-	{
-		if(err) throw err;
-		
-		console.log('Data received from Db:\n');
-		console.log(rows);
+var getAllRooms = function(date, connection, callback){
+
+
+    var roomsData = {
+	"rooms" : []
+    }
+
+    
+    if(!moment(date, "YYYY-MM-DD", true).isValid()){
+	callback(new Error("invalid date"));
+	return;
+    }
+    
+    connection.query('SELECT * FROM rooms', function(error,results,fields){
+
+	//Iterate over all rooms in database
+	results.forEach(function(element, index, array){
+
+	    if(error){
+		callback(error);
+		return;
+	    }
+
+	    var roomObj = {}
+
+	    //Set room data here
+	    roomObj.roomID = element.room_id;
+	    roomObj.roomName = element.room_name;
+	    roomObj.date = date;
+	    roomObj.blocked = element.blocked == 1 ? true : false;
+
+	    //Get all reservations for room here
+	    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?',
+			     [element.room_id, date], function(error,results,fields){		
+		if(error){
+		    callback(error);
+		    return;
+		}
+		    
+		roomObj.reservations = results;
+		roomsData.rooms.push(roomObj);
+
+		if(index + 1  == array.length){
+		    callback(null,roomsData);
+		}
+
+
+	    });
+	    
 	});
+
+    });
+    
 };
 
+
+//TODO: needs implementing
 var getRoomSchedule = function(room, day)
 {
 	connection.query("SELECT * FROM rooms WHERE room_id = ? AND date = ?"
 	[room, day],
-	function(error,results,fields)
-	{
+	function(error,results,fields){
 		if(error) throw error;
 		
 		console.log('Data received from Db:\n');
@@ -204,8 +248,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
 	conflictcheck: function(callback) {
 
-	    //database is not zero indexed
-	    isConflictingTime(date,startTime+1, endTime+1, connection, function(err, res){
+	    isConflictingTime(date,startTime, endTime, connection, function(err, res){
 		if(err)
 		    callback(err)
 		else if(res)
@@ -227,10 +270,6 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	    callback(err);
 	    return;
 	}
-
-	//We dont want these values 0-indexed
-	startTime += 1;
-	endTime += 1;
 
 	//Change params to format we need
 	startTime = util.format("0%d:00:00",startTime);
@@ -270,7 +309,7 @@ var cancelReservation = function(reservationID, connection, callback)
 	else if(results.affectedRows == 1)
 	    callback(null, true);
 	else
-	    throw new Error('Illegal state');
+	    callback(new Error('illegal state: duplicate resvation IDs'));
 	
     });
 

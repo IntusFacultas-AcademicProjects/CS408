@@ -5,11 +5,11 @@
 
 // call the packages we need
 var express    = require('express');        // call express
-var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 
+var app        = express();                 // define our app using express
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,8 +44,6 @@ var router = express.Router();              // get an instance of the express Ro
 // middleware to use for all requests
 router.use(function(req, res, next) {
 
-
-    
     if ('OPTIONS' == req.method) {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
@@ -54,13 +52,11 @@ router.use(function(req, res, next) {
 
     }
     else {
-	
+
 	// do logging and validation here
-	console.log('Recieved request with data ' + JSON.stringify(req.body));
+	console.log('>>>[%s]: %s with data: %s',req.method.toUpperCase(), req.url, JSON.stringify(req.body));
 	next();
     }
-
-
 
 });
 
@@ -72,7 +68,9 @@ router.route('/addAccount')
 		res.json({ err: err.message });
 	    }
 	    else{
-		res.json({message: 'Success' });
+		var response = {message: 'Success' };
+		console.log("<<<[RESPONSE]: %j", response);
+		res.json(response);
 	    }
 
 	});
@@ -86,17 +84,24 @@ router.route('/authAccount')
 		console.error('Request generated an error: ' + err.message);
 		res.json({ Err: err.message });
 	    }
-		
-	    if(result){
-		res.json({ msg: "authenticated" });
-	    }
-	    else
-		res.json({ msg: "invalid" });
 
+	    var response;
+	    
+	    if(result){
+		response = { message: "authenticated" };
+		console.log("<<<[RESPONSE]: %j", response);
+		res.json(response);
+	    }
+	    else{
+		response = { message: "invalid credentials" };
+		console.log("<<<[RESPONSE]: %j", response);
+		res.json(response);
+	    }
 	});
 	
     });
 
+//TODO add proper result checking and response
 router.route('/deleteAccount')
     .delete(function(req, res) {
 	query.deleteAccount(req.body.email,req.body.password,con,function(err,result){
@@ -107,9 +112,10 @@ router.route('/deleteAccount')
 	
     });
 
+//TODO add proper result checking and response
 router.route('/getRoom')
 	.get(function(req, res) {
-	    query.getRoom(req.body.room,req.body.date,function(result){
+	    query.getRoom(req.body.room,req.body.date,function(err, result){
 	    	console.log('result: ' + result);
 	    });
 
@@ -117,12 +123,19 @@ router.route('/getRoom')
     });
 
 router.route('/getAllRooms')
-	.get(function(req, res) {
-	    query.getAllRooms(req.body.date,function(result){
-	    	console.log('result: ' + result);
-	    });
+    .post(function(req, res) {
+	query.getAllRooms(req.body.date, con, function(err, result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ err: err.message });
+	    }
+	    else{
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
+	    }
 
-	    res.json({message: 'ACK'});
+	});
+
     });
 
 router.route('/addReservation')
@@ -133,7 +146,9 @@ router.route('/addReservation')
 		res.json({ err: err.message });
 	    }
 	    else{
-		res.json({message: 'Success',reservationID: result});
+		var response = {message: 'Success',reservationID: result};
+		console.log("<<<[RESPONSE]: %j", response);
+		res.json(response);
 	    }
 
 	});
