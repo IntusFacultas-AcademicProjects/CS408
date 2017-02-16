@@ -137,7 +137,6 @@ var deleteAccount = function(email,password,connection,callback)
 
 var getAllRooms = function(date, connection, callback){
 
-
     var roomsData = {
 	"rooms" : []
     }
@@ -191,17 +190,47 @@ var getAllRooms = function(date, connection, callback){
 };
 
 
-//TODO: needs implementing
-var getRoomSchedule = function(room, day)
-{
-	connection.query("SELECT * FROM rooms WHERE room_id = ? AND date = ?"
-	[room, day],
-	function(error,results,fields){
-		if(error) throw error;
-		
-		console.log('Data received from Db:\n');
-		console.log(rows);
+
+var getRoomSchedule = function(roomID, date, connection, callback){
+
+    var roomObj = {}
+
+    connection.query('SELECT * FROM rooms WHERE room_id = ?', [roomID], function(error,results,fields){
+
+	if(error){
+	    callback(error);
+	    return;
+	}
+	else if(results.length == 0){
+	    callback(new Error("room does not exist"));
+	    return;
+	}
+	else if(results.length > 1){
+	    callback(new Error("invalid state: duplicate rooms in database"));
+	    return;
+	}
+	
+	
+	//Set room data here
+	roomObj.roomID = results[0].room_id;
+	roomObj.roomName = results[0].room_name;
+	roomObj.date = date;
+	roomObj.blocked = results[0].blocked == 1 ? true : false;
+
+	//Get all reservations for room here
+	connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?', [roomID, date], function(error,results,fields){		
+	    if(error){
+		callback(error);
+		return;
+	    }
+	    
+	    roomObj.reservations = results;
+	    callback(null,roomObj);
+
 	});
+
+    });
+
 };
 
 /*

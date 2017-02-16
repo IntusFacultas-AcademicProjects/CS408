@@ -101,25 +101,38 @@ router.route('/authAccount')
 	
     });
 
-//TODO add proper result checking and response
 router.route('/deleteAccount')
     .delete(function(req, res) {
 	query.deleteAccount(req.body.email,req.body.password,con,function(err,result){
-	    console.log('result: ' + result);
+
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ err: err.message });
+	    }
+	    else{
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
+	    }
+
 	});
 
-	res.json({ message: 'ACK' });
 	
     });
 
-//TODO add proper result checking and response
-router.route('/getRoom')
-	.get(function(req, res) {
-	    query.getRoom(req.body.room,req.body.date,function(err, result){
-	    	console.log('result: ' + result);
-	    });
+router.route('/getRoomSchedule')
+    .post(function(req, res) {
+	query.getRoomSchedule(req.body.roomID, req.body.date, con, function(err, result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ err: err.message });
+	    }
+	    else{
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
+	    }
 
-	    res.json({message: 'ACK'});
+	});
+
     });
 
 router.route('/getAllRooms')
