@@ -163,7 +163,7 @@ var getAllRooms = function(date, connection, callback){
 	    var roomObj = {}
 
 	    //Set room data here
-	    roomObj.roomID = element.room_id;
+	    roomObj.roomid = element.room_id;
 	    roomObj.roomName = element.room_name;
 	    roomObj.date = date;
 	    roomObj.blocked = element.blocked == 1 ? true : false;
@@ -176,7 +176,7 @@ var getAllRooms = function(date, connection, callback){
 		    return;
 		}
 		    
-		roomObj.reservations = results;
+		roomObj.res = results;
 		roomsData.rooms.push(roomObj);
 
 		if(index + 1  == array.length){

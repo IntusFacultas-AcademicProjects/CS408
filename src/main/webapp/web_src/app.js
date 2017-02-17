@@ -22,6 +22,7 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
+				localStorage["firstPageLoad"] = false;
 				window.location.href = '/reserve.html';	
 			}
 			else {
@@ -44,8 +45,9 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-				if (typeof response.data.err == "undefined") {				
-						window.location.href = '/login.html';				 
+				if (typeof response.data.err == "undefined") {
+					localStorage["firstPageLoad"] = false;				
+					window.location.href = '/login.html';				 
 				}
 				else {
 					alert(response.data.err);
@@ -98,10 +100,21 @@ app.controller("index", function($scope) {
 });
 
 app.controller("navbar", function($scope) {
-
+	$scope.login = function() {
+		localStorage["firstPageLoad"] = false;
+		window.location.href = "/login.html";
+	}
+	$scope.register = function() {
+		localStorage["firstPageLoad"] = false;
+		window.location.href = "/register.html";
+	}
+	$scope.admin = function() {
+		localStorage["firstPageLoad"] = false;
+		window.location.href = "/admin.html";
+	}
 });
 
-app.controller("reservation", function($scope) {
+app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 	$scope.date;
 	$scope.user = {
         "username": String,
@@ -151,154 +164,85 @@ app.controller("reservation", function($scope) {
 
     ];
     $scope.isCollapsed = true;
-    
+    $scope.updateRooms = function() {
+		var datePieces= $scope.date.split('/');
+		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
+			if (typeof response.data.err == "undefined") {
+				$scope.roomsData = response.data.rooms;
+				angular.forEach($scope.roomsData, function(room, index) {
+					    if (room.blocked) {
+					        var roomName = "#room" + room.roomid + "a";
+					        var roomTable = "#room" + room.roomid + "c";
+					        $(roomName).mapster('set', true);
+					        $(roomName).css("background-color", 'black');
+					        $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+					                fillColor: 'ffffff'
+					            }]
+					        });        
+					    }
+					}
+
+				);
+				return true;		 
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}  
+		    //load response
+	    });
+    }
+    $scope.loadRooms = function() {
+    	if(!localStorage["firstPageLoad"]) {
+
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1;
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+				dd='0'+dd;
+			} 
+
+			if(mm<10) {
+				mm='0'+mm;
+			} 
+
+			today = yyyy+ '-'+mm+'-'+dd;
+			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
+				if (typeof response.data.err == "undefined") {
+					$scope.roomsData = response.data.rooms;
+					angular.forEach($scope.roomsData, function(room, index) {
+						    if (room.blocked) {
+						        var roomName = "#room" + room.roomid + "a";
+						        var roomTable = "#room" + room.roomid + "c";
+						        $(roomName).mapster('set', true);
+						        $(roomName).css("background-color", 'black');
+						        $('#map').mapster('set_options', {
+						            areas: [{
+						                key: room.roomid,
+						                fillColor: 'ffffff'
+						            }]
+						        });        
+						    }
+						}
+
+					);
+					return true;		 
+				}
+				else {
+					alert(response.data.err);
+					window.location.reload();
+				}  
+			    //load response
+		    });
+		}
+    }
     // json information delivered from SQL database (currently disposable data)
-    $scope.roomsData = [{
-            blocked: true,
-            res: {},
-            day: 1,
-            roomid: 0,
-            roomName: "Room1"
-        },
-        {
-            blocked: false,
-            res: [{
-                    user: "Pedro",
-                    start: 0,
-                    end: 4,
-                    shareable: false
-                },
-                {
-                    user: "Andrew",
-                    start: 7,
-                    end: 8,
-                    shareable: true
-                }
-            ],
-            day: 1,
-            roomid: 1,
-            roomName: "Room2"
-        },
-        {
-            blocked: true,
-            res: [],
-            day: 1,
-            roomid: 2,
-            roomName: "Room3"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 3,
-            roomName: "Room4"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 4,
-            roomName: "Room5"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 5,
-            roomName: "Room6"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 6,
-            roomName: "Room7"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 7,
-            roomName: "Room8"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 8,
-            roomName: "Room9"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 9,
-            roomName: "Room10"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 10,
-            roomName: "Room11"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 11,
-            roomName: "Room12"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 12,
-            roomName: "Room13"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 13,
-            roomName: "Room14"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 14,
-            roomName: "Room15"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 15,
-            roomName: "Room16"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 16,
-            roomName: "Room17"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 17,
-            roomName: "Room18"
-        },
-        {
-            blocked: false,
-            res: [],
-            day: 1,
-            roomid: 18,
-            roomName: "Room19"
-        }
-    ];
+    $scope.roomsData = [];
     // name displayed at top of modal
     $scope.roomSelected;
     // index of room data in array
@@ -319,6 +263,7 @@ app.controller("reservation", function($scope) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
+        console.log(num);
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
         if ($scope.roomsData[num].blocked == false) {
             $("#reserve-modal").modal("toggle");
@@ -406,6 +351,7 @@ app.controller("reservation", function($scope) {
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.hourSelected = startTime;
         var room = roomSelected;
+        console.log(roomSelected);
         var roomReservations = room.res;
         var takenHours = [];
         for (var i = 0; i < roomReservations.length; i++) {
@@ -522,7 +468,7 @@ app.controller("reservation", function($scope) {
 	return false;
     };
    
-}).directive('reservationTable', function() {
+}]).directive('reservationTable', function($timeout) {
     // handles the hour by hour modal body for the modal opened on map click
     return {
         restrict: 'E',
@@ -532,7 +478,7 @@ app.controller("reservation", function($scope) {
         },
         templateUrl: 'reservation-table.html',
         compile: function(tElem, attrs) {
-            return {
+            $timeout(function() {return {
                 pre: function(scope, iElem, iAttrs) {
                     //access this data 
                     iElem.children().each(function() {
@@ -544,7 +490,7 @@ app.controller("reservation", function($scope) {
                 post: function(scope, iElem, iAttrs) {
                     $.material.init();
                 } // post
-            } //return
+            }}) //return
         } // compile
     }; // return
 });

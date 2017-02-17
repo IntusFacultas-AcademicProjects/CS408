@@ -54,7 +54,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <div class="datepicker input-group date" data-provide="datepicker">
-                                <input id="dp" type="text" class="datepicker form-control" required>
+                                <input ng-model="date" ng-init="loadRooms()" ng-change="updateRooms()" id="dp" type="text" class="datepicker form-control" required>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
@@ -131,6 +131,7 @@
                                 fillColor: 'ffffff',
                                 isSelectable: false
                             });
+                           	
                         </script>
                     </div>
                     <timetable class="col-lg-4 shadowed" slots="slots"  ></timetable>

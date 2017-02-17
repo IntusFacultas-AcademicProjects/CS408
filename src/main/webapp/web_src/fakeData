@@ -1,0 +1,145 @@
+{
+            blocked: true,
+            res: {},
+            day: 1,
+            roomid: 0,
+            roomName: "Room1"
+        },
+        {
+            blocked: false,
+            res: [{
+                    user: "Pedro",
+                    start: 0,
+                    end: 4,
+                    shareable: false
+                },
+                {
+                    user: "Andrew",
+                    start: 7,
+                    end: 8,
+                    shareable: true
+                }
+            ],
+            day: 1,
+            roomid: 1,
+            roomName: "Room2"
+        },
+        {
+            blocked: true,
+            res: [],
+            day: 1,
+            roomid: 2,
+            roomName: "Room3"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 3,
+            roomName: "Room4"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 4,
+            roomName: "Room5"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 5,
+            roomName: "Room6"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 6,
+            roomName: "Room7"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 7,
+            roomName: "Room8"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 8,
+            roomName: "Room9"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 9,
+            roomName: "Room10"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 10,
+            roomName: "Room11"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 11,
+            roomName: "Room12"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 12,
+            roomName: "Room13"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 13,
+            roomName: "Room14"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 14,
+            roomName: "Room15"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 15,
+            roomName: "Room16"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 16,
+            roomName: "Room17"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 17,
+            roomName: "Room18"
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 18,
+            roomName: "Room19"
+        }
