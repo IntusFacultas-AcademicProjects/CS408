@@ -9,14 +9,11 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
                 }
             }
     $scope.message = "fuck";
+    $scope.userinfo;
     $scope.login = function()
     {
-        var userinfo = {
-        				email: String,
-        				password: String,
-        			};
-        userinfo.email = $scope.email;
-        userinfo.password = $scope.password;
+    	
+       
         /*$http.post('url',userinfo,$scope.config)
             .success(function (data, status, headers, config) {
                 $scope.PostDataResponse = data;
@@ -28,8 +25,8 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
                     "<hr />headers: " + header +
                     "<hr />config: " + config;
             });*/
-        console.log($scope.email);
-        console.log($scope.password);
+        console.log($scope.userinfo);
+      
     }
     $scope.recover = function()
     {
@@ -39,22 +36,8 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     {
         if ($scope.password == $scope.confirmpassword)
         {
-               var userinfo = new Object();
-               userinfo.email = $scope.email;
-               userinfo.password = $scope.password;
-                var jsonString= JSON.stringify(userinfo);//making data json format and send it to back end
-                        $http.post('url',jsoninfo,$scope.config)
-            .success(function (data, status, headers, config) {
-                $scope.PostDataResponse = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });
-               console.log($scope.email);
-               console.log($scope.password);
+              $scope.userinfo.password = $scope.password;
+              console.log($scope.userinfo);
         }
     }
 
@@ -125,6 +108,7 @@ app.controller("reservation", function($scope) {
 
     $scope._init = function() {
         $scope.slots = _slots;
+        return true;
     }
     $scope._init();
     // fake variables for development time testing
@@ -313,24 +297,28 @@ app.controller("reservation", function($scope) {
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
         if ($scope.roomsData[num].blocked == false) {
             $("#reserve-modal").modal("toggle");
+            return true;
         } 
         else {
             var room = $scope.roomsData[num];
             console.log("attempting to open blocked room modal.")
             if ($scope.user.admin) {
                 $("#reserve-block-modal").modal("toggle");
+                return false;
             } 
             else {
                 alert("This room is currently blocked");
+                return false;
             }
         }
-
+		
     };
 
     //handles mouseover for rooms on the map
     $scope.mouseOver = function(event) {
         var room = "#room" + event + "a";
         $(room).mapster('select');
+        return true;
     };
 
     // handles mouseover for rooms on the map
@@ -339,6 +327,7 @@ app.controller("reservation", function($scope) {
         if ($scope.roomsData[event].blocked == false) {
             $(room).mapster('deselect');
         }
+        return true;
     };
 
     // permanently highlights rooms that are blocked (color change is not working)
@@ -354,11 +343,12 @@ app.controller("reservation", function($scope) {
                             key: room.roomid,
                             fillColor: '000000'
                         }]
-                    });
+                    });        
                 }
             }
 
         );
+        return true;
     };
 
     // checks blocked status
@@ -418,11 +408,13 @@ app.controller("reservation", function($scope) {
             }
         }
         $("#reserve-input-modal").modal("toggle");
+        return true;
     }
     
     // closes second modal. overrides normal modal close to avoid double closure
     $scope.closeSecondModal = function() {
         $("#reserve-input-modal").modal("toggle");
+        return true;
     }
     
     $scope.unblockRoom = function(id) {

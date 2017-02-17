@@ -51,13 +51,13 @@
             </div>
             <div class="col-lg-4 shadowed" style="background-color:white">
                 <form>
-                    <div class="username" style="height:400px">
+                    <div class="username" style="height:490px">
                         <div class="row">
                             <div class="col-lg-12">
                                 <h4>Create an Account</h4><br>
                                 <div class="form-group label-floating">
                                     <label for="email" class="control-label">Enter a valid Purdue email address.</label>
-                                    <input type="email" class="form-control" ng-model="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
+                                    <input type="email" class="form-control" ng-model="userinfo.email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
                                     <span class="error"></span>
                                     <span class="help-block">This should be the same email as your Purdue Career Account</span>
                                     
@@ -72,6 +72,17 @@
                                     <input type="password" class="form-control" ng-model="confirmpassword" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9.?!]{5,10}$">
                                      <span class="help-block">The passwords should match</span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group label-floating">
+                                    <label for="email" class="control-label">Enter a preferred username</label>
+                                    <input type="email" class="form-control" ng-model="userinfo.uname" oninvalid="">
+                                    <span class="error"></span>
+                                    <span class="help-block">We will use this to keep your account safe. Don't forget this, but you will log in with your email</span>
+                                    
+                                </div>    
                             </div>
                         </div>
                         <div class="row">
