@@ -45,7 +45,7 @@ var res1 = {"username": "test1",
     /////////////////////
     
     //TEST 19 PASS - reservation added
-    query.addReservation(res1.roomID, res1.username, res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
+    query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
     			 {
     			     assert.ok(!err);
 			     console.log("Passed Reservation Test 1")
