@@ -19,14 +19,10 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     	
        
         $scope.userinfo.password = $scope.password;
-		  $http.post('/api/authAccount', $scope.userinfo).then(function(response) {
-			  $scope.user = null;
-				console.log(response)
+		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
+			
 			//load response
-		  });
-          console.log($scope.userinfo);
-        console.log($scope.userinfo);
-      
+		});
     }
 
     $scope.recover = function()
@@ -41,11 +37,18 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-			  console.log(response.data.html);
-
-			//load response
-			});
-			console.log($scope.userinfo);
+				if (typeof response.data.err == "undefined") {
+					$http.get('/login').then(function(response) {
+						alert("Account succesfully created");
+						document.write(response.data.html);
+				  	});
+				}
+				else {
+					alert(response.data.err);
+					window.location.reload();
+				}  
+			    //load response
+			    });
         }
         else {
         	alert("Passwords must match");
