@@ -29,237 +29,287 @@ var account2 = {"email":"test2@purdue.edu",
 var res1 = {"username": "test1",
 	    "roomID": 87,
 	    "date": "2010-01-01",
-	    "startTime":8,
+	    "startTime":7,
 	    "endTime":9,
 	    "shareable":1
 	   }
 
 
-    //In order to connect to the database you will need node installed on your machine.
-    //Once Node's installed, run command 'npm install' in 'CS408/src/main/webapp/cs408_app' dir.
-    //Note: This database can only be accessed through Purdue's network.
-    var con = mysql.createConnection({
-	host: "mydb.itap.purdue.edu",
-	user: "bhuemann",
-	password: "ben408",
-	database: "bhuemann"
-    });
+//In order to connect to the database you will need node installed on your machine.
+//Once Node's installed, run command 'npm install' in 'CS408/src/main/webapp/cs408_app' dir.
+//Note: This database can only be accessed through Purdue's network.
+var con = mysql.createConnection({
+    host: "mydb.itap.purdue.edu",
+    user: "bhuemann",
+    password: "ben408",
+    database: "bhuemann"
+});
 
-async.waterfall([
+async.series({
 
-    con.connect(function(err){
-	if(err){
-	    console.log('Error connecting to Db');
-	    return;
-	}
-	console.log('Connection established');
-    }),
-
-
-
-
-
-    /////////////////////
-    ///Add Account
-    /////////////////////
-
-    //TEST 1 TRUE
-    query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
-		     {
-			 assert.ok(!err);
-		     }),
-
-    // //TEST 3 ERR - duplicate email
-    // query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
-    // 		     {
-    // 			 assert.ok(err);
-    // 			 assert.equal(err.message, 'Email already exists');
-    // 		     }),
-
-    // //TEST 5 ERR - duplicate username
-    // query.addAccount(account2.email, account1.username, account1.password, con, function(err, res)
-    // 		     {
-    // 			 assert.ok(err);
-    // 			 assert.equal(err.message, 'Username already exists');
-    // 		     }),
+    CON_CONNECT:function(callback){
+	con.connect(function(err){
+	    if(err){
+		callback(err)
+		return;
+	    }
+	    callback(null,true);
+	})
+    },
 
 
+    //TEST PASS
+    TEST1:function(callback){
+	query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
 
+	    if(err)
+		callback(null, false)
+	    else
+		callback(null, res.message == 'success');
+	})
 
+    },
 
+    //TEST PASS
+    TEST#:function(callback){
+	query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){
+	    
+	    if(err)
+		callback(null, false)
+	    else
+		callback(null, res.message == 'success');
+	})
 
-    // /////////////////////
-    // ///Username Exists
-    // /////////////////////
-
-    // //TEST 8 TRUE - username exists
-    // query.usernameExists(account1.username, con, function(res)
-    // 			 {
-    // 			     assert.ok(res);
-    // 			 }),
-
-    // //TEST 9 FALSE - username does not exist
-    // query.usernameExists("BADUSER", con, function(res)
-    // 			 {
-    // 			     assert.ok(!res);
-    // 			 }),
-
-
-
-
-
-    // /////////////////////
-    // ///Email Exists
-    // /////////////////////
-
-    // //TEST 11 TRUE - email exists
-    // query.emailExists(account1.email, con, function(err, res)
-    // 		      {
-    // 			  assert.ok(!err);
-    // 			  assert.ok(res);
-    // 		      }),
-
-
-    // //TEST 13 FALSE - email does not exist
-    // query.emailExists("BADEMAIL", con, function(err,res)
-    // 		      {
-    // 			  assert.ok(!err);
-    // 			  assert.ok(!res);
-    // 		      }),
-
-
-
-
-
-
-
-    // /////////////////////
-    // ///Authenticate Acct
-    // /////////////////////
-
-    // //TEST 15 TRUE - valid credentials
-    // query.authAccount(account1.email, account1.password, con, function(err, res)
-    // 		      {
-    // 			  assert.ok(!err);
-    // 			  assert.ok(res);
-    // 		      }), 
-
-
-    // //TEST 17 FALSE - invalid credentials
-    // query.authAccount(account1.email, account1.password, con, function(err,res)
-    // 		      {
-    // 			  assert.ok(!err);
-    // 			  //assert.equal(res, "wrong email or password");
-    // 		      }),
+    },
     
     
+    //TEST 3 ERR - duplicate email
+    TEST2:function(callback){
+
+	query.addAccount(account1.email, account2.username, account1.password, con, function(err, res){
+	    console.log(err);
+	    console.log(res);
+	    callback(null, err.message == 'email already exists');
+	})
+
+    },
+
+    //TEST 5 ERR - duplicate username
+    TEST3:function(callback){
+
+	query.addAccount(account2.email, account1.username, account2.password, con, function(err, res){
+
+	    if(err)
+		callback(null, false)
+	    else
+		callback(null, res.message == 'success');
+
+
+	})
+
+    },
+
+
+    TEST#:function(callback){
+
+	query.deleteAccount(account2.email, account2.username, account2.password, con, function(err, res){
+	    callback(null, err.message == 'username already exists');
+	})
+
+    },
+
+
+
+
+
+    //TEST 8 TRUE - username exists
+    TEST4:function(callback){
+
+	query.usernameExists(account1.username, con, function(res){
+	    callback(null, res);
+	})
+
+    },
+
+    //TEST 9 FALSE - username does not exist
+    TEST5:function(callback){
+
+	query.usernameExists("BADUSER", con, function(res) {
+	    callback(null, res);
+	})
+
+    },
+
+
+
+
+    //TEST 11 TRUE - email exists
+    TEST6:function(callback){
+
+	query.emailExists(account1.email, con, function(err, res){
+	    callback(null, res);
+	})
+    },
+
+    //TEST 13 FALSE - email does not exist
+    TEST7:function(callback){
+
+	query.emailExists("BADEMAIL", con, function(err,res){
+	    callback(null, res);
+	})
+    },
+
+
+
+
+
+
+    //TEST 15 TRUE - valid credentials
+    TEST8:function(callback){		
+
+	query.authAccount(account1.email, account1.password, con, function(err, res){
+	    callback(null, res);
+	})
+    }, 
+
+    //TEST 17 FALSE - invalid credentials
+    TEST9:function(callback){
+
+	query.authAccount(account1.email, account1.password, con, function(err,res){
+	    callback(null, res == "invalid credentials");
+	})
+    },
     
     
+    //TEST 19 PASS - reservation added
+    TEST10:function(callback){
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 7, 9, res1.shareable, con, function(err, res){
+	    callback(null, res != null);
+	})
+    },
+
+    //TEST PASS
+    TEST11:function(callback){	    
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 6, 7, res1.shareable, con, function(err, res){
+	    callback(null, res != null);
+	})
+    },
+
+    //TEST PASS
+    TEST12:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
+	    callback(null, res != null);
+	})
+    },
+    
+    //ERR - overlapping reservation
+    TEST13:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
+	    //callback(null, err.message == 'overlapping reservation');
+	    callback(null, false);
+	})
+    },
+
+    //ERR - overlapping reservation
+    TEST14:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 10, 11, res1.shareable, con, function(err, res){
+	    //callback(null, err.message == 'overlapping reservation');
+	    callback(null, false);
+	})
+    },
+
     
     
-    // /////////////////////
-    // ///Add reservation
-    // /////////////////////
+
+
+    //ERR - startTime out of acceptable range [0,23]    
+    TEST15:function(callback){
+
+	query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'startTime out of acceptable range [0,23]');
+	})
+    },
+
+    //ERR - startTime out of acceptable range [0,23]
+    TEST16:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
+    	    callback(null,err.message == 'startTime out of acceptable range [0,23]');
+	})
+    },
     
-    // //TEST 19 PASS - reservation added
-    // query.addReservation(res1.roomID, res1.username, res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(!err);
-    // 			 }),
+    //ERR - endTime out of acceptable range [0,23]
+    TEST17:function(callback){	
 
-    // //ERR - username doesnt exist
-    // //TODO NEEDS IMPLEMENTING
-    // /*
-    //   query.addReservation(res1.roomID, "BADUSER", res1.date, res1.starTime, res1.endTime, res1.shareable, con, function(err, res)
-    //   {
-    //   assert.ok(!err);
-    //   assert.ok(err.message, 'room is already reserved for this time slot');
-    //   });
-    // */
+	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
+    	    callback(null,err.message == 'endTime out of acceptable range [0,23]');
+	})
+    },
 
-    // //ERR - startTime out of acceptable range [0,23]
-    // query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'startTime out of acceptable range [0,23]');
-    // 			 }),
+    //ERR - endTime out of acceptable range [0,23]
+    TEST18:function(callback){	
 
-    // //ERR - startTime out of acceptable range [0,23]
-    // query.addReservation(res1.roomID, res1.username, res1.date, -1, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'startTime out of acceptable range [0,23]');
-    // 			 }),
+	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
+	})
+    },
 
-    // //ERR - endTime out of acceptable range [0,23]
-    // query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'endTime out of acceptable range [0,23]');
-    // 			 }),
+    //TEST 15 FAIL - startTime must be less than endTime
+    TEST19:function(callback){	
 
-    // //ERR - endTime out of acceptable range [0,23]
-    // query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'endTime out of acceptable range [0,23]');
-    // 			 }),
+	query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'startTime must be less than endTime');
+	})
+    },
 
-    // //TEST 15 FAIL - startTime must be less than endTime
-    // query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'startTime must be less than endTime');
-    // 			 }),
+    //TEST 15 FAIL - startTime must be less than endTime
+    TEST20:function(callback){	
 
-    // //TEST 15 FAIL - startTime must be less than endTime
-    // query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'startTime must be less than endTime');
-    // 			 }),
+	query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'startTime must be less than endTime');
+	})
+    },
 
+    //ERR - invalid date
+    TEST21:function(callback){
 
-    // //ERR - invalid date
-    // query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'invalid date');
-    // 			 }),
-
-    // //ERR - invalid date
-    // query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'invalid date');
-    // 			 }),
-
-    // //ERR - invalid date
-    // query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res)
-    // 			 {
-    // 			     assert.ok(err);
-    // 			     assert.equal(err.message, 'invalid date');
-    // 			 }),
-
-
-    //ERR - make overlapping reservation
-    //TODO NEEDS IMPLEMENTING
-    /*
-      query.addReservation(
-      {
-      assert.ok(!err);
-      assert.equal(err.message, 'room is already reserved for this time slot');
-      });
-    */
-
-    con.end(function(err) {
-	// The connection is terminated gracefully
-	// Ensures all previously enqueued queries are still
-	// before sending a COM_QUIT packet to the MySQL server.
-	process.exit();
-    })
+	query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'invalid date');
+	})
+    },
     
-], function (err, result) {
+    //ERR - invalid date
+    TEST22:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'invalid date');
+	})
+    },
+
+    //ERR - invalid date
+    TEST23:function(callback){	
+
+	query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+    	    callback(null, err.message == 'invalid date');
+	})
+    },
+
+
+    CON_QUIT:function(callback){
+	con.end(function(err) {
+	    // The connection is terminated gracefully
+	    // Ensures all previously enqueued queries are still
+	    // before sending a COM_QUIT packet to the MySQL server.
+	    callback(null, true);
+	})
+    }
+    
+}, function (err, result) {
     // result now equals 'done'
     console.log(result);
 });

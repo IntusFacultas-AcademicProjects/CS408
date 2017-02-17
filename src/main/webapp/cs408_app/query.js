@@ -66,18 +66,20 @@ var addAccount = function(email,username,password,connection,callback) {
     //We do all error checking in parallel here...
     async.parallel({
 
-	usercheck: function(callback) {
-	    usernameExists(username,connection,function(err,res){
-		callback(err, res);
-	    });
-	},
-	
+
 	emailcheck: function(callback) {
 	    emailExists(email,connection,function(err,res){
 		callback(err, res);
 	    });
+	},
+
+	usercheck: function(callback) {
+	    usernameExists(username,connection,function(err,res){
+		callback(err, res);
+	    });
 	}
-	    
+	
+	
     },
     // ...and get the results here
     function(err, results) {
@@ -96,9 +98,10 @@ var addAccount = function(email,username,password,connection,callback) {
     		callback(error);
     		return;
     	    }
-    	    else
-    		callback(null);
-	    
+    	    else{
+    		callback(null,{message:'success'});
+	    }
+		
     	    console.log('Added account: ' + email + ', password: ' + password + '\n');
 	});
 	
