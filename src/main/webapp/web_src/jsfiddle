@@ -1,0 +1,625 @@
+//--- CODE --------------------------
+(function (angular) {
+    var app = angular.module("myApp", []);
+
+
+app.controller("reservation", function($scope) {
+
+    $scope.naomi = {
+        name: 'Naomi',
+        address: '1600 Amphitheatre'
+    };
+    $scope.igor = {
+        name: 'Igor',
+        address: '123 Somewhere'
+    };
+
+    $scope.user = {
+        "username": String,
+        "password": String,
+        "userid": Number,
+        "email": String,
+        "budget": Number,
+        "admin": Boolean
+    };
+
+    $scope.user.username = "SFellers";
+    $scope.user.password = "password";
+    $scope.user.userid = 0;
+    $scope.user.email = "sfellers@purdue.edu";
+    $scope.user.budget = 3;
+    $scope.user.admin = true;
+
+    var _slots = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+
+    // variables
+    $scope.hours = [{
+            id: 0,
+            selected: "selected",
+            name: "00:00 - 00:59"
+        },
+        {
+            id: 1,
+            selected: "",
+            name: "01:00 - 01:59"
+        },
+        {
+            id: 2,
+            selected: "",
+            name: "02:00 - 02:59"
+        }
+
+    ];
+    $scope.isCollapsed = true;
+    // json information delivered from SQL database (currently disposable data)
+    $scope.roomsData = [{
+            blocked: true,
+            res: {},
+            day: 1,
+            roomid: 1
+        },
+        {
+            blocked: false,
+            res: [{
+                    user: "Pedro",
+                    start: 0,
+                    end: 4,
+                    shareable: false
+                },
+                {
+                    user: "Andrew",
+                    start: 7,
+                    end: 8,
+                    shareable: true
+                }
+            ],
+            day: 1,
+            roomid: 2
+        },
+        {
+            blocked: true,
+            res: [],
+            day: 1,
+            roomid: 3
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 4
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 5
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 6
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 7
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 8
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 9
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 10
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 11
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 12
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 13
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 14
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 15
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 16
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 17
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 18
+        },
+        {
+            blocked: false,
+            res: [],
+            day: 1,
+            roomid: 19
+        }
+    ];
+    
+    $scope.reservationData = [
+    {
+    	reservationId: 0000,
+      userId:	4,
+      startTime:	19,
+      endTime:	20,
+      roomId:	2,
+      shareable: true
+      
+    },
+    {
+    	reservationId: 0001,
+      userId:	4,
+      startTime:	2,
+      endTime:	4,
+      roomId:	2,
+      shareable: false
+    
+    },
+    {
+    	reservationId: 0002,
+      userId:	5,
+      startTime:	17,
+      endTime:	18,
+      roomId:	4,
+      shareable: false
+    
+    },
+    {
+    	reservationId: 0003,
+      userId:	1,
+      startTime:	4,
+      endTime:	6,
+      roomId:	7,
+      shareable: true
+    
+    },
+    {
+    	reservationId: 0004,
+      userId:	2,
+      startTime:	22,
+      endTime:	23,
+      roomId:	9,
+      shareable: false
+    
+    }
+    
+    ];
+    // name displayed at top of modal
+    $scope.roomSelected;
+    // index of room data in array
+    $scope.roomIndex;
+    // hour selected from reserve-modal serves as start time
+    $scope.hourSelected;
+    // available hours from selected start time
+    $scope.availableHours = [];
+    
+    $scope._init = function() {
+        $scope.slots = _slots;
+    };
+    $scope._init();
+
+    // opens modal for viewing hours for a room
+    $scope.openModal = function(event) {
+        var id = event.target.id;
+        $scope.roomSelected = id;
+        var num = $scope.roomSelected.substring(4, id.length - 1);
+        $scope.roomSelected = $scope.roomSelected.substring(0, id.length - 1);
+        $scope.roomIndex = num;
+        if ($scope.roomsData[num - 1].blocked == false) {
+
+            var room = $scope.roomsData[num - 1];
+            for (var resSlot = 0; resSlot < room.res.length; resSlot++) {
+                var reservation = room.res[resSlot];
+                var start = reservation.start;
+                var end = reservation.end;
+                for (var i = start; i <= end; i++) {
+                    var name = "#roomModal." + i;
+                    var htmlName = "roomModal." + i;
+                }
+            }
+            $("#reserve-modal").modal("toggle");
+
+        } else {
+            var room = $scope.roomsData[num - 1];
+            console.log("attempting to open blocked room modal.")
+            if ($scope.user.admin) {
+                $("#reserve-block-modal").modal("toggle");
+            } else {
+                alert("This room is currently blocked");
+            }
+            console.log("roomselected: " + $scope.roomIndex);
+        }
+
+    };
+
+    //handles mouseover for rooms on the map
+    $scope.mouseOver = function(event) {
+        var room = "#room" + event + "a";
+        $(room).mapster('select');
+    };
+
+    // handles mouseover for rooms on the map
+    $scope.mouseLeave = function(event) {
+        var room = "#room" + event + "a";
+        if ($scope.roomsData[event - 1].blocked == false) {
+            $(room).mapster('deselect');
+        }
+    };
+
+    // permanently highlights rooms that are blocked (color change is not working)
+    $scope.disableBlockedRooms = function() {
+        angular.forEach($scope.roomsData, function(room, index) {
+                if (room.blocked) {
+                    var roomName = "#room" + room.roomid + "a";
+                    var roomTable = "#room" + room.roomid + "c";
+                    //                $(roomName).mapster('isSelectable',false);
+                    $(roomName).mapster('set', true);
+                    $(roomName).css("background-color", 'black');
+                    $('#map').mapster('set_options', {
+                        areas: [{
+                            key: room.roomid,
+                            fillColor: '000000'
+                        }]
+                    });
+                }
+            }
+
+        );
+    };
+
+    // checks blocked status
+    $scope.checkBlocked = function(id) {
+       if(id <= 0 || id >= 20){
+        	console.log("tried to check a room that doesnt exist");
+        	return false;
+        }
+        if ($scope.roomsData[id - 1].blocked) {
+            //var name = "#room" + id;
+            return true;
+        }
+        else{
+       			return false;
+        }
+    };
+
+
+    // opens second reservation modal
+    $scope.openHours = function(event, roomSelected) {
+        var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", "03:00-03:59", "04:00-04:59", "05:00-05:59", "06:00-06:59", "07:00-07:59", "08:00-08:59", "09:00-09:59", "10:00-10:59", "11:00-11:59", "12:00-12:59", "13:00-13:59", "14:00-14:59", "15:00-15:59", "16:00-16:59", "17:00-17:59", "18:00-18:59", "19:00-19:59", "20:00-20:59", "21:00-21:59", "23:00-22:59", "23:00-23:59"];
+        var startTime = event.target.id.substring(10, event.target.id.length);
+        $scope.lastButtonPressed = startTime;
+        $scope.hourSelected = startTime;
+        var room = roomSelected;
+        var roomReservations = room.res;
+        var takenHours = [];
+        for (var i = 0; i < roomReservations.length; i++) {
+            var reservationSlot = roomReservations[i];
+            var start = reservationSlot.start;
+            for (start; start <= reservationSlot.end; start++) {
+                takenHours.push(start);
+            }
+        }
+        var first = 0;
+        for (var i = parseInt(startTime); takenHours.includes(i) == false && i < 24; i++) {
+            if (first == 0) {
+                $scope.availableHours.push({
+                    id: i,
+                    name: hourTemplate[i],
+                    selected: "selected"
+                });
+                first++;
+            } else {
+                $scope.availableHours.push({
+                    id: i,
+                    name: hourTemplate[i],
+                    selected: ""
+                });
+            }
+        }
+
+        $("#reserve-input-modal").modal("toggle");
+    }
+
+    $scope.closeSecondModal = function() {
+        console.log("closing");
+        $("#reserve-input-modal").modal("toggle");
+    }
+
+    $scope.unblockRoom = function(id) {
+    		//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	console.log("checked unblock on a room that is not defined");
+        	return false;
+        }
+        if ($scope.checkBlocked(id)) {
+            $scope.roomsData[id - 1].blocked = false;
+            return true;
+        }else{
+        	console.log("admin attempt to unblock room; room is already unblocked");
+          return false;
+        }
+    };
+    
+   $scope.blockRoom = function(id) {
+  			//int id : roomId
+    		if(id <= 0 || id >= 20){
+        	console.log("checked block on a room that is not defined");
+        	return false;
+        }
+        if (!$scope.checkBlocked(id)) {
+            $scope.roomsData[id - 1].blocked = true;
+            return true;
+        }else{
+        	console.log("admin attempt to block room; room is already blocked");
+          return false;
+        }
+    };
+    
+     $scope.toggleShareable = function(resId, roomId) {
+     		//int resId : reservationId
+    		if(roomId <= 0 || roomId >= 20){
+        	console.log("toggleshareable() on a room that is not defined");
+        	return false;
+        }
+        if ($scope.checkBlocked(roomId)) {
+            //cant toggle a blocked room
+            return false;
+        }
+        $scope.reservationData.forEach(function(element){
+        	if(element.reservationId == resId){
+          	if(element.shareable){
+            	element.shareable = false;
+              return true;
+            }else{
+            	element.shareable = true;
+              return true;
+            }
+          }
+          return false;
+        });
+				return false;
+    };
+    
+    //validates that a slot in the modal should be displayed as not available
+    $scope.validate = function(roomData, hour) {
+        var room = roomData.res;
+        if(room == undefined)
+        	return false;
+        //var room : reservation list (array)
+        for (var i = 0; i < room.length; i++) {
+            if (room[i].start <= hour && room[i].end >= hour){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    //validates that a slot in the modal should be displayed as shareable
+    $scope.validateShareable = function(roomData, hour) {
+        var room = roomData.res;
+        if(room == undefined)
+        	return false;
+        for (var i = 0; i < room.length; i++) {
+            if (room[i].start <= hour && room[i].end >= hour){
+                if (room[i].shareable == true) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+
+});
+})(angular);
+
+
+		// ---SPECS-------------------------
+
+describe('myApp', function () {
+    var scope,
+    controller;
+    beforeEach(function () {
+        module('myApp');
+    });
+
+    describe('reservation', function () {
+        beforeEach(inject(function ($rootScope, $controller) {
+            scope = $rootScope.$new();
+            controller = $controller('reservation', {
+                '$scope': scope
+            });
+        }));
+        it('testcase : make sure jasmine works', function () {
+            expect(scope.user.username).toBe('SFellers');
+        });
+        it('unblocks blocked rooms', function () {
+        		//room 1 is the 0th element in the roomsData array
+            expect(scope.roomsData[0].blocked).toBe(true);
+            scope.unblockRoom(1);
+            expect(scope.roomsData[0].blocked).toBe(false);
+        });
+        it('makes a room shareable', function () {
+            expect(scope.reservationData[0].shareable).toBe(true);
+            scope.toggleShareable(0000,5);
+            expect(scope.reservationData[0].shareable).toBe(false);
+        });
+        it('validates if a room is not available', function () {
+            expect(scope.roomsData[1].res[0].start).toEqual(0);
+            expect(scope.roomsData[1].res[0].end).toEqual(4);
+            expect(scope.validate(scope.roomsData[1],3)).toBe(true);
+        });
+        it('validates if a room is shareable', function () {
+            expect(scope.roomsData[1].res[1].start).toEqual(7);
+            expect(scope.roomsData[1].res[1].end).toEqual(8);
+            expect(scope.roomsData[1].res[1].shareable).toBe(true);
+            expect(scope.validateShareable(scope.roomsData[1],8)).toBe(true);
+        });
+        it('checks if a room is blocked', function () {
+            expect(scope.checkBlocked(1)).toBe(true);
+            scope.unblockRoom(1);
+            expect(scope.checkBlocked(1)).toBe(false);
+            scope.blockRoom(1);
+            expect(scope.checkBlocked(1)).toBe(true);
+        });
+        it('blocks unblocked rooms', function () {
+        		//room 2 is the 1st element in the roomsData array
+            expect(scope.roomsData[1].blocked).toBe(false);
+            scope.blockRoom(2);
+            expect(scope.roomsData[1].blocked).toBe(true);
+        });
+        it('checks unblock for input that is out of bounds', function () {
+            expect(scope.unblockRoom(21)).toBe(false);
+            expect(scope.unblockRoom(0)).toBe(false);
+            expect(scope.unblockRoom(-293)).toBe(false);
+            expect(scope.unblockRoom(32489)).toBe(false);
+        });
+        it('checks block for input that is out of bounds', function () {
+            expect(scope.blockRoom(21)).toBe(false);
+            expect(scope.blockRoom(0)).toBe(false);
+            expect(scope.blockRoom(-243)).toBe(false);
+            expect(scope.blockRoom(5389)).toBe(false);
+        });
+        it('checks checkBlock for input that is out of bounds', function () {
+            expect(scope.checkBlocked(21)).toBe(false);
+            expect(scope.checkBlocked(0)).toBe(false);
+           	expect(scope.checkBlocked(-39)).toBe(false);
+            expect(scope.checkBlocked(499)).toBe(false);
+        });
+        it('checks toggleShareable for invalid input', function () {
+        		//invalid reservation id
+            expect(scope.toggleShareable(0, 4)).toBe(false);
+            //roomid 1 is blocked
+            expect(scope.toggleShareable(0000, 1)).toBe(false);
+            //out of bounds roomId's
+            expect(scope.toggleShareable(0001, 21)).toBe(false);
+            expect(scope.toggleShareable(0001, 0)).toBe(false);
+            //invalid reservation id and out of bounds roomId
+            expect(scope.toggleShareable(-23, 21)).toBe(false);
+        });
+        it('checks validateShareable for bad input', function () {
+        		//no reservations for hour 9 in roomsData[1]
+            expect(scope.validateShareable(scope.roomsData[1],9)).toBe(false);
+            //edge case hour 24 does not exist
+						expect(scope.validateShareable(scope.roomsData[1],24)).toBe(false);
+            //edge case hour -1 does not exist
+						expect(scope.validateShareable(scope.roomsData[1],-1)).toBe(false);
+            //blocked room
+            expect(scope.validateShareable(scope.roomsData[0],2)).toBe(false);
+            //wrong first parameter
+            expect(scope.validate(6.0,2)).toBe(false);
+        });
+        it('checks validate for bad input', function () {
+        		//no reservations for hour 9 in roomsData[1]
+            expect(scope.validate(scope.roomsData[1],9)).toBe(false);
+            //edge case hour 24 does not exist
+						expect(scope.validate(scope.roomsData[1],24)).toBe(false);
+            //edge case hour -1 does not exist
+						expect(scope.validate(scope.roomsData[1],-1)).toBe(false);
+            //blocked room
+            expect(scope.validate(scope.roomsData[0],2)).toBe(false);
+            //wrong first parameter
+            expect(scope.validate(5,2)).toBe(false);
+        });
+        
+        
+        var _slots = [
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    		];
+        it('initializes slots', function () {
+            expect(scope.slots).toEqual(_slots);
+            scope.slots[0][0] = 1;
+            expect(scope.slots).toNotEqual(_slots);
+        });
+        
+       
+        
+        
+
+    });
+
+    
+});
+
+// --- Runner -------------------------
+(function () {
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.updateInterval = 1000;
+
+    var htmlReporter = new jasmine.HtmlReporter();
+
+    jasmineEnv.addReporter(htmlReporter);
+
+    jasmineEnv.specFilter = function (spec) {
+        return htmlReporter.specFilter(spec);
+    };
+
+    var currentWindowOnload = window.onload;
+
+    window.onload = function () {
+        if (currentWindowOnload) {
+            currentWindowOnload();
+        }
+        execJasmine();
+    };
+
+    function execJasmine() {
+        jasmineEnv.execute();
+    }
+
+})();

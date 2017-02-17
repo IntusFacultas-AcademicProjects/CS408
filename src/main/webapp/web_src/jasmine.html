@@ -1,46 +1,15 @@
-//app.js, handles frontend functionality.
-//BEFORE HOOKING UP WITH BACKEND
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="assets/testjs/jasmine.css"></link>
+		<script src="assets/testjs/angular.js"></script>
+		<script src="assets/testjs/angular-mocks.js"></script>
+		<script src="assets/testjs/jasmine-html.js"></script>
+		<script src="assets/testjs/jasmine.js"></script>
+	</head>
+	<body>
+	</body>
+	<script type="text/javascript">
 var app = angular.module("myApp", []);
-
-app.controller("index", function($scope) {
-
-    $scope.user = {
-        "username": String,
-        "password": String,
-        "userid": Number,
-        "email": String,
-        "budget": Number,
-        "admin": Boolean
-    };
-    $scope.lastButtonPressed;
-    $scope.user.username = "Sfellers";
-    $scope.user.password = "password";
-    $scope.user.userid = 0;
-    $scope.user.email = "sfellers@purdue.edu";
-    $scope.user.budget = 3;
-    $scope.user.admin = true;
-    $scope.firstName = "Sam";
-    $scope.lastName = "Fellers";
-    $scope.roomsData = [];
-
-
-    //functions go in here.
-    $scope.addRoom = function(id, name, capacity) {
-        var room = {
-            "id": id,
-            "name": name,
-            "capacity": capacity
-        };
-        $scope.roomsData.push(room);
-        $scope.roomData = "";
-
-    };
-
-});
-
-app.controller("navbar", function($scope) {
-
-});
 
 app.controller("reservation", function($scope) {
 
@@ -378,126 +347,59 @@ app.controller("reservation", function($scope) {
         }
     };
 
-}).directive('reservationTable', function() {
-    // handles the hour by hour modal body for the modal opened on map click
-    return {
-        restrict: 'E',
-        scope: {
-            roomData: '=info'
-        },
-        templateUrl: 'reservation-table.html',
-        compile: function(tElem, attrs) {
-            return {
-                pre: function(scope, iElem, iAttrs) {
-                    //access this data 
-                    iElem.children().each(function() {
-                        /*
-                            if this.id = "roomModal." + array[0].id
-							color red or yellow depending on shareable
-                            */
-                        $(this).children().each(function() {
-                            // used to block hours that are taken. Needs outside data that is not being passed properly.
-                            //                            $(this).prop('disabled',true);
-                        })
-                    })
+});
+		// ---SPECS-------------------------
 
-                }, // pre
-                post: function(scope, iElem, iAttrs) {
+describe('myApp', function () {
+    var scope,
+    controller;
+    beforeEach(function () {
+        module('myApp');
+    });
 
-                } // post
-            } //return
-        } // compile
-    }; // return
+    describe('reservation', function () {
+        beforeEach(inject(function ($rootScope, $controller) {
+            scope = $rootScope.$new();
+            controller = $controller('reservation', {
+                '$scope': scope
+            });
+        }));
+        it('sets the name', function () {
+            expect(scope.user.username).toBe('SFellers');
+        });
+
+    });
+
+    
 });
 
+// --- Runner -------------------------
+(function () {
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.updateInterval = 1000;
 
-// this is the directive for the tabular view to the right of the map
-app.directive('timetable', function() {
-    return {
-        restrict: 'AE',
-        scope: {
-            slots: '='
-        },
-        templateUrl: 'my-timetable-iso.html',
-        link: function(scope, element, attributes) {
-            var _days = ['Room 00', 'Room 01', 'Room 02', 'Room 03'];
-            var _selection = {
-                state: false,
-                day: [0, 0, 0, 0],
-                hour: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            };
+    var htmlReporter = new jasmine.HtmlReporter();
 
-            function _loop(begin, end, step) {
-                var array = [];
+    jasmineEnv.addReporter(htmlReporter);
 
-                for (var i = begin; i <= end; i += step) {
-                    array.push(i);
-                }
-
-                return array;
-            }
-
-            function _toggle(what, day, hour) {
-                var i = 0;
-                switch (what) {
-                    case 'day':
-                        _selection.day[day] = !_selection.day[day];
-
-                        for (i = 0; i < 24; i++) {
-                            scope.slots[day][i] = _selection.day[day];
-                        }
-                        break;
-
-                    case 'hour':
-                        _selection.hour[hour] = !_selection.hour[hour];
-
-                        for (i = 0; i < 4; i++) {
-                            scope.slots[i][hour] = _selection.hour[hour];
-                        }
-                        break;
-
-                    case 'slot':
-                        if (_selection.state) {
-                            scope.slots[day][hour] = !scope.slots[day][hour];
-                        }
-                        break;
-                }
-            }
-
-            function _select(state, day, hour) {
-                _selection.state = state;
-
-                if (_selection.state) {
-                    _toggle('slot', day, hour);
-                }
-            }
-
-            function _init() {
-                scope.loop = _loop;
-                scope.toggle = _toggle;
-                scope.select = _select;
-
-                scope.days = _days;
-            }
-
-            _init();
-        }
+    jasmineEnv.specFilter = function (spec) {
+        return htmlReporter.specFilter(spec);
     };
-});
 
+    var currentWindowOnload = window.onload;
 
-/*
- * POST HOOKING UP WITH BACKEND
-var resApp = angular.module('resMod', []);
-resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.firstName = "John";
- 	$scope.lastName = "Doe";
-	//functions go in here...
-  	$scope.editRoom = function(id) {
-		console.log("editting room id: " + id);
-    	$http.get('/roomlist/' + id).success(function(response) {
-    		$scope.roomsData = response;
-  		});
-  	};
-}]);﻿
-*/
+    window.onload = function () {
+        if (currentWindowOnload) {
+            currentWindowOnload();
+        }
+        execJasmine();
+    };
+
+    function execJasmine() {
+        jasmineEnv.execute();
+    }
+
+})();
+	</script>
+</html>
+

@@ -11,8 +11,6 @@ resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.user.password = "passpass123";
 	$scope.user.email = "email@aol.com";
 
-
-	
 	//functions go in here...
   	$scope.sendData = function() {
 		console.log($scope.user);
@@ -24,6 +22,7 @@ resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
 		);
     		
 	};
+
 
   	$scope.login = function() {
 		console.log($scope.user);
