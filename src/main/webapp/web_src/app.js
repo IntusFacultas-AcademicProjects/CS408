@@ -102,20 +102,24 @@ app.controller("index", function($scope) {
 app.controller("navbar", function($scope) {
 	$scope.login = function() {
 		localStorage["firstPageLoad"] = false;
+		localStorage["adminFirstPageLoad"] = false;
 		window.location.href = "/login.html";
 	}
 	$scope.register = function() {
 		localStorage["firstPageLoad"] = false;
+		localStorage["adminFirstPageLoad"] = false;
 		window.location.href = "/register.html";
 	}
 	$scope.admin = function() {
 		localStorage["firstPageLoad"] = false;
+		localStorage["adminFirstPageLoad"] = false;
 		window.location.href = "/admin.html";
 	}
 });
 
 app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 	$scope.date;
+	$scope.adminDate;
 	$scope.user = {
         "username": String,
         "password": String,
@@ -194,10 +198,87 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 			}  
 		    //load response
 	    });
+    };
+    $scope.updateAdminRooms = function() {
+		var datePieces= $scope.adminDate.split('/');
+		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
+			if (typeof response.data.err == "undefined") {
+				$scope.roomsData = response.data.rooms;
+				angular.forEach($scope.roomsData, function(room, index) {
+					    if (room.blocked) {
+					        var roomName = "#room" + room.roomid + "a";
+					        var roomTable = "#room" + room.roomid + "c";
+					        $(roomName).mapster('set', true);
+					        $(roomName).css("background-color", 'black');
+					        $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+					                fillColor: 'ffffff'
+					            }]
+					        });        
+					    }
+					}
+
+				);
+				return true;		 
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}  
+		    //load response
+	    });
+    };
+    $scope.adminLoadRooms = function() {
+    	//if(!localStorage["adminFirstPageLoad"]) {
+			//localStorage["adminFirstPageLoad"] = true;
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1;
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+				dd='0'+dd;
+			} 
+
+			if(mm<10) {
+				mm='0'+mm;
+			} 
+
+			today = yyyy+ '-'+mm+'-'+dd;
+			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
+				if (typeof response.data.err == "undefined") {
+					$scope.roomsData = response.data.rooms;
+					angular.forEach($scope.roomsData, function(room, index) {
+						    if (room.blocked) {
+						        var roomName = "#room" + room.roomid + "a";
+						        var roomTable = "#room" + room.roomid + "c";
+						        $(roomName).mapster('set', true);
+						        $(roomName).css("background-color", 'black');
+						        $('#map').mapster('set_options', {
+						            areas: [{
+						                key: room.roomid,
+						                fillColor: 'ffffff'
+						            }]
+						        });        
+						    }
+						}
+
+					);
+					return true;		 
+				}
+				else {
+					alert(response.data.err);
+					window.location.reload();
+				}  
+			    //load response
+		    });
+		//}
     }
     $scope.loadRooms = function() {
-    	if(!localStorage["firstPageLoad"]) {
-
+    	//if(!localStorage["firstPageLoad"]) {
+			//localStorage["firstpageLoad"] = true;
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -240,7 +321,7 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 			    //load response
 		    });
 		}
-    }
+    //}
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
     // name displayed at top of modal

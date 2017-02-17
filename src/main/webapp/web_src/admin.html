@@ -47,7 +47,7 @@
     
 	<body ng-app="myApp">
         <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
-		<div ng-controller="reservation" class="container">
+		<div ng-controller="reservation" ng-init="adminLoadRooms()" class="container">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-5">
@@ -56,7 +56,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <div class="datepicker input-group date" data-provide="datepicker">
-                                <input id="dp" type="text" class="datepicker form-control" required>
+                                <input ng-model="adminDate" ng-change="updateAdminRooms()" id="dp" type="text" class="datepicker form-control" required>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
