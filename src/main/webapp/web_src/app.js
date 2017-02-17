@@ -17,10 +17,17 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     $scope.login = function()
     {
     	
-       
+		$scope.userinfo.email = $scope.email;       
         $scope.userinfo.password = $scope.password;
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
-			
+			if (typeof response.data.err == "undefined") {
+				alert("Login successful");
+				window.location.href = '/reserve.html';	
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}  
 			//load response
 		});
     }
@@ -37,11 +44,8 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-				if (typeof response.data.err == "undefined") {
-					$http.get('/login').then(function(response) {
-						alert("Account succesfully created");
-						document.write(response.data.html);
-				  	});
+				if (typeof response.data.err == "undefined") {				
+						window.location.href = '/login.html';				 
 				}
 				else {
 					alert(response.data.err);
