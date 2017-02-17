@@ -391,7 +391,14 @@ app.controller("reservation", function($scope) {
 		    }
     	}
     };
-
+    $scope.savechanges = function() {
+        //get the reservation time
+        $scope.start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
+        $scope.end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
+    	
+        console.log($scope.start);
+        console.log($scope.end);
+    };
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
