@@ -39,16 +39,22 @@ var emailExists = function(email,connection,callback) {
     });
 };
 
-var isConflictingTime = function(date, startTime, endTime, connection, callback){
+var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
     
     connection.query("SELECT * FROM reservations " +
-		     "WHERE date = ? " +
+		     "WHERE room_id = ? " +
+		     "AND date = ? " +
 		     "AND ((HOUR(start_time) > ? AND HOUR(start_time) < ?) " +
 		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) " +
 		     "OR (HOUR(start_time) = ? AND HOUR(end_time) = ?))",
-		     [date, startTime, endTime, startTime, endTime, startTime, endTime],
+		     [roomID, date, startTime, endTime, startTime, endTime, startTime, endTime],
 		     function(err, res, fields){
 
+			 if(err){
+			     callback(err)
+			     return;
+			 }
+			     
 			 if(res.length == 0){
 			     callback(null, false);
 			 }
@@ -280,7 +286,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
 	conflictcheck: function(callback) {
 
-	    isConflictingTime(date,startTime, endTime, connection, function(err, res){
+	    isConflictingTime(roomID, date, startTime, endTime, connection, function(err, res){
 		if(err)
 		    callback(err)
 		else if(res)
@@ -337,7 +343,7 @@ var cancelReservation = function(reservationID, connection, callback)
 	if(error)
 	    callback(error)
 	if(results.affectedRows == 0)
-	    callback(new Error("reservation doesn't exist"));
+	    callback(new Error("reservation doesnt exist"));
 	else if(results.affectedRows == 1)
 	    callback(null, true);
 	else

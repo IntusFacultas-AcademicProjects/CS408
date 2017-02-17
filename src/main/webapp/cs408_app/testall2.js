@@ -24,15 +24,38 @@ var account2 = {"email":"test2@purdue.edu",
 		"password":"test2"
 	       }
 
+//To be added and removed
+var account3 = {"email":"test3@purdue.edu",
+		"username":"test3",
+		"password":"test3"
+	       }
+
 
 //Valid reservation
 var res1 = {"username": "test1",
-	    "roomID": 87,
+	    "roomID": 1,
 	    "date": "2010-01-01",
 	    "startTime":7,
 	    "endTime":9,
 	    "shareable":1
 	   }
+
+var res2 = {"username": "test2",
+	    "roomID": 1,
+	    "date": "2010-01-01",
+	    "startTime":6,
+	    "endTime":7,
+	    "shareable":1
+	   }
+
+var res3 = {"username": "test3",
+	    "roomID": 1,
+	    "date": "2010-01-01",
+	    "startTime":9,
+	    "endTime":10,
+	    "shareable":1
+	   }
+
 
 
 //In order to connect to the database you will need node installed on your machine.
@@ -59,7 +82,7 @@ async.series({
 
 
     //TEST PASS
-    TEST1:function(callback){
+    TEST1_PASS:function(callback){
 	query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
 
 	    if(err)
@@ -71,7 +94,7 @@ async.series({
     },
 
     //TEST PASS
-    TEST2:function(callback){
+    TEST2_PASS:function(callback){
 	query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){
 	    
 	    if(err)
@@ -84,49 +107,49 @@ async.series({
     
     
     //TEST 3 ERR - duplicate email
-    TEST3:function(callback){
-
-	query.addAccount(account1.email, account2.username, account1.password, con, function(err, res){
-	    console.log(err);
-	    console.log(res);
-	    callback(null, err.message == 'email already exists');
+    TEST3_PASS:function(callback){
+	
+	query.addAccount(account1.email, account3.username, account3.password, con, function(err, res){
+	    if(err)
+		callback(null, err.message == 'email already exists');
+	    else
+		callback(null, false);
 	})
 
     },
 
     //TEST 5 ERR - duplicate username
-    TEST4:function(callback){
+    TEST4_PASS:function(callback){
 
-	query.addAccount(account2.email, account1.username, account2.password, con, function(err, res){
-
+	query.addAccount(account3.email, account1.username, account3.password, con, function(err, res){
+   
 	    if(err)
-		callback(null, false)
+		callback(null, err.message == 'username already exists');
 	    else
-		callback(null, res.message == 'success');
-
+		callback(null, false)
 
 	})
 
     },
 
     //TEST PASS
-    TEST5:function(callback){
+    TEST5_PASS:function(callback){
 
 	query.deleteAccount(account2.email, con, function(err, res){
 	    if(err)
 		callback(null,false);
 	    else
-		callback(null, err.message == 'account doesnt exist');
+		callback(null, res.message == 'success');
 	})
 
     },
 
     //TEST FAIL - ACCOUNT DOESNT EXIST
-    TEST6:function(callback){
+    TEST6_PASS:function(callback){
 	
 	query.deleteAccount(account2.email, con, function(err, res){
 	    if(err)
-		callback(null,err.message == 'account doesnt exist');
+		callback(null, err.message == 'account doesnt exist');
 	    else
 		callback(null, false);
 	})
@@ -138,19 +161,19 @@ async.series({
 
 
     //TEST 8 TRUE - username exists
-    TEST7:function(callback){
-
-	query.usernameExists(account1.username, con, function(res){
-	    callback(null, res);
+    TEST7_PASS:function(callback){
+	
+	query.usernameExists(account1.username, con, function(err,res){
+	    callback(null, res == true);
 	})
 
     },
 
     //TEST 9 FALSE - username does not exist
-    TEST8:function(callback){
+    TEST8_PASS:function(callback){
 
-	query.usernameExists("BADUSER", con, function(res) {
-	    callback(null, res);
+	query.usernameExists("BADUSER", con, function(err,res) {
+	    callback(null, res == false);
 	})
 
     },
@@ -159,18 +182,18 @@ async.series({
 
 
     //TEST 11 TRUE - email exists
-    TEST9:function(callback){
+    TEST9_PASS:function(callback){
 
 	query.emailExists(account1.email, con, function(err, res){
-	    callback(null, res);
+	    callback(null, res == true);
 	})
     },
 
     //TEST 13 FALSE - email does not exist
-    TEST10:function(callback){
+    TEST10_PASS:function(callback){
 
 	query.emailExists("BADEMAIL", con, function(err,res){
-	    callback(null, res);
+	    callback(null, res == false);
 	})
     },
 
@@ -180,86 +203,110 @@ async.series({
 
 
     //TEST 15 TRUE - valid credentials
-    TEST11:function(callback){		
+    TEST11_PASS:function(callback){		
 
 	query.authAccount(account1.email, account1.password, con, function(err, res){
-	    callback(null, res);
+	    callback(null, res == true);
 	})
     }, 
 
     //TEST 17 FALSE - invalid credentials
-    TEST12:function(callback){
+    TEST12_PASS:function(callback){
 
-	query.authAccount(account1.email, account1.password, con, function(err,res){
-	    callback(null, res == "invalid credentials");
+	query.authAccount(account3.email, account3.password, con, function(err,res){
+	    callback(null, res == false);
 	})
     },
     
     
-    //TEST 19 PASS - reservation added
-    TEST13:function(callback){
+    //TEST 19 PASS
+    TEST13_PASS:function(callback){
 
-	query.addReservation(res1.roomID, res1.username, res1.date, 7, 9, res1.shareable, con, function(err, res){
-	    callback(null, res != null);
+	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+
+	    if(err){
+		callback(null, false);
+	    }
+	    else{
+		res1.reservationID = res;
+		callback(null, true);
+	    }
 	})
     },
 
     //TEST PASS
-    TEST14:function(callback){	    
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 6, 7, res1.shareable, con, function(err, res){
-	    callback(null, res != null);
+    TEST14_PASS:function(callback){	    
+	query.addReservation(res2.roomID, res2.username, res2.date, res2.startTime, res2.endTime, res2.shareable, con, function(err, res){
+	    if(err){
+		callback(null, false);
+	    }
+	    else{
+		res2.reservationID = res;
+		callback(null, true);
+	    }
 	})
     },
 
     //TEST PASS
-    TEST15:function(callback){	
+    TEST15_PASS:function(callback){	
 
-	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
-	    callback(null, res != null);
+	query.addReservation(res2.roomID, res3.username, res3.date, res3.startTime, res3.endTime, res3.shareable, con, function(err, res){
+	    if(err){
+		callback(null, false);
+	    }
+	    else{
+		res3.reservationID = res;
+		callback(null, true);
+	    }
 	})
     },
     
     //ERR - overlapping reservation
-    TEST16:function(callback){	
+    TEST16_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
-	    //callback(null, err.message == 'overlapping reservation');
-	    callback(null, false);
+	    if(err)
+		callback(null, err.message == 'conflicting reservation time');
+	    else
+		callback(null, false);
 	})
     },
 
     //ERR - overlapping reservation
-    TEST17:function(callback){	
+    TEST17_PASS:function(callback){	
 
-	query.addReservation(res1.roomID, res1.username, res1.date, 10, 11, res1.shareable, con, function(err, res){
-	    //callback(null, err.message == 'overlapping reservation');
-	    callback(null, false);
+	query.addReservation(res1.roomID, res1.username, res1.date, 7, 11, res1.shareable, con, function(err, res){
+	    if(err)
+		callback(null, err.message == 'conflicting reservation time');
+	    else
+		callback(null, false);
 	})
     },
-
-    
-    
-
 
     //ERR - startTime out of acceptable range [0,23]    
-    TEST18:function(callback){
+    TEST18_PASS:function(callback){
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'startTime out of acceptable range [0,23]');
+	    if(err)
+		callback(null, err.message == 'startTime out of acceptable range [0,23]');
+	    else
+		callback(null, false);
 	})
     },
 
     //ERR - startTime out of acceptable range [0,23]
-    TEST19:function(callback){	
+    TEST19_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
-    	    callback(null,err.message == 'startTime out of acceptable range [0,23]');
+	    if(err)
+    		callback(null,err.message == 'startTime out of acceptable range [0,23]');
+	    else
+		callback(null, false);
 	})
     },
     
     //ERR - endTime out of acceptable range [0,23]
-    TEST20:function(callback){	
+    TEST20_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
     	    callback(null,err.message == 'endTime out of acceptable range [0,23]');
@@ -267,7 +314,7 @@ async.series({
     },
 
     //ERR - endTime out of acceptable range [0,23]
-    TEST21:function(callback){	
+    TEST21_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
@@ -275,7 +322,7 @@ async.series({
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST22:function(callback){	
+    TEST22_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'startTime must be less than endTime');
@@ -283,7 +330,7 @@ async.series({
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST23:function(callback){	
+    TEST23_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'startTime must be less than endTime');
@@ -291,7 +338,7 @@ async.series({
     },
 
     //ERR - invalid date
-    TEST24:function(callback){
+    TEST24_PASS:function(callback){
 
 	query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
@@ -299,7 +346,7 @@ async.series({
     },
     
     //ERR - invalid date
-    TEST25:function(callback){	
+    TEST25_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
@@ -307,7 +354,7 @@ async.series({
     },
 
     //ERR - invalid date
-    TEST26:function(callback){	
+    TEST26_PASS:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
@@ -316,17 +363,66 @@ async.series({
 
     
     //TEST PASS
-    TEST27:function(callback){
+    TEST27_PASS:function(callback){
 	
 	query.deleteAccount(account1.email, con, function(err, res){
 	    if(err)
 		callback(null,false);
 	    else
-		callback(null, err.message == 'account doesnt exist');
+		callback(null, res.message == 'success');
 	})
 
     },
 
+    //TEST PASS
+    TEST29_PASS:function(callback){
+
+	query.cancelReservation(res1.reservationID, con, function(err, res){
+	    if(err)
+		callback(null,false);
+	    else
+		callback(null, res == true);
+	})
+
+    },
+
+    //TEST PASS
+    TEST30_PASS:function(callback){
+	
+	query.cancelReservation(res2.reservationID, con, function(err, res){
+	    if(err)
+		callback(null,false);
+	    else
+		callback(null, res == true);
+	})
+
+    },
+
+    //TEST PASS
+    TEST31_PASS:function(callback){
+
+	query.cancelReservation(res3.reservationID, con, function(err, res){
+	    if(err)
+		callback(null,false);
+	    else
+		callback(null, res == true);
+	})
+
+    },
+
+    //TEST FAIL
+    TEST32_PASS:function(callback){
+	
+	query.cancelReservation(1000000, con, function(err, res){
+	    if(err)
+		callback(null, err.message == 'reservation doesnt exist');
+	    else
+		callback(null, false);
+	})
+
+    },
+    
+    
 
     CON_QUIT:function(callback){
 	con.end(function(err) {
