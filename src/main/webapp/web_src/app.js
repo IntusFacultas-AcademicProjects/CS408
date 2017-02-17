@@ -3,9 +3,28 @@
 var app = angular.module("myApp", []);
 //collective data controller
 app.controller("user",function($scope) {
+    $scope.config = {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
     $scope.message = "fuck";
     $scope.login = function()
     {
+        var userinfo = new Object();
+        userinfo.email = $scope.email;
+        userinfo.password = $scope.password;
+        var jsoninfo= JSON.stringify(userinfo);//making data json format and send it to back end
+        $http.post('url',jsoninfo,$scope.config)
+            .success(function (data, status, headers, config) {
+                $scope.PostDataResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
         console.log($scope.email);
         console.log($scope.password);
     }
@@ -17,6 +36,20 @@ app.controller("user",function($scope) {
     {
         if ($scope.password == $scope.confirmpassword)
         {
+               var userinfo = new Object();
+               userinfo.email = $scope.email;
+               userinfo.password = $scope.password;
+                var jsonString= JSON.stringify(userinfo);//making data json format and send it to back end
+                        $http.post('url',jsoninfo,$scope.config)
+            .success(function (data, status, headers, config) {
+                $scope.PostDataResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
                console.log($scope.email);
                console.log($scope.password);
         }
