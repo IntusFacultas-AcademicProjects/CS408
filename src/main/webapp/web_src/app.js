@@ -2,7 +2,7 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 //collective data controller
-app.controller("user",function($scope) {
+app.controller("user", ['$scope', '$http', function ($scope, $http) {
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -11,20 +11,23 @@ app.controller("user",function($scope) {
     $scope.message = "fuck";
     $scope.login = function()
     {
-        var userinfo = new Object();
+        var userinfo = {
+        				email: String,
+        				password: String,
+        			};
         userinfo.email = $scope.email;
         userinfo.password = $scope.password;
-        var jsoninfo= JSON.stringify(userinfo);//making data json format and send it to back end
-        $http.post('url',jsoninfo,$scope.config)
+        /*$http.post('url',userinfo,$scope.config)
             .success(function (data, status, headers, config) {
                 $scope.PostDataResponse = data;
+                window.location.href("reserve.html");
             })
             .error(function (data, status, header, config) {
                 $scope.ResponseDetails = "Data: " + data +
                     "<hr />status: " + status +
                     "<hr />headers: " + header +
                     "<hr />config: " + config;
-            });
+            });*/
         console.log($scope.email);
         console.log($scope.password);
     }
@@ -55,7 +58,7 @@ app.controller("user",function($scope) {
         }
     }
 
-})
+}]);
 app.controller("index", function($scope) {
 
     $scope.user = {
