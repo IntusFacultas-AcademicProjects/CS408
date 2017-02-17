@@ -38,7 +38,7 @@
                                     </select>
                             <br />
                                 <label for="endTime" style="margin-left:3%">Reservation End Time</label>
-                                <select id="endtTime" class="mdb-select form-control" onchange="changeFunc()">
+                                <select id="endTime" class="mdb-select form-control" onchange="changeFunc()">
                                       <option ng-repeat="hour in availableHours" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                                 </select>
                             <br />
@@ -58,7 +58,7 @@
                         </script>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-target="#reserve-input-modal" ng-click="closeSecondModal()">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-primary" ng-click="savechanges()">Save changes</button>
                         </div>
                     </div>
                 </div>
