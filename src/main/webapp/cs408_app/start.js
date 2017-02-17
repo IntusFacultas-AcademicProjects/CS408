@@ -8,12 +8,15 @@ var express    = require('express');        // call express
 var bodyParser = require('body-parser');
 var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
+var path = require("path");
 
 var app        = express();                 // define our app using express
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '/../web_src')));
+
 
 var port = process.env.PORT || 8888;        // set our port
 
@@ -60,6 +63,7 @@ router.use(function(req, res, next) {
 
 });
 
+
 router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
@@ -90,7 +94,8 @@ router.route('/authAccount')
 	    if(result){
 		response = { message: "authenticated" };
 		console.log("<<<[RESPONSE]: %j", response);
-		res.json(response);
+		res.sendStatus(200);
+		//res.sendFile(path.join(__dirname, '/../web_src/reserve.html'));
 	    }
 	    else{
 		response = { message: "invalid credentials" };

@@ -2,12 +2,24 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 //collective data controller
-app.controller("user",function($scope) {
+app.controller("user", [ '$scope', '$http', function($scope, $http) {
     $scope.message = "fuck";
+	$scope.user;
     $scope.login = function()
     {
-        console.log($scope.email);
-        console.log($scope.password);
+        console.log($scope.user.email);
+        console.log($scope.user.password);
+
+		$http.post('/api/authAccount', $scope.user).then(function(response) {
+			$scope.user = null;
+			console.log(response);
+			console.log("status : " + response.status);
+		if(response.status == 200){
+			console.log("here");
+			window.location.href = 'http://localhost:8888/reserve.html';
+		}
+			//load response
+		})
     }
     $scope.recover = function()
     {
@@ -15,16 +27,24 @@ app.controller("user",function($scope) {
     }
     $scope.register = function()
     {
+		$scope.user.username = "sfellers";
+		$http.post('/api/addAccount', $scope.user).then(function(response) {
+			$scope.user = null;
+
+			//load response
+		})
+		
         if ($scope.password == $scope.confirmpassword)
         {
-               console.log($scope.email);
-               console.log($scope.password);
+               console.log($scope.user.email);
+               console.log($scope.user.password);
         }
     }
 
-})
-app.controller("index", function($scope) {
+}]);
 
+app.controller("index", function($scope) {
+	
     $scope.user = {
         "username": String,
         "password": String,
@@ -63,6 +83,7 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
+	$scope.date;
 	$scope.user = {
         "username": String,
         "password": String,
@@ -267,7 +288,11 @@ app.controller("reservation", function($scope) {
     // available hours from selected start time
     $scope.availableHours = [];
 
+	$scope.refreshRoomsData = function(){
+		$http.post('/api/getAllRooms', $scope.date).then(function(response) {
 
+		});
+	}
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
