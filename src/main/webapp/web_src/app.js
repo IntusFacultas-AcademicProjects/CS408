@@ -2,6 +2,7 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 //collective data controller
+
 app.controller("user", ['$scope', '$http', function ($scope, $http) {
     $scope.config = {
                 headers : {
@@ -28,12 +29,20 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
         console.log($scope.userinfo);
       
     }
+
     $scope.recover = function()
     {
         console.log($scope.email);
     }
     $scope.register = function()
     {
+		$scope.user.username = "sfellers";
+		$http.post('/api/addAccount', $scope.user).then(function(response) {
+			$scope.user = null;
+
+			//load response
+		})
+		
         if ($scope.password == $scope.confirmpassword)
         {
               $scope.userinfo.password = $scope.password;
@@ -45,8 +54,10 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     }
 
 }]);
-app.controller("index", function($scope) {
 
+
+app.controller("index", function($scope) {
+	
     $scope.user = {
         "username": String,
         "password": String,
@@ -85,6 +96,7 @@ app.controller("navbar", function($scope) {
 });
 
 app.controller("reservation", function($scope) {
+	$scope.date;
 	$scope.user = {
         "username": String,
         "password": String,
@@ -290,7 +302,11 @@ app.controller("reservation", function($scope) {
     // available hours from selected start time
     $scope.availableHours = [];
 
+	$scope.refreshRoomsData = function(){
+		$http.post('/api/getAllRooms', $scope.date).then(function(response) {
 
+		});
+	}
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
