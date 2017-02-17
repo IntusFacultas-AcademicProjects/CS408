@@ -31,16 +31,17 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     }
     $scope.register = function()
     {	
-        if ($scope.userinfo.password == $scope.userinfo.confirmpassword)
+        if ($scope.password == $scope.confirmpassword)
         {
-              $scope.userinfo.password = $scope.password;
-			  $http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-			  	  console.log(response)
-				  $scope.user = null;
+			$scope.userinfo.username = $scope.username;
+			$scope.userinfo.email = $scope.email;
+			$scope.userinfo.password = $scope.password;
+			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
+			  console.log(response);
 
-				//load response
-			  });
-              console.log($scope.userinfo);
+			//load response
+			});
+			console.log($scope.userinfo);
         }
         else {
         	alert("Passwords must match");

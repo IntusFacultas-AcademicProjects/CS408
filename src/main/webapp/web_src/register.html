@@ -57,19 +57,19 @@
                                 <h4>Create an Account</h4><br>
                                 <div class="form-group label-floating">
                                     <label for="email" class="control-label">Enter a valid Purdue email address.</label>
-                                    <input type="email" class="form-control" ng-model="userinfo.email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
+                                    <input type="email" class="form-control" ng-model="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@purdue.edu" oninvalid="">
                                     <span class="error"></span>
                                     <span class="help-block">This should be the same email as your Purdue Career Account</span>
                                     
                                 </div>
                                 <div class="form-group label-floating">
                                     <label for="password" class="control-label">Enter Password</label>
-                                    <input type="password" class="form-control" ng-model="userinfo.password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9.?!]{5,10}$">
+                                    <input type="password" class="form-control" ng-model="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9.?!]{5,10}$">
                                     <span class="help-block">The password should contain a capital letter, a lower case letter, one number, and should be 5-10 characters long. The only types of punctuation that are accepted is "?", "!", and "."</span>
                                 </div>
                                  <div class="form-group label-floating">
                                     <label for="confirmpassword" class="control-label">Confirm Password</label>
-                                    <input type="password" class="form-control" ng-model="userinfo.confirmpassword" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9.?!]{5,10}$">
+                                    <input type="password" class="form-control" ng-model="confirmpassword" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9.?!]{5,10}$">
                                      <span class="help-block">The passwords should match</span>
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group label-floating">
                                     <label for="email" class="control-label">Enter a preferred username</label>
-                                    <input type="username" class="form-control" ng-model="userinfo.userame" oninvalid="">
+                                    <input type="username" class="form-control" ng-model="username" oninvalid="">
                                     <span class="error"></span>
                                     <span class="help-block">We will use this to keep your account safe. Don't forget this, but you will log in with your email</span>
                                     
