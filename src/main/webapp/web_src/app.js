@@ -9,7 +9,11 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
                 }
             }
-    $scope.userinfo;
+    $scope.userinfo = {
+    					username: String,
+    					password: String,
+    					email: String
+    					};
     $scope.login = function()
     {
     	
