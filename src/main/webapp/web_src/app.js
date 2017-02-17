@@ -9,7 +9,6 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
                 }
             }
-    $scope.message = "fuck";
     $scope.userinfo;
     $scope.login = function()
     {
@@ -31,14 +30,12 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
         console.log($scope.email);
     }
     $scope.register = function()
-    {
-		
-		
-        if ($scope.password == $scope.confirmpassword)
+    {	
+        if ($scope.userinfo.password == $scope.userinfo.confirmpassword)
         {
               $scope.userinfo.password = $scope.password;
 			  $http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-			  	  consol.log(response)
+			  	  console.log(response)
 				  $scope.user = null;
 
 				//load response
