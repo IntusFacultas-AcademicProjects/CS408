@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 var path = require("path");
+var fs = require('fs');
 
 
 var app        = express();                 // define our app using express
@@ -99,7 +100,7 @@ router.route('/authAccount')
 		//res.sendFile(path.join(__dirname, '/../web_src/reserve.html'));
 	    }
 	    else{
-		response = { message: "invalid credentials" };
+		response = { err: "invalid credentials" };
 		console.log("<<<[RESPONSE]: %j", response);
 		res.json(response);
 	    }
@@ -187,8 +188,24 @@ router.route('/cancelReservation')
 	});
 	
     });
+// View Routes -------------------------------------
+app.get('/login', function(req,res) {
+    var html = fs.readFileSync('../web_src/login.html', 'utf8');
+//res.send('login').body({html: html});
+    res.json({html: html})
+});
 
+app.get('/home', function(req,res) {
+    var html = fs.readFileSync('../web_src/reserve.html', 'utf8');
+//res.send('login').body({html: html});
+    res.json({html: html})
+});
 
+app.get('/', function(req,res) {
+    var html = fs.readFileSync('../web_src/login.html', 'utf8');
+//res.send('login').body({html: html});
+    res.json({html: html})
+});
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 

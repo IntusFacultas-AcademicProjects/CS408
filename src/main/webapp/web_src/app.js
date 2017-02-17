@@ -17,16 +17,19 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     $scope.login = function()
     {
     	
-       
+		$scope.userinfo.email = $scope.email;       
         $scope.userinfo.password = $scope.password;
-		  $http.post('/api/authAccount', $scope.userinfo).then(function(response) {
-			  $scope.user = null;
-				console.log(response)
+		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
+			if (typeof response.data.err == "undefined") {
+				alert("Login successful");
+				window.location.href = '/reserve.html';	
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}  
 			//load response
-		  });
-          console.log($scope.userinfo);
-        console.log($scope.userinfo);
-      
+		});
     }
 
     $scope.recover = function()
@@ -41,11 +44,15 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-			  console.log(response);
-
-			//load response
-			});
-			console.log($scope.userinfo);
+				if (typeof response.data.err == "undefined") {				
+						window.location.href = '/login.html';				 
+				}
+				else {
+					alert(response.data.err);
+					window.location.reload();
+				}  
+			    //load response
+			    });
         }
         else {
         	alert("Passwords must match");
@@ -384,7 +391,14 @@ app.controller("reservation", function($scope) {
 		    }
     	}
     };
-
+    $scope.savechanges = function() {
+        //get the reservation time
+        $scope.start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
+        $scope.end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
+    	
+        console.log($scope.start);
+        console.log($scope.end);
+    };
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
