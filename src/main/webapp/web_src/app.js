@@ -15,17 +15,13 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
     {
     	
        
-        /*$http.post('url',userinfo,$scope.config)
-            .success(function (data, status, headers, config) {
-                $scope.PostDataResponse = data;
-                window.location.href("reserve.html");
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });*/
+        $scope.userinfo.password = $scope.password;
+		  $http.post('/api/authAccount', $scope.userinfo).then(function(response) {
+			  $scope.user = null;
+				console.log(response)
+			//load response
+		  });
+          console.log($scope.userinfo);
         console.log($scope.userinfo);
       
     }
@@ -42,6 +38,7 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
         {
               $scope.userinfo.password = $scope.password;
 			  $http.post('/api/addAccount', $scope.userinfo).then(function(response) {
+			  	  consol.log(response)
 				  $scope.user = null;
 
 				//load response
