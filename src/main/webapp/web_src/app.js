@@ -2,7 +2,13 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 //collective data controller
-app.controller("user", [ '$scope', '$http', function($scope, $http) {
+
+app.controller("user", ['$scope', '$http', function ($scope, $http) {
+    $scope.config = {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
     $scope.message = "fuck";
 	$scope.user;
     $scope.login = function()
@@ -20,7 +26,9 @@ app.controller("user", [ '$scope', '$http', function($scope, $http) {
 		}
 			//load response
 		})
+
     }
+
     $scope.recover = function()
     {
         console.log($scope.email);
@@ -36,12 +44,12 @@ app.controller("user", [ '$scope', '$http', function($scope, $http) {
 		
         if ($scope.password == $scope.confirmpassword)
         {
-               console.log($scope.user.email);
-               console.log($scope.user.password);
+
         }
     }
 
 }]);
+
 
 app.controller("index", function($scope) {
 	
