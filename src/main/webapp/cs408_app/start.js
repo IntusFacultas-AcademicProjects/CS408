@@ -188,8 +188,14 @@ router.route('/cancelReservation')
 	});
 	
     });
-
+// View Routes -------------------------------------
 app.get('/login', function(req,res) {
+    var html = fs.readFileSync('../web_src/login.html', 'utf8');
+//res.send('login').body({html: html});
+    res.json({html: html})
+});
+
+app.get('/', function(req,res) {
     var html = fs.readFileSync('../web_src/login.html', 'utf8');
 //res.send('login').body({html: html});
     res.json({html: html})
