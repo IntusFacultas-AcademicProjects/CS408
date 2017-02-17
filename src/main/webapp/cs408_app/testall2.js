@@ -71,7 +71,7 @@ async.series({
     },
 
     //TEST PASS
-    TEST#:function(callback){
+    TEST2:function(callback){
 	query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){
 	    
 	    if(err)
@@ -84,7 +84,7 @@ async.series({
     
     
     //TEST 3 ERR - duplicate email
-    TEST2:function(callback){
+    TEST3:function(callback){
 
 	query.addAccount(account1.email, account2.username, account1.password, con, function(err, res){
 	    console.log(err);
@@ -95,7 +95,7 @@ async.series({
     },
 
     //TEST 5 ERR - duplicate username
-    TEST3:function(callback){
+    TEST4:function(callback){
 
 	query.addAccount(account2.email, account1.username, account2.password, con, function(err, res){
 
@@ -109,11 +109,26 @@ async.series({
 
     },
 
+    //TEST PASS
+    TEST5:function(callback){
 
-    TEST#:function(callback){
+	query.deleteAccount(account2.email, con, function(err, res){
+	    if(err)
+		callback(null,false);
+	    else
+		callback(null, err.message == 'account doesnt exist');
+	})
 
-	query.deleteAccount(account2.email, account2.username, account2.password, con, function(err, res){
-	    callback(null, err.message == 'username already exists');
+    },
+
+    //TEST FAIL - ACCOUNT DOESNT EXIST
+    TEST6:function(callback){
+	
+	query.deleteAccount(account2.email, con, function(err, res){
+	    if(err)
+		callback(null,err.message == 'account doesnt exist');
+	    else
+		callback(null, false);
 	})
 
     },
@@ -123,7 +138,7 @@ async.series({
 
 
     //TEST 8 TRUE - username exists
-    TEST4:function(callback){
+    TEST7:function(callback){
 
 	query.usernameExists(account1.username, con, function(res){
 	    callback(null, res);
@@ -132,7 +147,7 @@ async.series({
     },
 
     //TEST 9 FALSE - username does not exist
-    TEST5:function(callback){
+    TEST8:function(callback){
 
 	query.usernameExists("BADUSER", con, function(res) {
 	    callback(null, res);
@@ -144,7 +159,7 @@ async.series({
 
 
     //TEST 11 TRUE - email exists
-    TEST6:function(callback){
+    TEST9:function(callback){
 
 	query.emailExists(account1.email, con, function(err, res){
 	    callback(null, res);
@@ -152,7 +167,7 @@ async.series({
     },
 
     //TEST 13 FALSE - email does not exist
-    TEST7:function(callback){
+    TEST10:function(callback){
 
 	query.emailExists("BADEMAIL", con, function(err,res){
 	    callback(null, res);
@@ -165,7 +180,7 @@ async.series({
 
 
     //TEST 15 TRUE - valid credentials
-    TEST8:function(callback){		
+    TEST11:function(callback){		
 
 	query.authAccount(account1.email, account1.password, con, function(err, res){
 	    callback(null, res);
@@ -173,7 +188,7 @@ async.series({
     }, 
 
     //TEST 17 FALSE - invalid credentials
-    TEST9:function(callback){
+    TEST12:function(callback){
 
 	query.authAccount(account1.email, account1.password, con, function(err,res){
 	    callback(null, res == "invalid credentials");
@@ -182,7 +197,7 @@ async.series({
     
     
     //TEST 19 PASS - reservation added
-    TEST10:function(callback){
+    TEST13:function(callback){
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 7, 9, res1.shareable, con, function(err, res){
 	    callback(null, res != null);
@@ -190,7 +205,7 @@ async.series({
     },
 
     //TEST PASS
-    TEST11:function(callback){	    
+    TEST14:function(callback){	    
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 6, 7, res1.shareable, con, function(err, res){
 	    callback(null, res != null);
@@ -198,7 +213,7 @@ async.series({
     },
 
     //TEST PASS
-    TEST12:function(callback){	
+    TEST15:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
 	    callback(null, res != null);
@@ -206,7 +221,7 @@ async.series({
     },
     
     //ERR - overlapping reservation
-    TEST13:function(callback){	
+    TEST16:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
 	    //callback(null, err.message == 'overlapping reservation');
@@ -215,7 +230,7 @@ async.series({
     },
 
     //ERR - overlapping reservation
-    TEST14:function(callback){	
+    TEST17:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 10, 11, res1.shareable, con, function(err, res){
 	    //callback(null, err.message == 'overlapping reservation');
@@ -228,7 +243,7 @@ async.series({
 
 
     //ERR - startTime out of acceptable range [0,23]    
-    TEST15:function(callback){
+    TEST18:function(callback){
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'startTime out of acceptable range [0,23]');
@@ -236,7 +251,7 @@ async.series({
     },
 
     //ERR - startTime out of acceptable range [0,23]
-    TEST16:function(callback){	
+    TEST19:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null,err.message == 'startTime out of acceptable range [0,23]');
@@ -244,7 +259,7 @@ async.series({
     },
     
     //ERR - endTime out of acceptable range [0,23]
-    TEST17:function(callback){	
+    TEST20:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
     	    callback(null,err.message == 'endTime out of acceptable range [0,23]');
@@ -252,7 +267,7 @@ async.series({
     },
 
     //ERR - endTime out of acceptable range [0,23]
-    TEST18:function(callback){	
+    TEST21:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
@@ -260,7 +275,7 @@ async.series({
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST19:function(callback){	
+    TEST22:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'startTime must be less than endTime');
@@ -268,7 +283,7 @@ async.series({
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST20:function(callback){	
+    TEST23:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'startTime must be less than endTime');
@@ -276,7 +291,7 @@ async.series({
     },
 
     //ERR - invalid date
-    TEST21:function(callback){
+    TEST24:function(callback){
 
 	query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
@@ -284,7 +299,7 @@ async.series({
     },
     
     //ERR - invalid date
-    TEST22:function(callback){	
+    TEST25:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
@@ -292,11 +307,24 @@ async.series({
     },
 
     //ERR - invalid date
-    TEST23:function(callback){	
+    TEST26:function(callback){	
 
 	query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
     	    callback(null, err.message == 'invalid date');
 	})
+    },
+
+    
+    //TEST PASS
+    TEST27:function(callback){
+	
+	query.deleteAccount(account1.email, con, function(err, res){
+	    if(err)
+		callback(null,false);
+	    else
+		callback(null, err.message == 'account doesnt exist');
+	})
+
     },
 
 

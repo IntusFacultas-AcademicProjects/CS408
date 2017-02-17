@@ -123,15 +123,15 @@ var authAccount = function(email,password,connection,callback)
     });
 };
 
-var deleteAccount = function(email,password,connection,callback) 
+var deleteAccount = function(email,connection,callback) 
 {
-    connection.query('DELETE FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password], function(error,results,fields){
+    connection.query('DELETE FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
 	if(error)
 	    throw error;
 	if(results.affectedRows == 1)
-	    callback(null, true);
+	    callback(null, {message:'success'});
 	else if(results.affectedRows == 0)
-	    callback(null, false);
+	    callback(new Error('account doesnt exist'));
 	else
 	    callback(new Error('Illegal state'));
 	

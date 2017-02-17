@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 var path = require("path");
+var fs = require('fs');
 
 
 var app        = express();                 // define our app using express
@@ -188,7 +189,11 @@ router.route('/cancelReservation')
 	
     });
 
-
+app.get('/login', function(req,res) {
+    var html = fs.readFileSync('../web_src/login.html', 'utf8');
+//res.send('login').body({html: html});
+    res.json({html: html})
+});
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 
