@@ -41,7 +41,7 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
-			  console.log(response);
+			  console.log(response.data.html);
 
 			//load response
 			});
