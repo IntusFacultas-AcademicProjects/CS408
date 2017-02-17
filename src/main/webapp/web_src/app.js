@@ -39,6 +39,9 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
               $scope.userinfo.password = $scope.password;
               console.log($scope.userinfo);
         }
+        else {
+        	alert("Passwords must match");
+        }
     }
 
 }]);
