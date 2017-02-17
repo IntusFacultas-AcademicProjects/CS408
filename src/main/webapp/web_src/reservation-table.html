@@ -1,29 +1,30 @@
 
 <ul ng-controller="reservation" class="list-group modal-list">
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.0" > 00:00-00:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.1"> 01:00-01:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.2"> 02:00-02:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.3"> 03:00-03:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.4"> 04:00-04:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.5"> 05:00-05:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.6"> 06:00-06:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.7"> 07:00-07:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.8"> 08:00-08:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.9"> 09:00-09:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.10"> 10:00-10:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.11"> 11:00-11:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.12"> 12:00-12:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.13"> 13:00-13:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.14"> 14:00-14:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.15"> 15:00-15:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.16"> 16:00-16:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.17"> 17:00-17:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.18"> 18:00-18:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.19"> 19:00-19:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.20"> 20:00-20:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.21"> 21:00-21:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.22"> 23:00-22:59</button>
-    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.23"> 23:00-23:59</button>
+    
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.0" ng-disabled="validate(roomData, 0)"> 00:00-00:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.1" ng-disabled="validate(roomData, 1)"> 01:00-01:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.2" ng-disabled="validate(roomData, 2)"> 02:00-02:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.3" ng-disabled="validate(roomData, 3)"> 03:00-03:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.4" ng-disabled="validate(roomData, 4)"> 04:00-04:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.5" ng-disabled="validate(roomData, 5)"> 05:00-05:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.6" ng-disabled="validate(roomData, 6)"> 06:00-06:59</button>
+    <button type="button" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.7" ng-disabled="validate(roomData, 7)" ng-class="{'shareable': validateShareable(roomData, 0)}" > 07:00-07:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.8" ng-disabled="validate(roomData, 8)"> 08:00-08:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.9" ng-disabled="validate(roomData, 9)"> 09:00-09:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.10" ng-disabled="validate(roomData, 10)"> 10:00-10:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.11" ng-disabled="validate(roomData, 11)"> 11:00-11:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.12" ng-disabled="validate(roomData, 12)"> 12:00-12:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.13" ng-disabled="validate(roomData, 13)"> 13:00-13:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.14" ng-disabled="validate(roomData, 14)"> 14:00-14:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.15" ng-disabled="validate(roomData, 15)"> 15:00-15:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.16" ng-disabled="validate(roomData, 16)"> 16:00-16:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.17" ng-disabled="validate(roomData, 17)"> 17:00-17:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.18" ng-disabled="validate(roomData, 18)"> 18:00-18:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.19" ng-disabled="validate(roomData, 19)"> 19:00-19:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.20" ng-disabled="validate(roomData, 20)"> 20:00-20:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.21" ng-disabled="validate(roomData, 21)"> 21:00-21:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.22" ng-disabled="validate(roomData, 22)"> 23:00-22:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.23" ng-disabled="validate(roomData, 23)"> 23:00-23:59</button>
     <div class="modal fade" id="reserve-input-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -31,16 +32,30 @@
                             <h5 class="modal-title" id="reserveHoursModal">Make Reservation</h5>
                         </div>
                         <div class="modal-body">
-                                    <label for="startTime">Reservation Start Time</label>
-                                    <select id="startTime" class="mdb-select form-control floating-label" >
+                                    <label for="startTime" style="margin-left:3%">Reservation Start Time</label>
+                                    <select id="startTime" class="mdb-select form-control" onchange="changeFunc()">
                                             <option ng-repeat="hour in availableHours|limitTo:1" value="{{hour.id}}" selected="selected">{{hour.name}}</option>
                                     </select>
-                            <br>
-                                <label for="endTime">Reservation End Time</label>
-                                <select id="endtTime" class="mdb-select form-control floating-label">
+                            <br />
+                                <label for="endTime" style="margin-left:3%">Reservation End Time</label>
+                                <select id="endtTime" class="mdb-select form-control" onchange="changeFunc()">
                                       <option ng-repeat="hour in availableHours" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                                 </select>
+                            <br />
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label> <input type="checkbox"> Mark Shareable </input></label>
+                                </div>
+                                <p class="help-block">Allow other students to share the space with you</p>
+                            </div>
                         </div>
+                        <script>
+                            function changeFunc() {
+                                console.log("removing focus");
+                                $('#startTime').removeClass("is-focused");
+                                $('#endTime').removeClass("is-focused");
+                            }
+                        </script>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-target="#reserve-input-modal" ng-click="closeSecondModal()">Close</button>
                             <button type="button" class="btn btn-primary">Save changes</button>

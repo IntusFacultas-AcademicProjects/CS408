@@ -1,0 +1,10 @@
+Run Tests in Following Order:
+
+Account Creation
+Username Existence
+Email Existence
+Authenticate Account
+Add Reservation 1
+Add Reservation 2
+Add Reservation 3
+Add Reservation 4

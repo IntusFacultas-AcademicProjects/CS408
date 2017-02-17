@@ -7,10 +7,8 @@
         <!-- Material Design-->
         <script src="assets/js/material.js"></script>
         <script src="assets/js/ripples.js"></script>
-<!--        <script src="assets/js/mdb.js"></script>-->
         <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
         <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
-        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">
         <script src="assets/js/tether.min.js"></script>
             
 		<!-- Latest compiled and minified CSS -->
@@ -28,6 +26,7 @@
         <script src="assets/js/collapse.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/datepicker.js"></script>
         
 		<!-- Latest AngularJS lib -->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
@@ -54,22 +53,44 @@
                     <div class="col-sm-5"></div>
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <div class='input-group date' id='datetimepicker1'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
+                            <div class="datepicker input-group date" data-provide="datepicker">
+                                <input id="dp" type="text" class="datepicker form-control" required>
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
                             </div>
-                            <script type="text/javascript">
-                                $(function () {
-                                    var dateNow = new Date();
-                                    $('#datetimepicker1').datetimepicker({
-                                         format: 'MM/DD/YYYY',
-                                         minDate: new Date(),
-                                        defaultDate: dateNow
+<!--                            <input type="text" id="datepicker" class="datepicker">-->
+                            <script>
+                                
+                                    $.material.init();
+                                $(document).ready(function() {
+                                    var date = new Date();
+                                    date.setDate(date.getDate());
+                                    $('.datepicker').datepicker({
+                                        format:'mm/dd/yyyy',
+                                        startDate: new Date(),
+                                        setDate: new Date(),
+                                        autoclose: true
                                     });
-                                    
+                                var date = new Date();
+                                var monthNames = [
+                                "01", "02", "03",
+                                "04", "05", "06", "07",
+                                "08", "09", "10",
+                                "11", "12"
+                                ];
+                                var days =["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+                                var day = date.getDate();
+                                
+                                var monthIndex = date.getMonth();
+                                var year = date.getFullYear();
+
+                                var val =  monthNames[monthIndex] + '/' + days[day] + '/' + year;
+
+                                $("#dp").val(val);
+                               
                                 });
+                                
                             </script>
                         </div>    
                     </div>
@@ -80,27 +101,27 @@
                         <img alt="HICKS" src="assets/img/HICKS.jpg" usemap="#map_map"  id="map">
                         <map id="map_map" name="map_map">
                             <!--Vertical Rooms-->
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="68,354, 87,372">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="68,336, 87,353">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="3" id="room3a" shape="rect" coords="68,319, 87,335">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="4" id="room4a" shape="rect" coords="68,302, 87,317">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="5" id="room5a" shape="rect" coords="68,284, 87,299">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="6" id="room6a" shape="rect" coords="68,265, 87,281">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="7" id="room7a" shape="rect" coords="68,247, 87,263">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="8" id="room8a" shape="rect" coords="68,230, 87,246">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="9" id="room9a" shape="rect" coords="68,213, 87,227">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="10" id="room10a" shape="rect" coords="68,196, 87,211">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="11" id="room11a" shape="rect" coords="68,177, 87,193">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="12" id="room12a" shape="rect" coords="68,149, 87,174">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="0" id="room0a" shape="rect" coords="68,354, 87,372">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="1" id="room1a" shape="rect" coords="68,336, 87,353">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="2" id="room2a" shape="rect" coords="68,319, 87,335">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="3" id="room3a" shape="rect" coords="68,302, 87,317">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="4" id="room4a" shape="rect" coords="68,284, 87,299">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="5" id="room5a" shape="rect" coords="68,265, 87,281">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="6" id="room6a" shape="rect" coords="68,247, 87,263">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="7" id="room7a" shape="rect" coords="68,230, 87,246">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="8" id="room8a" shape="rect" coords="68,213, 87,227">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="9" id="room9a" shape="rect" coords="68,196, 87,211">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="10" id="room10a" shape="rect" coords="68,177, 87,193">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="11" id="room11a" shape="rect" coords="68,149, 87,174">
                             
                             <!--Horizontal Rooms-->
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="13" id="room13a" shape="rect" coords="50,90, 65,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="14" id="room14a" shape="rect" coords="68,90, 81,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="15" id="room15a" shape="rect" coords="84,90, 98,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="16" id="room16a" shape="rect" coords="101,90, 115,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="17" id="room17a" shape="rect" coords="118,90, 132,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="18" id="room18a" shape="rect" coords="135,90, 148,108">
-                            <area ng-click="openModal($event)" class="room_area" href="#" room="19" id="room19a" shape="rect" coords="152,90, 163,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="12" id="room12a" shape="rect" coords="50,90, 65,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="13" id="room13a" shape="rect" coords="68,90, 81,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="14" id="room14a" shape="rect" coords="84,90, 98,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="15" id="room15a" shape="rect" coords="101,90, 115,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="16" id="room16a" shape="rect" coords="118,90, 132,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="17" id="room17a" shape="rect" coords="135,90, 148,108">
+                            <area ng-click="openModal($event)" class="room_area" href="#" room="18" id="room18a" shape="rect" coords="152,90, 163,108">
                         </map>
                         <script type="text/javascript">
                             
@@ -115,31 +136,29 @@
                     <timetable class="col-lg-4 shadowed" slots="slots"  ></timetable>
                 </div>
             </div>
-            <div  class="modal fade" id="reserve-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div ng-controller="reservation" class="modal fade" id="reserve-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="reserveRoomModal">Reservation</h5>
+                            <h5 class="modal-title" id="reserveRoomModal">{{roomSelected}} Reservation</h5>
                         </div>
                         <div class="modal-body">
-                            <reservation-table info='roomsData[roomIndex - 1]'></reservation-table>
+                            <reservation-table info='roomsData[roomIndex]' index='roomIndex'></reservation-table>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
-        </div>
-			<!-- Footer -->
+    			<!-- Footer -->
 			<footer id="footer">
                 <br>
                 <p>Selectable Rooms are colored in <img class="shadowed" alt="color_swatch" src="assets/img/color_swatch.png"></p><br>
 				<p>&copy; RSVP. All rights reserved.</p>
 			</footer>
-		</div>
+ 
+        </div>
 	</body>
 </html>
 
