@@ -115,8 +115,15 @@ app.controller("navbar", function($scope) {
 		localStorage["adminFirstPageLoad"] = false;
 		window.location.href = "/admin.html";
 	}
+    $scope.portal = function() {
+        localStorage["firstPageLoad"] = false;
+		localStorage["adminFirstPageLoad"] = false;
+		window.location.href = "/account-portal.html";
+    }
 });
-
+app.controller("userPortal",['$scope', '$http', function ($scope, $http){
+    
+}]);
 app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 	$scope.date;
 	$scope.adminDate;

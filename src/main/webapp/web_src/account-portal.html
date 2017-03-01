@@ -1,0 +1,176 @@
+<html>
+    <head>
+        <!-- Latest jQuery-->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        
+        <!-- Material Design-->
+        <script src="assets/js/material.js"></script>
+        <script src="assets/js/ripples.js"></script>
+<!--        <script src="assets/js/mdb.js"></script>-->
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
+<!--        <link type="text/css" rel="stylesheet" href="assets/css/mdb.css">-->
+        <script src="assets/js/tether.min.js"></script>
+            
+		<!-- Latest compiled and minified CSS -->
+ 		<meta charset="UTF-8">
+        <link type="text/css" rel="stylesheet" href="assets/css/rsvp.css">
+		<link title="compact" type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/material.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-datetimepicker-standalone.min.css">
+        
+        
+        <!-- Bootstrap Plugins needed for DateTimePicker-->
+        <script src="assets/js/moment.js"></script>
+        <script src="assets/js/collapse.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/datepicker.js"></script>
+        
+		<!-- Latest AngularJS lib -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+        
+        <!-- ImageMapster -->
+        <script src="assets/js/jquery.imagemapster.js"></script>
+		<!-- Our Angular Code -->
+		<script src="app.js"></script>
+        
+        <!-- Dropdown-->
+        <script src="assets/js/dropdown.js"></script>
+        <link type="text/css" rel="stylesheet" href="assets/css/dropdown.css">
+        
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
+    </head>
+    <body ng-app="myApp" style="background-color:#60553F">
+        <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
+        <div class="row" ng-controller="userPortal">
+            <div class="col-lg-8">
+                <div class="reservation-table shadowed">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4>Reservations</h4>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <h5>Reservation Time</h5>
+                                </div>
+                                <div class="col-sm-2">
+                                    <h5>Cancel Reservation</h5>
+                                </div>
+                                 <div class="col-sm-2">
+                                    <h5>Shareable Status</h5>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div style="overflow-y:scroll; height: 500px;">
+                                    <div ng-repeat="reservation in reservations">
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <h5>{{reservation.start}} - {{reservation.end}}</h5>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="{{$index}}" class="btn btn-danger">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" checked="{{reservation.shareable}}"> Shareable
+                                                        </label>
+                                                    </div>
+                                                    <p class="help-block">Allow others to share the room</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="shadowed" style="background-color:white; border-radius:25px; padding:20px; margin-top:20px; margin-left:-10px; margin-right:20px;">
+                    <div class="row" >
+                        <div class="col-sm-12">
+                            <h4>Change Password</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="form-group label-floating">
+                                <label id="oldPassword" for="password" class="control-label">Enter Current Password</label>
+                                <input type="password" class="form-control" ng-model="password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="form-group label-floating">
+                                <label id="newPassword" for="password" class="control-label">Enter New Password</label>
+                                <input type="password" class="form-control" ng-model="password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="form-group label-floating">
+                                <label id="confirmPassword" for="password" class="control-label">Confirm New Password</label>
+                                <input type="password" class="form-control" ng-model="password" required>
+                                <span class="help-block">The passwords should match</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+
+                        </div>
+                        <div class="col-sm-8">
+                            <button id="passwordReset" class="btn btn-primary">Submit</button>
+                        </div>
+                        <div class="col-sm-4">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="shadowed" style="background-color:white; border-radius:25px; padding:20px; margin-top:20px; margin-left:-10px; margin-right:20px;">
+                    <div class="row" >
+                        <div class="col-sm-12">
+                            <h4>Account Information</h4>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12">
+                            <h5>Current Allowance: {{allowance}}</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a href="" onclick="alert('This is how many hours you can reserve at this time. Cancel reservations to increase your allowance.')">What is this?</a>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12">
+                            <h5>Number of Reservations: {{reservations.length}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $.material.init();
+            </script>
+        </div>
+    </body>
+    <footer>
+        <p>&copy; RSVP. All rights reserved.</p>
+    </footer>
+</html>

@@ -88,6 +88,15 @@
 .room_table *{
     background-color:#ffffff;
 }
+.reservation-table {
+    background-color:#ffffff;
+    height: 710px;
+    border-radius:25px;
+    overflow-x:hidden;
+    overflow-y:hidden;
+    padding:20px;
+    margin:20px;
+}
 .list-button {
     padding: 0;
     border: none;
