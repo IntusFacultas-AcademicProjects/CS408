@@ -142,16 +142,52 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 	$scope.session = Session;
     $scope.allowance = 0;
     $scope.reservations = [];
-    $scope.cancel = function(id) {
-    	console.log("Cancel: " + id);
+    $scope.cancel = function(event) {
+    	console.log(event.target.id);
+    	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
+    		location.reload();
+    	});
     };
     $scope.fetchReservations = function() {
-    	$scope.userData = $scope.session.updateSession();
-    	console.log($scope.userData);
-		//$http.post('/api/getUserReservations').then(function(response) {
-			
-	    //});
+    	$scope.sessionData = $scope.session.updateSession();
+		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
+			console.log(response.data.res[0]);
+			$scope.reservations = response.data.res;
+			console.log(response.data.res[0]);
+			var start = ["00:00", "01:00", "02:00", 
+        					"03:00", "04:00", "05:00", 
+        					"06:00", "07:00", "08:00", 
+        					"09:00", "10:00", "11:00", 
+        					"12:00", "13:00", "14:00", 
+        					"15:00", "16:00", "17:00", 
+        					"18:00", "19:00", "20:00", 
+        					"21:00", "23:00", "23:00"];
+        	var end = ["ERROR","00:59", "01:59", "02:59", 
+        					"03:59", "04:59", "05:59", 
+        					"06:59", "07:59", "08:59", 
+        					"09:59", "10:59", "11:59", 
+        					"12:59", "13:59", "14:59", 
+        					"15:59", "16:59", "17:59", 
+        					"18:59", "19:59", "20:59", 
+        					"21:59", "22:59", "23:59"];
+        	var months = ["ERROR", "January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"];
+        	angular.forEach($scope.reservations, function(reservation, index) {
+						
+					    reservation.date=reservation.date.substring(0, reservation.date.indexOf("T"));
+					    var date = reservation.date.split("-");
+					    reservation.date = months[parseInt(date[1])] + " " + date[2] + " " + date[0];
+					    reservation.startTime = start[reservation.startTime];
+						reservation.endTime = end[reservation.endTime];
+					}
+
+				);
+	    });
+	    
+	    $http.post('/api/getUserHours', {username: $scope.sessionData.username}).then(function(response) {
+	    	$scope.allowance = response.data.data;
+	    });
     };
+    
 }]);
 app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 	$scope.date;
@@ -210,6 +246,7 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
+				console.log($scope.roomsData);
 				angular.forEach($scope.roomsData, function(room, index) {
 					    if (room.blocked) {
 					        var roomName = "#room" + room.roomid + "a";
@@ -381,6 +418,26 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
+    	 var id = event.target.id;
+        var num = id.substring(4, id.length - 1);
+        $scope.roomIndex = num;
+        $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
+        if ($scope.roomsData[num].blocked == false) {
+        	console.log($scope.roomsData[num]);
+            $("#reserve-modal").modal("toggle");
+        } 
+        else {
+            var room = $scope.roomsData[num];
+            console.log("attempting to open blocked room modal.")
+            if ($scope.user.admin) {
+                $("#reserve-block-modal").modal("toggle");
+            } 
+            else {
+                alert("This room is currently blocked");
+            }
+        }
+    }
+    $scope.openAdminModal = function(event) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
@@ -433,7 +490,9 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 
     // permanently highlights rooms that are blocked (color change is not working)
     $scope.disableBlockedRooms = function() {
-        angular.forEach($scope.roomsData, function(room, index) {
+    	//console.log($scope.roomsData);
+        /*angular.forEach($scope.roomsData, function(room, index) {
+        		console.log(room.blocked);
                 if (room.blocked) {
                     var roomName = "#room" + room.roomid + "a";
                     var roomTable = "#room" + room.roomid + "c";
@@ -448,7 +507,7 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
                 }
             }
 
-        );
+        );*/
         return true;
     };
 
