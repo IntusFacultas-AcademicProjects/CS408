@@ -1,7 +1,7 @@
 
 <ul ng-controller="reservation" class="list-group modal-list">
     
-    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.0" ng-disabled="validate(roomData, 0)"> 00:00-00:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.0" ng-disabled="roomData != null && validate(roomData, 0)"> 00:00-00:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.1" ng-disabled="validate(roomData, 1)"> 01:00-01:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.2" ng-disabled="validate(roomData, 2)"> 02:00-02:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 0)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.3" ng-disabled="validate(roomData, 3)"> 03:00-03:59</button>

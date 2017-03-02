@@ -419,6 +419,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
+    	$("#roomModal.0").prop("disabled", true);
     	 var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
@@ -541,7 +542,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
-
+		
         var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", 
         					"03:00-03:59", "04:00-04:59", "05:00-05:59", 
         					"06:00-06:59", "07:00-07:59", "08:00-08:59", 
@@ -644,6 +645,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    }
 		    return false;
     	}
+    	return false;
     };
 	
 	// used to color hours as shareable if hours are shareable (DOM not updating)
