@@ -237,7 +237,7 @@ var getAllRooms = function(date, connection, callback){
 	    roomObj.roomid = element.room_id;
 	    roomObj.roomName = element.room_name;
 	    roomObj.date = date;
-	    roomObj.blocked = element.blocked == 1 ? true : false;
+	    roomObj.blocked = element.blocked_status == 1 ? true : false;
 
 	    //Get all reservations for room here
 	    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?',
