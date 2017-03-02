@@ -422,8 +422,9 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
+    
         if ($scope.roomsData[num].blocked == false) {
-        	console.log($scope.roomsData[num]);
+        	console.log($scope.roomSelected);
             $("#reserve-modal").modal("toggle");
         } 
         else {
@@ -537,6 +538,7 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
+
         var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", 
         					"03:00-03:59", "04:00-04:59", "05:00-05:59", 
         					"06:00-06:59", "07:00-07:59", "08:00-08:59", 
@@ -548,7 +550,7 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.hourSelected = startTime;
         var room = roomSelected;
-        console.log(roomSelected);
+        console.log(room);
         var roomReservations = room.res;
         var takenHours = [];
         for (var i = 0; i < roomReservations.length; i++) {
