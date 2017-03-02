@@ -189,8 +189,9 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     };
     
 }]);
-app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $http, Session){
-	$scope.session = Session;
+
+app.controller('administration', ['$scope', '$http', 'Session', function ($scope, $http, Session) {
+    $scope.session = Session;
 	$scope.date;
 	$scope.adminDate;
 	$scope.user = {
@@ -216,63 +217,26 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
+     // json information delivered from SQL database (currently disposable data)
+    $scope.roomsData = [];
+    // name displayed at top of modal
+    $scope.roomSelected;
+    // index of room data in array
+    $scope.roomIndex;
+    // hour selected from reserve-modal serves as start time
+    $scope.hourSelected;
+    // available hours from selected start time
+    //status text
+    $scope.roomStatus;
+    //admin option
+    $scope.option;
+    $scope.availableHours = [];
 
     $scope._init = function() {
         $scope.slots = _slots;
         return true;
     }
     $scope._init();
-    // fake variables for development time testing
-    $scope.hours = [{
-            id: 0,
-            selected: "selected",
-            name: "00:00 - 00:59"
-        },
-        {
-            id: 1,
-            selected: "",
-            name: "01:00 - 01:59"
-        },
-        {
-            id: 2,
-            selected: "",
-            name: "02:00 - 02:59"
-        }
-
-    ];
-    $scope.isCollapsed = true;
-    $scope.updateRooms = function() {
-		var datePieces= $scope.date.split('/');
-		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
-		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
-			if (typeof response.data.err == "undefined") {
-				$scope.roomsData = response.data.rooms;
-				console.log($scope.roomsData);
-				angular.forEach($scope.roomsData, function(room, index) {
-					    if (room.blocked) {
-					        var roomName = "#room" + room.roomid + "a";
-					        var roomTable = "#room" + room.roomid + "c";
-					        $(roomName).mapster('set', true);
-					        $(roomName).css("background-color", 'black');
-					        $('#map').mapster('set_options', {
-					            areas: [{
-					                key: room.roomid,
-					                fillColor: 'ffffff'
-					            }]
-					        });        
-					    }
-					}
-
-				);
-				return true;		 
-			}
-			else {
-				alert(response.data.err);
-				window.location.reload();
-			}  
-		    //load response
-	    });
-    };
     $scope.updateAdminRooms = function() {
 		var datePieces= $scope.adminDate.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
@@ -348,11 +312,167 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 				}  
 			    //load response
 		    });
-		//}
     }
+    $scope.unblockRoom = function(id) {
+    		//int id : roomId
+    		if(id < 0 || id > 20){
+        	return false;
+        }
+        if ($scope.roomsData[$scope.roomIndex].blocked) {
+            $scope.roomsData[id].blocked = false;
+            return true;
+        }else{
+          return false;
+        }
+    };
+	
+	$scope.blockRoom = function(id) {
+  			//int id : roomId
+    		if(id < 0 || id > 20){
+        	return false;
+        }
+        if (!$scope.roomsData[$scope.roomIndex].blocked) {
+            $scope.roomsData[id].blocked = true;
+            return true;
+        }else{
+          return false;
+        }
+    };
+    //admin block options
+    	$scope.adminoption = function() {
+
+        if ($scope.roomsData[$scope.roomIndex].blocked)
+        {
+            $scope.unblockRoom($scope.roomIndex);
+            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            alert("Unblock successfully");
+        }
+        else
+        {
+            $scope.blockRoom($scope.roomIndex);
+            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            alert("Block successfully");
+        }
+    };
+    $scope.openAdminModal = function(event) {
+        var id = event.target.id;
+        var num = id.substring(4, id.length - 1);
+        $scope.roomIndex = num;
+        console.log(num);
+        $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
+         if ($scope.roomsData[num].blocked)
+        {
+            $scope.roomStatus = "Current Status: Blocked";
+            $scope.option = "Unblock";
+        }
+        else
+        {
+            $scope.roomStatus = "Current Status: Available";
+            $scope.option = "Block";
+        }
+        if ($scope.roomsData[num].blocked == false && !$scope.user.admin) {
+            $("#reserve-modal").modal("toggle");
+            return true;
+        } 
+        else {
+            var room = $scope.roomsData[num];
+            console.log("attempting to open blocked room modal.")
+            if ($scope.user.admin) {
+                $("#reserve-block-modal").modal("toggle");
+                return false;
+            } 
+            else {
+                alert("This room is currently blocked");
+                return false;
+            }
+        }
+		
+    };
+
+}]);
+
+app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $http, Session){
+	$scope.session = Session;
+	$scope.date;
+ 	
+    var _slots = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    $scope._init = function() {
+        $scope.slots = _slots;
+        return true;
+    }
+    $scope._init();
+    
+    // fake variables for development time testing
+    $scope.hours = [{
+            id: 0,
+            selected: "selected",
+            name: "00:00 - 00:59"
+        },
+        {
+            id: 1,
+            selected: "",
+            name: "01:00 - 01:59"
+        },
+        {
+            id: 2,
+            selected: "",
+            name: "02:00 - 02:59"
+        }
+
+    ];
+    $scope.user.username = "Sfellers";
+    $scope.user.password = "password";
+    $scope.user.userid = 0;
+    $scope.user.email = "sfellers@purdue.edu";
+    $scope.user.budget = 3;
+    $scope.user.admin = true;
+    $scope.firstName = "Sam";
+    $scope.lastName = "Fellers";
+//    end fake data
+    
+//    Bound to datepicker, serves as onchange function and loads new room information
+    $scope.updateRooms = function() {
+		var datePieces= $scope.date.split('/');
+		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
+			if (typeof response.data.err == "undefined") {
+				$scope.roomsData = response.data.rooms;
+				console.log($scope.roomsData);
+				angular.forEach($scope.roomsData, function(room, index) {
+					    if (room.blocked) {
+					        var roomName = "#room" + room.roomid + "a";
+					        var roomTable = "#room" + room.roomid + "c";
+					        $(roomName).mapster('set', true);
+					        $(roomName).css("background-color", 'black');
+					        $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+					                fillColor: 'ffffff'
+					            }]
+					        });        
+					    }
+					}
+
+				);
+				return true;		 
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}  
+		    //load response
+	    });
+    };
+    
+//    Bound to datepicker, serves as init function and loads room information on page load for the current date
     $scope.loadRooms = function() {
-    	//if(!localStorage["firstPageLoad"]) {
-			//localStorage["firstpageLoad"] = true;
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -395,7 +515,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 			    //load response
 		    });
 		}
-    //}
+
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
     // name displayed at top of modal
@@ -440,41 +560,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
             }
         }
     }
-    $scope.openAdminModal = function(event) {
-        var id = event.target.id;
-        var num = id.substring(4, id.length - 1);
-        $scope.roomIndex = num;
-        console.log(num);
-        $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
-         if ($scope.roomsData[num].blocked)
-        {
-            $scope.roomStatus = "Current Status: Blocked";
-            $scope.option = "Unblock";
-        }
-        else
-        {
-            $scope.roomStatus = "Current Status: Available";
-            $scope.option = "Block";
-        }
-        if ($scope.roomsData[num].blocked == false && !$scope.user.admin) {
-            $("#reserve-modal").modal("toggle");
-            return true;
-        } 
-        else {
-            var room = $scope.roomsData[num];
-            console.log("attempting to open blocked room modal.")
-            if ($scope.user.admin) {
-                $("#reserve-block-modal").modal("toggle");
-                return false;
-            } 
-            else {
-                alert("This room is currently blocked");
-                return false;
-            }
-        }
-		
-    };
-
+   
     //handles mouseover for rooms on the map
     $scope.mouseOver = function(event) {
         var room = "#room" + event + "a";
@@ -507,6 +593,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    }
     	}
     };
+    
+//    submit on second hours modal
     $scope.savechanges = function(room) {
         //get the reservation time
         var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
@@ -539,6 +627,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         });
         
     };
+    
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
@@ -591,47 +680,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         return true;
     }
     
-    $scope.unblockRoom = function(id) {
-    		//int id : roomId
-    		if(id < 0 || id > 20){
-        	return false;
-        }
-        if ($scope.roomsData[$scope.roomIndex].blocked) {
-            $scope.roomsData[id].blocked = false;
-            return true;
-        }else{
-          return false;
-        }
-    };
-	
-	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    		if(id < 0 || id > 20){
-        	return false;
-        }
-        if (!$scope.roomsData[$scope.roomIndex].blocked) {
-            $scope.roomsData[id].blocked = true;
-            return true;
-        }else{
-          return false;
-        }
-    };
-    //admin block options
-    	$scope.adminoption = function() {
-
-        if ($scope.roomsData[$scope.roomIndex].blocked)
-        {
-            $scope.unblockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
-            alert("Unblock successfully");
-        }
-        else
-        {
-            $scope.blockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
-            alert("Block successfully");
-        }
-    };
+    
     
     // used to block hours that are already reserved by someone else
     $scope.validate = function(roomData, hour) {
