@@ -313,6 +313,47 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 			    //load response
 		    });
     }
+    $scope.unblockRoom = function(id) {
+    		//int id : roomId
+    		if(id < 0 || id > 20){
+        	return false;
+        }
+        if ($scope.roomsData[$scope.roomIndex].blocked) {
+            $scope.roomsData[id].blocked = false;
+            return true;
+        }else{
+          return false;
+        }
+    };
+	
+	$scope.blockRoom = function(id) {
+  			//int id : roomId
+    		if(id < 0 || id > 20){
+        	return false;
+        }
+        if (!$scope.roomsData[$scope.roomIndex].blocked) {
+            $scope.roomsData[id].blocked = true;
+            return true;
+        }else{
+          return false;
+        }
+    };
+    //admin block options
+    	$scope.adminoption = function() {
+
+        if ($scope.roomsData[$scope.roomIndex].blocked)
+        {
+            $scope.unblockRoom($scope.roomIndex);
+            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            alert("Unblock successfully");
+        }
+        else
+        {
+            $scope.blockRoom($scope.roomIndex);
+            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            alert("Block successfully");
+        }
+    };
     $scope.openAdminModal = function(event) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
@@ -638,47 +679,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         return true;
     }
     
-    $scope.unblockRoom = function(id) {
-    		//int id : roomId
-    		if(id < 0 || id > 20){
-        	return false;
-        }
-        if ($scope.roomsData[$scope.roomIndex].blocked) {
-            $scope.roomsData[id].blocked = false;
-            return true;
-        }else{
-          return false;
-        }
-    };
-	
-	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    		if(id < 0 || id > 20){
-        	return false;
-        }
-        if (!$scope.roomsData[$scope.roomIndex].blocked) {
-            $scope.roomsData[id].blocked = true;
-            return true;
-        }else{
-          return false;
-        }
-    };
-    //admin block options
-    	$scope.adminoption = function() {
-
-        if ($scope.roomsData[$scope.roomIndex].blocked)
-        {
-            $scope.unblockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
-            alert("Unblock successfully");
-        }
-        else
-        {
-            $scope.blockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
-            alert("Block successfully");
-        }
-    };
+    
     
     // used to block hours that are already reserved by someone else
     $scope.validate = function(roomData, hour) {
