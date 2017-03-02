@@ -427,6 +427,14 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         }
 
     ];
+    $scope.user = {
+        "username": String,
+        "password": String,
+        "userid": Number,
+        "email": String,
+        "budget": Number,
+        "admin": Boolean
+    };
     $scope.user.username = "Sfellers";
     $scope.user.password = "password";
     $scope.user.userid = 0;
