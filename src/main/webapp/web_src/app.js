@@ -124,7 +124,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 				else {
 					alert("Password not changed.\n" + response.data.err);
 				}
-				
+				window.location.reload();
 			});
     	}
     	else {
@@ -305,6 +305,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     }
     $scope.unblockRoom = function(id) {
     		//int id : roomId
+    		console.log(id);
     		if(id < 0 || id > 20){
         	return false;
         }
@@ -318,10 +319,14 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	
 	$scope.blockRoom = function(id) {
   			//int id : roomId
+  			console.log("id ", id," roomsData[id].roomid ", roomsData[id].roomid );
     		if(id < 0 || id > 20){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
+        	/*$http.post('/api/setRoomBlockedStatus', {roomid: id, status: true}).then(function(response) {
+        		
+        	});*/
             $scope.roomsData[id].blocked = true;
             return true;
         }else{

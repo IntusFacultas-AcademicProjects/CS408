@@ -107,7 +107,19 @@ router.route('/authAccount')
 	});
 	
     });
+router.route('/authAdmin')
+    .post(function(req, res) {
+	query.authAdmin(req.body.username,function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
 
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	});
+	
+    });
 router.route('/deleteAccount')
     .delete(function(req, res) {
 	query.deleteAccount(req.body.email,req.body.password,con,function(err,result){
