@@ -189,7 +189,8 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     };
     
 }]);
-app.controller("reservation", ['$scope', '$http', function ($scope, $http){
+app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $http, Session){
+	$scope.session = Session;
 	$scope.date;
 	$scope.adminDate;
 	$scope.user = {
@@ -489,28 +490,6 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
         return true;
     };
 
-    // permanently highlights rooms that are blocked (color change is not working)
-    $scope.disableBlockedRooms = function() {
-    	//console.log($scope.roomsData);
-        /*angular.forEach($scope.roomsData, function(room, index) {
-        		console.log(room.blocked);
-                if (room.blocked) {
-                    var roomName = "#room" + room.roomid + "a";
-                    var roomTable = "#room" + room.roomid + "c";
-                    $(roomName).mapster('set', true);
-                    $(roomName).css("background-color", 'black');
-                    $('#map').mapster('set_options', {
-                        areas: [{
-                            key: room.roomid,
-                            fillColor: '000000'
-                        }]
-                    });        
-                }
-            }
-
-        );*/
-        return true;
-    };
 
     // checks blocked status
     $scope.checkBlocked = function(id) {
@@ -527,13 +506,37 @@ app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 		    }
     	}
     };
-    $scope.savechanges = function() {
+    $scope.savechanges = function(room) {
         //get the reservation time
-        $scope.start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
-        $scope.end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
-    	
-        console.log($scope.start);
-        console.log($scope.end);
+        var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
+        var end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
+        var dateChosen = $("#dp").val();
+        var dateA = dateChosen.split("/");
+        dateChosen = dateA[2] + "-"+ dateA[0] + "-" + dateA[1];
+    	var share = document.getElementById("shareOption").checked;
+    	if (share) {
+    		share = 1;
+    	}
+    	else {
+    		share = 0;
+    	}
+        $scope.sessionData = $scope.session.updateSession();
+        console.log(start);
+        console.log(end);
+        console.log(share);
+        console.log(dateChosen);
+        console.log($scope.sessionData.username);
+ 
+        $http.post('/api/addReservation', {roomID: room.roomid, username: $scope.sessionData.username, date:dateChosen, startTime: start, endTime: end, shareable:share}).then(function(response) {
+        	if (typeof response.data.err == "undefined") {
+        		console.log(response);
+        	}
+        	else {
+        		alert("Reservation failed. Please contact System Administrator");
+        	}
+        	
+        });
+        
     };
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {

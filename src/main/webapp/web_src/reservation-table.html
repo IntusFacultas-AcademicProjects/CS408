@@ -44,7 +44,7 @@
                             <br />
                             <div class="form-group">
                                 <div class="checkbox">
-                                    <label> <input type="checkbox"> Mark Shareable </input></label>
+                                    <label> <input id="shareOption" type="checkbox"> Mark Shareable </input></label>
                                 </div>
                                 <p class="help-block">Allow other students to share the space with you</p>
                             </div>
@@ -55,10 +55,11 @@
                                 $('#startTime').removeClass("is-focused");
                                 $('#endTime').removeClass("is-focused");
                             }
+                            $.material.init();
                         </script>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-target="#reserve-input-modal" ng-click="closeSecondModal()">Close</button>
-                            <button type="button" class="btn btn-primary" ng-click="savechanges()">Save changes</button>
+                            <button type="button" class="btn btn-primary" ng-click="savechanges(roomData)" data-dismiss="modal">Save changes</button>
                         </div>
                     </div>
                 </div>
