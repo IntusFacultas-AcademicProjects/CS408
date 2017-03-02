@@ -607,6 +607,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         //get the reservation time
         var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
         var end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
+        start = parseInt(start);
+        end = parseInt(end);
         var dateChosen = $("#dp").val();
         var dateA = dateChosen.split("/");
         dateChosen = dateA[2] + "-"+ dateA[0] + "-" + dateA[1];
@@ -629,7 +631,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         		console.log(response);
         	}
         	else {
-        		alert("Reservation failed. Please contact System Administrator");
+        		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
         	}
         	
         });
@@ -705,13 +707,17 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     	// roomData is temporarily undefined on page load
     	if (typeof roomData != 'undefined') {
     		var room = roomData.res;
+    		console.log("shareable checking for room res ", room, " hour ", hour);
 		    for (var i = 0; i < room.length; i++) {
+		    	console.log("currently checking room ", room[i]);
 		        if (room[i].startTime <= hour && room[i].endTime >= hour){
-		            if (room[i].shareable == true) {
+		            if (room[i].shareable == 1) {
+		            	console.log(hour, " is shareable");
 		                return true
 		            }
 		        }
 		    }
+		    console.log(hour, " is not shareable");
 		    return false;
     	}
     };
