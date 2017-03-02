@@ -126,6 +126,22 @@ router.route('/deleteAccount')
 	
     });
 
+router.route('/getUserhours')
+    .post(function(req, res) {
+	query.getUserHours(req.body.username,con,function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
+
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	    
+	});
+	
+    });
+
+
 router.route('/getRoomSchedule')
     .post(function(req, res) {
 	query.getRoomSchedule(req.body.roomID, req.body.date, con, function(err, result){

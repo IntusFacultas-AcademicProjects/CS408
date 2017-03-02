@@ -39,9 +39,12 @@ var emailExists = function(email,connection,callback) {
     });
 };
 
-var getAccountHours = function(username,connection,callback) {
 
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+var getUserHours = function(username,connection,callback) {
+
+    //TODO check if username exists
+    
+   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [username], function(error,results,fields){
 
        if(error){
 	   callback(error);
@@ -49,9 +52,9 @@ var getAccountHours = function(username,connection,callback) {
        }
 
        if(results.length == 1)
-	   callback(null, true);
+	   callback(null, {"data":results[0].hours_remain});
        else
-	   callback(null, false);
+	   callback(new Error("Illegal State: multiple hours results from username " + username));
 	
     });
 };
@@ -432,6 +435,7 @@ exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
+exports.getUserHours = getUserHours;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
