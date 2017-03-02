@@ -244,7 +244,7 @@ router.route('/addReservation')
 
 router.route('/cancelReservation')
     .post(function(req, res) {
-	query.cancelReservation(req.body.reservationID,con,function(err){
+	query.cancelReservation(req.body.reservationID,con,function(err,res){
 	    if(err){
 		res.json({ err: err.message });
 	    }
