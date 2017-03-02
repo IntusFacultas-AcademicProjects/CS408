@@ -39,6 +39,26 @@ var emailExists = function(email,connection,callback) {
     });
 };
 
+var getAccountHours = function(username,connection,callback) {
+
+   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+
+       if(error){
+	   callback(error);
+	   return;
+       }
+
+       if(results.length == 1)
+	   callback(null, true);
+       else
+	   callback(null, false);
+	
+    });
+};
+
+
+
+
 var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
     
     connection.query("SELECT * FROM reservations " +
@@ -211,6 +231,10 @@ var getUserReservations = function(username, connection, callback){
 	    return;
 	}
 
+	if(results.length == 0){
+	    callback(null, {"res":[]});
+	}
+	
 	results.forEach(function(element, index, array){
 	    
 	    connection.query('SELECT room_name FROM rooms WHERE room_id=?', [element.roomID], function(error,results,fields){		
@@ -221,9 +245,7 @@ var getUserReservations = function(username, connection, callback){
 		}
 		
 		if(results.length == 1){
-		    console.log(results);
 		    element.roomName = results[0].room_name;
-		    console.log(element);
 		}
 		else if(results.length == 0){
 		    callback(new Error("Could not fetch roomName for roomID: " + element.roomID)); 
@@ -237,7 +259,7 @@ var getUserReservations = function(username, connection, callback){
 
 
 		if(index + 1  == array.length){
-		    callback(null,array);
+		    callback(null,{"res":array});
 		}
 		
 		
