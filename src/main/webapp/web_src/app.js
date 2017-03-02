@@ -117,7 +117,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     };
     $scope.changePassword = function() {
     	if ($scope.newPassword == $scope.confirmPassword) {
-			$http.post('/api/changePassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
+			$http.post('/api/updateAccountPassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					alert("Password has been changed");
 				}
@@ -622,6 +622,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         	else {
         		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
         	}
+        	window.location.reload();
         });
         
     };
