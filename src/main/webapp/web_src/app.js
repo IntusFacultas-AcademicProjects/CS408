@@ -695,12 +695,13 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		var room = roomData.res;
 		    for (var i = 0; i < room.length; i++) {
 		        if (room[i].start <= hour && room[i].end >= hour){
+                    console.log(hour, " true");
 		            return true;
 		        }
 		    }
+            console.log(hour, " false");
 		    return false;
     	}
-    	return false;
     };
 	
 	// used to color hours as shareable if hours are shareable (DOM not updating)
