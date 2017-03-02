@@ -710,7 +710,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     	if (typeof roomData != 'undefined') {
     		var room = roomData.res;
 		    for (var i = 0; i < room.length; i++) {
-		        if (room[i].start <= hour && room[i].end >= hour){
+		        if (room[i].startTime <= hour && room[i].endTime >= hour){
 		            if (room[i].shareable == true) {
 		                return true
 		            }
