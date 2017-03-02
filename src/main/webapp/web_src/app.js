@@ -639,7 +639,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
-		console.log("Opening!");
         var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", 
         					"03:00-03:59", "04:00-04:59", "05:00-05:59", 
         					"06:00-06:59", "07:00-07:59", "08:00-08:59", 
@@ -651,17 +650,15 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.hourSelected = startTime;
         var room = roomSelected;
-        console.log(room);
         var roomReservations = room.res;
         var takenHours = [];
         for (var i = 0; i < roomReservations.length; i++) {
             var reservationSlot = roomReservations[i];
-            var start = reservationSlot.start;
-            for (start; start <= reservationSlot.end; start++) {
+            var start = reservationSlot.startTime;
+            for (start; start <= reservationSlot.endTime; start++) {
                 takenHours.push(start);
             }
         }
-        console.log("takenHours ", takenHours);
         var first = 0;
         for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
             if (first == 0) {
