@@ -185,6 +185,26 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 
 };
 
+var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
+
+
+    connection.query('UPDATE accounts SET password=? WHERE username=? AND password=?', [newPassword, username, oldPassword], function(error,results,fields){
+
+	if(error)
+	    callback(error)
+	if(results.affectedRows == 0)
+	    callback(null, {"err":"invalid credentials"});
+	else if(results.affectedRows == 1)
+	    callback(null, {"message":"success"});
+	else
+	    callback(new Error('illegal state: multiple results for user and pass'));
+
+    });
+
+
+};
+
+
 var setRoomBlockedStatus = function(roomID, status, connection, callback){
 
 
@@ -202,6 +222,30 @@ var setRoomBlockedStatus = function(roomID, status, connection, callback){
 	    callback(null, {"message":"success"});
 	else
 	    callback(new Error('illegal state: duplicate blocked_status values'));
+
+    });
+
+
+};
+
+var setReservationShareable = function(reservationID, status, connection, callback){
+
+
+    //TODO check reservationID exists
+
+    status = (status ? 1 : 0);
+    
+    connection.query('UPDATE reservations SET shareable=? WHERE reservation_id=?', [status, reservationID], function(error,results,fields){
+
+	if(error)
+	    callback(error)
+
+	if(results.affectedRows == 1)
+	    callback(null, {"message":"success"});
+	else if(results.affectedRows == 0)
+	    callback(new Error("Could not get set sharable status for reservation_id: " + reservationID));
+	else
+	    callback(new Error('illegal state: duplicate shareable values'));
 
     });
 
@@ -477,6 +521,8 @@ exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
+exports.updateAccountPassword = updateAccountPassword;
+exports.setReservationShareable = setReservationShareable;
 exports.getUserHours = getUserHours;
 exports.getRoomBlockedStatus = getRoomBlockedStatus;
 exports.setRoomBlockedStatus = setRoomBlockedStatus;

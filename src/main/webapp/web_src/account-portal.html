@@ -110,24 +110,24 @@
                     <div class="row">
                         <div class="col-sm-12">
                              <div class="form-group label-floating">
-                                <label id="oldPassword" for="password" class="control-label">Enter Current Password</label>
-                                <input type="password" class="form-control" ng-model="password" required>
+                                <label id="oldPassword" for="oldPassword" class="control-label">Enter Current Password</label>
+                                <input type="password" class="form-control" ng-model="oldPassword" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
                              <div class="form-group label-floating">
-                                <label id="newPassword" for="password" class="control-label">Enter New Password</label>
-                                <input type="password" class="form-control" ng-model="password" required>
+                                <label id="newPassword" for="newPassword" class="control-label">Enter New Password</label>
+                                <input type="password" class="form-control" ng-model="newPassword" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
                              <div class="form-group label-floating">
-                                <label id="confirmPassword" for="password" class="control-label">Confirm New Password</label>
-                                <input type="password" class="form-control" ng-model="password" required>
+                                <label id="confirmPassword" for="confirmPassword" class="control-label">Confirm New Password</label>
+                                <input type="password" class="form-control" ng-model="confirmPassword" required>
                                 <span class="help-block">The passwords should match</span>
                             </div>
                         </div>
@@ -137,7 +137,7 @@
 
                         </div>
                         <div class="col-sm-4">
-                            <button id="passwordReset" class="btn btn-primary btn-bootstrap-block">Submit</button>
+                            <button id="passwordReset" ng-click="changePassword()" class="btn btn-primary btn-bootstrap-block">Submit</button>
                         </div>
                         <div class="col-sm-4">
 

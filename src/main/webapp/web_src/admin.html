@@ -45,7 +45,7 @@
 		<title>RSVP</title>
 	</head>
     
-	<body ng-app="myApp">
+	<body ng-app="myApp" style="background-color:#60553F">
         <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
 		<div ng-controller="administration" ng-init="adminLoadRooms()" class="container">
             <div class="container">
@@ -55,7 +55,7 @@
 					</div>
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <div class="datepicker input-group date" data-provide="datepicker">
+                            <div class="datepicker input-group date shadowed" style="background-color:white" data-provide="datepicker">
                                 <input ng-model="adminDate" ng-change="updateAdminRooms()" id="dp" type="text" class="datepicker form-control" required>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
@@ -99,7 +99,7 @@
                     <div class="col-sm-5"></div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-8 shadowed" style="margin-left:-15px; margin-right:15px">
+                    <div class="col-lg-8 shadowed" style="background-color:white; margin-left:-15px; margin-right:15px">
                         <img alt="HICKS" src="assets/img/HICKS.jpg" usemap="#map_map"  id="map">
                         <map id="map_map" name="map_map">
                             <!--Vertical Rooms-->
@@ -135,7 +135,7 @@
                             });
                         </script>
                     </div>
-                    <timetable class="col-lg-4 shadowed" slots="slots" ></timetable>
+                    <timetable class="col-lg-4 shadowed" style="background-color:white;" slots="slots" ></timetable>
                 </div>
             </div>
             <div  ng-include src="'reserve-modal.html'"></div>

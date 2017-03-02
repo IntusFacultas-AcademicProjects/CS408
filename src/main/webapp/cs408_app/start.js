@@ -126,6 +126,25 @@ router.route('/deleteAccount')
 	
     });
 
+router.route('/updateAccountPassword')
+    .post(function(req, res) {
+	query.updateAccountPassword(req.body.username,req.body.oldPassword,req.body.newPassword,con,function(err,result){
+
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ err: err.message });
+	    }
+	    else{
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
+	    }
+
+	    
+	});
+	
+    });
+
+
 router.route('/getUserHours')
     .post(function(req, res) {
 	query.getUserHours(req.body.username,con,function(err,result){
@@ -170,6 +189,22 @@ router.route('/setRoomBlockedStatus')
 	});
 	
     });
+
+router.route('/setReservationShareable')
+    .post(function(req, res) {
+	query.setReservationShareable(req.body.reservationID, req.body.status, con, function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
+
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	    
+	});
+	
+    });
+
 
 
 
