@@ -205,7 +205,7 @@ async.series({
     //TEST 15 TRUE - valid credentials
     TEST11_PASS:function(callback){		
 
-	query.authAccount(account1.email, account1.password, con, function(err, res){
+	query.authAccount(account1.username, account1.password, con, function(err, res){
 	    callback(null, res == true);
 	})
     }, 
@@ -381,7 +381,7 @@ async.series({
 	    if(err)
 		callback(null,false);
 	    else
-		callback(null, res == true);
+		callback(null, true);
 	})
 
     },
@@ -393,7 +393,7 @@ async.series({
 	    if(err)
 		callback(null,false);
 	    else
-		callback(null, res == true);
+		callback(null, true);
 	})
 
     },
@@ -405,7 +405,7 @@ async.series({
 	    if(err)
 		callback(null,false);
 	    else
-		callback(null, res == true);
+		callback(null, true);
 	})
 
     },
