@@ -133,7 +133,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	
     }
     $scope.share = function(event) {
-    	$http.post('/api/setShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, shareable:$(event.target).is(":checked")}).then(function(response) {
+    	$http.post('/api/setReservationShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, status:$(event.target).is(":checked")}).then(function(response) {
     		if (typeof response.data.err == "undefined") {
     		
     		}
