@@ -11,6 +11,9 @@ app.factory('Session', function($http) {
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
+    },
+    closeSession: function() {
+    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" }));
     }
   };
   Session.updateSession();
@@ -80,7 +83,48 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 
 }]);
 
-app.controller("navbar", function($scope) {
+app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http, Session)  {
+	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
+	$scope.boolVal = true;
+	$scope.check = function() {
+		return true;
+	}
+	$scope.notLogged = function() {
+		console.log("Checking Not Logged NavBar");
+		if ($scope.sessionData.loggedIn) {
+			console.log("false");
+			return false;
+		}
+		console.log("true");
+		return true;
+	}
+	$scope.logged = function() {
+		// TODO return false if admin
+		console.log("Checking Logged NavBar");
+		if ($scope.sessionData.loggedIn) {
+			console.log("true");
+			return true;
+		}
+		console.log("false");
+		return false;
+	}
+	$scope.adminLog = function() {
+		console.log("Checking Admin NavBar");
+		/*if ($scope.sessionData.loggedIn) {
+			console.log("false");
+			return true;
+		}*/
+		// TODO: Connect with Database and check privileges
+		console.log("false");
+		return false;
+	}
+	$scope.logout = function() {
+		$scope.session.closeSession();
+		$scope.sessionData = $scope.session.updateSession();
+		console.log($scope.sessionData.username);
+		window.location.reload();
+	}
 	$scope.login = function() {
 		localStorage["firstPageLoad"] = false;
 		localStorage["adminFirstPageLoad"] = false;
@@ -101,7 +145,7 @@ app.controller("navbar", function($scope) {
 		localStorage["adminFirstPageLoad"] = false;
 		window.location.href = "/account-portal.html";
     }
-});
+}]);
 app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $http, Session){
 	$scope.session = Session;
     $scope.allowance = 0;
@@ -232,6 +276,10 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.updateAdminRooms = function() {
 		var datePieces= $scope.adminDate.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		if(datePieces[2] < 2017){
+			alert("invalid year requested");
+			return;
+		}
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -334,7 +382,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         }
     };
     //admin block options
-    	$scope.adminoption = function() {
+   	$scope.adminoption = function() {
 
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
