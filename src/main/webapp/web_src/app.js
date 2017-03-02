@@ -2,8 +2,23 @@
 //BEFORE HOOKING UP WITH BACKEND
 var app = angular.module("myApp", []);
 //collective data controller
+app.run(function(Session) {}); //bootstrap session;
 
-app.controller("user", ['$scope', '$http', function ($scope, $http) {
+app.factory('Session', function($http) {
+  var Session = {
+    data: {},
+    saveSession: function(logIn, uName) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName}));},
+    updateSession: function() { 
+      /* load data from db */
+      return data = JSON.parse(sessionStorage.getItem('data'));      
+    }
+  };
+  Session.updateSession();
+  return Session; 
+});
+
+app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
+	$scope.session = Session;
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -11,19 +26,21 @@ app.controller("user", ['$scope', '$http', function ($scope, $http) {
             }
     $scope.userinfo = {
     					username: String,
-    					password: String,
-    					email: String
+    					password: String
     					};
     $scope.login = function()
     {
-    	
-		$scope.userinfo.email = $scope.email;       
+
+		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
+    	console.log($scope.userinfo);
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
-				localStorage["firstPageLoad"] = false;
-				window.location.href = '/reserve.html';	
+				localStorage["firstPageLoad"] = false;				
+				$scope.session.saveSession(true, $scope.username);
+				console.log(JSON.parse(sessionStorage.getItem('data')));
+				window.location.href = '/reserve.html';									
 			}
 			else {
 				alert(response.data.err);
@@ -121,8 +138,20 @@ app.controller("navbar", function($scope) {
 		window.location.href = "/account-portal.html";
     }
 });
-app.controller("userPortal",['$scope', '$http', function ($scope, $http){
-    
+app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $http, Session){
+	$scope.session = Session;
+    $scope.allowance = 0;
+    $scope.reservations = [];
+    $scope.cancel = function(id) {
+    	console.log("Cancel: " + id);
+    };
+    $scope.fetchReservations = function() {
+    	$scope.userData = $scope.session.updateSession();
+    	console.log($scope.userData);
+		//$http.post('/api/getUserReservations').then(function(response) {
+			
+	    //});
+    };
 }]);
 app.controller("reservation", ['$scope', '$http', function ($scope, $http){
 	$scope.date;
