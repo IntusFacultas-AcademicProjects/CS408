@@ -80,42 +80,6 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 
 }]);
 
-
-app.controller("index", function($scope) {
-	
-    $scope.user = {
-        "username": String,
-        "password": String,
-        "userid": Number,
-        "email": String,
-        "budget": Number,
-        "admin": Boolean
-    };
-    $scope.user.username = "Sfellers";
-    $scope.user.password = "password";
-    $scope.user.userid = 0;
-    $scope.user.email = "sfellers@purdue.edu";
-    $scope.user.budget = 3;
-    $scope.user.admin = true;
-    $scope.firstName = "Sam";
-    $scope.lastName = "Fellers";
-    $scope.roomsData = [];
-    $scope.roomData = [];
-
-    //functions go in here.
-    $scope.addRoom = function(id, name, capacity) {
-        var room = {
-            "id": id,
-            "name": name,
-            "capacity": capacity
-        };
-        $scope.roomsData.push(room);
-        $scope.roomData = "";
-
-    };
-
-});
-
 app.controller("navbar", function($scope) {
 	$scope.login = function() {
 		localStorage["firstPageLoad"] = false;
@@ -142,23 +106,46 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 	$scope.session = Session;
     $scope.allowance = 0;
     $scope.reservations = [];
+    $scope.confirmPassword;
+    $scope.oldPassword;
+    $scope.newPassword;
     $scope.cancel = function(event) {
     	console.log(event.target.id);
     	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
     		location.reload();
     	});
     };
+    $scope.changePassword = function() {
+    	if ($scope.newPassword == $scope.confirmPassword) {
+			$http.post('/api/changePassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
+				if (typeof response.data.err == "undefined") {
+					alert("Password has been changed");
+				}
+				else {
+					alert("Password not changed.\n" + response.data.err);
+				}
+				
+			});
+    	}
+    	else {
+    		alert("Passwords must match.");
+    	}
+    	
+    }
     $scope.share = function(event) {
-    	$http.post('/api/markShareable', {reservationID: $scope.resrevations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id}).then(function(response) {
+    	$http.post('/api/setShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, shareable:$(event.target).is(":checked")}).then(function(response) {
+    		if (typeof response.data.err == "undefined") {
     		
+    		}
+    		else {
+    			alert("An error has occurred. Please contact the System Administrator\n" + response.data.err);
+    		}
     	});
     }
     $scope.fetchReservations = function() {
     	$scope.sessionData = $scope.session.updateSession();
 		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
-			console.log(response.data.res[0]);
 			$scope.reservations = response.data.res;
-			console.log(response.data.res[0]);
 			var start = ["00:00", "01:00", "02:00", 
         					"03:00", "04:00", "05:00", 
         					"06:00", "07:00", "08:00", 
@@ -274,8 +261,6 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	    });
     };
     $scope.adminLoadRooms = function() {
-    	//if(!localStorage["adminFirstPageLoad"]) {
-			//localStorage["adminFirstPageLoad"] = true;
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -633,12 +618,10 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
  
         $http.post('/api/addReservation', {roomID: room.roomid, username: $scope.sessionData.username, date:dateChosen, startTime: start, endTime: end, shareable:share}).then(function(response) {
         	if (typeof response.data.err == "undefined") {
-        		location.reload();
         	}
         	else {
         		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
         	}
-        	location.reload();
         });
         
     };
