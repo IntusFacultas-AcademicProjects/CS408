@@ -46,7 +46,7 @@
     </head>
     <body ng-app="myApp" style="background-color:#60553F">
         <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
-        <div class="row" ng-controller="userPortal">
+        <div class="row" ng-controller="userPortal" ng-init="fetchReservations()">
             <div class="col-lg-8">
                 <div class="reservation-table shadowed">
                     <div class="row">
@@ -58,13 +58,16 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="row">
-                                <div class="col-sm-8">
+                                <div class="col-sm-4">
                                     <h5>Reservation Time</h5>
                                 </div>
                                 <div class="col-sm-2">
+                                	<h5>Room</h5>
+                                </div>
+                                <div class="col-sm-3">
                                     <h5>Cancel Reservation</h5>
                                 </div>
-                                 <div class="col-sm-2">
+                                 <div class="col-sm-3">
                                     <h5>Shareable Status</h5>
                                 </div>
                             </div>
@@ -73,13 +76,16 @@
                                 <div style="overflow-y:scroll; height: 500px;">
                                     <div ng-repeat="reservation in reservations">
                                         <div class="row">
-                                            <div class="col-sm-8">
-                                                <h5>{{reservation.start}} - {{reservation.end}}</h5>
+                                            <div class="col-sm-4">
+                                                <h6>{{reservation.date}}: {{reservation.start}} - {{reservation.end}}</h6>
                                             </div>
                                             <div class="col-sm-2">
-                                                <button id="{{$index}}" class="btn btn-danger">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+                                            	<h6>{{reservation.roomName}}</h6>
                                             </div>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-3">
+                                                <button id="{{$index}}" ng-click="cancel($index)" class="btn btn-danger">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+                                            </div>
+                                            <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <div class="checkbox">
                                                         <label>
@@ -150,7 +156,7 @@
                     </div>
                     <div class="row" >
                         <div class="col-sm-12">
-                            <h5>Current Allowance: {{allowance}}</h4>
+                            <h5>Current Allowance: {{allowance}} hours</h4>
                         </div>
                     </div>
                     <div class="row">
@@ -160,7 +166,7 @@
                     </div>
                     <div class="row" >
                         <div class="col-sm-12">
-                            <h5>Number of Reservations: {{reservations.length}}</h4>
+                            <h5>Number of Reservations: {{reservations.length}} reservations</h4>
                         </div>
                     </div>
                 </div>
