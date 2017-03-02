@@ -106,16 +106,41 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 	$scope.session = Session;
     $scope.allowance = 0;
     $scope.reservations = [];
+    $scope.confirmPassword;
+    $scope.oldPassword;
+    $scope.newPassword;
     $scope.cancel = function(event) {
     	console.log(event.target.id);
     	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
     		location.reload();
     	});
     };
+    $scope.changePassword = function() {
+    	if ($scope.newPassword == $scope.confirmPassword) {
+			$http.post('/api/changePassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
+				if (typeof response.data.err == "undefined") {
+					alert("Password has been changed");
+				}
+				else {
+					alert("Password not changed.\n" + response.data.err);
+				}
+				
+			});
+    	}
+    	else {
+    		alert("Passwords must match.");
+    	}
+    	
+    }
     $scope.share = function(event) {
-    	/*$http.post('/api/setShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, shareable:$(event.target).is(":checked")}).then(function(response) {
+    	$http.post('/api/setShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, shareable:$(event.target).is(":checked")}).then(function(response) {
+    		if (typeof response.data.err == "undefined") {
     		
-    	});*/
+    		}
+    		else {
+    			alert("An error has occurred. Please contact the System Administrator\n" + response.data.err);
+    		}
+    	});
     }
     $scope.fetchReservations = function() {
     	$scope.sessionData = $scope.session.updateSession();
@@ -236,8 +261,6 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	    });
     };
     $scope.adminLoadRooms = function() {
-    	//if(!localStorage["adminFirstPageLoad"]) {
-			//localStorage["adminFirstPageLoad"] = true;
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
