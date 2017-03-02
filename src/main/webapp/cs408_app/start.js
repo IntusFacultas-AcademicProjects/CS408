@@ -85,7 +85,7 @@ router.route('/addAccount')
 
 router.route('/authAccount')
     .post(function(req, res) {
-	query.authAccount(req.body.email,req.body.password,con,function(err,result){
+	query.authAccount(req.body.username,req.body.password,con,function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
 		res.json({ Err: err.message });
@@ -141,6 +141,25 @@ router.route('/getRoomSchedule')
 	});
 
     });
+
+
+router.route('/getUserReservations')
+    .post(function(req, res) {
+	query.getUserReservations(req.body.username, con, function(err, result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ err: err.message });
+	    }
+	    else{
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
+	    }
+
+	});
+
+    });
+
+
 
 router.route('/getAllRooms')
     .post(function(req, res) {

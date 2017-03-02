@@ -115,9 +115,9 @@ var addAccount = function(email,username,password,connection,callback) {
     
 };
 
-var authAccount = function(email,password,connection,callback) 
+var authAccount = function(username,password,connection,callback) 
 {
-    connection.query('SELECT * FROM accounts WHERE email LIKE ? AND password LIKE ?', [email,password] ,function(error,results,fields){
+    connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
 	    
@@ -181,7 +181,8 @@ var getAllRooms = function(date, connection, callback){
 		    callback(error);
 		    return;
 		}
-		    
+
+				 
 		roomObj.res = results;
 		roomsData.rooms.push(roomObj);
 
@@ -197,6 +198,63 @@ var getAllRooms = function(date, connection, callback){
     });
     
 };
+
+
+
+// var getUserReservations = function(username, connection, callback){
+
+
+//     connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=?', [username], function(error,results,fields){		
+
+// 	if(error){
+// 	    callback(error);
+// 	    return;
+// 	}
+	
+
+// 	results.forEach(function(element, index, array){
+	    
+// 	    connection.query('SELECT room_name WHERE room_id=?', [element.roomID], function(error,results,fields){		
+
+// 		console.log(results);
+		
+// 		if(results.length == 1){
+// 		    element.roomName = results[0];
+// 		}
+// 		else if(results.length == 0){
+// 		    callback(new Error("Could not fetch roomName for roomID: " + element.roomID)); 
+// 		    return;
+// 		}
+// 		else{
+// 		    callback(new Error("Illegal state: multiple roomNames for roomID: " + element.roomID));
+// 		    return;
+// 		}
+
+
+// 		if(error){
+// 		    callback(error);
+// 		    return;
+// 		}
+
+// 		if(index + 1  == array.length){
+// 		    callback(null,array);
+// 		}
+
+		
+		
+		
+// 	    });
+	    
+	    
+// 	});
+
+	
+
+	
+
+//     });
+    
+// };
 
 
 
@@ -359,6 +417,7 @@ exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getRoomSchedule = getRoomSchedule;
+//exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
