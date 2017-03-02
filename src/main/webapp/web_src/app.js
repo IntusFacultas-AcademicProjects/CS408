@@ -189,6 +189,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     };
     
 }]);
+
 app.controller('administration', ['$scope', '$http', 'Session', function ($scope, $http, Session) {
     $scope.session = Session;
 	$scope.date;
@@ -348,26 +349,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
 
 }]);
+
 app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $http, Session){
 	$scope.session = Session;
 	$scope.date;
-	$scope.adminDate;
-	$scope.user = {
-        "username": String,
-        "password": String,
-        "userid": Number,
-        "email": String,
-        "budget": Number,
-        "admin": Boolean
-    };
- 	$scope.user.username = "Sfellers";
-    $scope.user.password = "password";
-    $scope.user.userid = 0;
-    $scope.user.email = "sfellers@purdue.edu";
-    $scope.user.budget = 3;
-    $scope.user.admin = true;
-    $scope.firstName = "Sam";
-    $scope.lastName = "Fellers";
+ 	
     var _slots = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -381,6 +367,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         return true;
     }
     $scope._init();
+    
     // fake variables for development time testing
     $scope.hours = [{
             id: 0,
@@ -399,7 +386,17 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         }
 
     ];
-    $scope.isCollapsed = true;
+    $scope.user.username = "Sfellers";
+    $scope.user.password = "password";
+    $scope.user.userid = 0;
+    $scope.user.email = "sfellers@purdue.edu";
+    $scope.user.budget = 3;
+    $scope.user.admin = true;
+    $scope.firstName = "Sam";
+    $scope.lastName = "Fellers";
+//    end fake data
+    
+//    Bound to datepicker, serves as onchange function and loads new room information
     $scope.updateRooms = function() {
 		var datePieces= $scope.date.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
@@ -433,9 +430,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 	    });
     };
     
+//    Bound to datepicker, serves as init function and loads room information on page load for the current date
     $scope.loadRooms = function() {
-    	//if(!localStorage["firstPageLoad"]) {
-			//localStorage["firstpageLoad"] = true;
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -478,7 +474,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 			    //load response
 		    });
 		}
-    //}
+
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
     // name displayed at top of modal
@@ -555,6 +551,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    }
     	}
     };
+    
+//    submit on second hours modal
     $scope.savechanges = function(room) {
         //get the reservation time
         var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
@@ -587,6 +585,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         });
         
     };
+    
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
