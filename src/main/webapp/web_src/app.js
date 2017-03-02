@@ -117,7 +117,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     };
     $scope.changePassword = function() {
     	if ($scope.newPassword == $scope.confirmPassword) {
-			$http.post('/api/changePassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
+			$http.post('/api/updateAccountPassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					alert("Password has been changed");
 				}
@@ -133,7 +133,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	
     }
     $scope.share = function(event) {
-    	$http.post('/api/setShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, shareable:$(event.target).is(":checked")}).then(function(response) {
+    	$http.post('/api/setReservationShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, status:$(event.target).is(":checked")}).then(function(response) {
     		if (typeof response.data.err == "undefined") {
     		
     		}
@@ -622,6 +622,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         	else {
         		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
         	}
+        	window.location.reload();
         });
         
     };
