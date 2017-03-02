@@ -244,12 +244,12 @@ router.route('/addReservation')
 
 router.route('/cancelReservation')
     .post(function(req, res) {
-	query.cancelReservation(req.body.reservationID,con,function(err,res){
+	query.cancelReservation(req.body.reservationID,con,function(err,result){
 	    if(err){
 		res.json({ err: err.message });
 	    }
 	    else{
-		res.json(res);
+		res.json(result);
 	    }
 
 	});
