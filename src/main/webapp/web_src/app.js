@@ -688,8 +688,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         return true;
     }
     
-    
-    
     // used to block hours that are already reserved by someone else
     $scope.validate = function(roomData, hour) {
     	// roomData is temporarily undefined on page load
@@ -720,31 +718,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    return false;
     	}
     };
-	
-     $scope.toggleShareable = function(resId, roomId) {
-     		//int resId : reservationId
-    		if(roomId <= 0 || roomId >= 20){
-        	return false;
-        }
-        if ($scope.checkBlocked(roomId)) {
-            //cant toggle a blocked room
-            return false;
-        }
-        $scope.reservationData.forEach(function(element){
-        	if(element.reservationId == resId){
-          	if(element.shareable){
-            	element.shareable = false;
-              return true;
-            }else{
-            	element.shareable = true;
-              return true;
-            }
-          }
-          return false;
-        });
-	return false;
-    };
-   
 }]).directive('reservationTable', function($timeout) {
     // handles the hour by hour modal body for the modal opened on map click
     return {
