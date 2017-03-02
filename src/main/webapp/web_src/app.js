@@ -661,6 +661,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
                 takenHours.push(start);
             }
         }
+        console.log("takenHours ", takenHours);
         var first = 0;
         for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
             if (first == 0) {
