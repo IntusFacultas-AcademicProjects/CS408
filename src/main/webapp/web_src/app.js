@@ -148,6 +148,11 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		location.reload();
     	});
     };
+    $scope.share = function(event) {
+    	$http.post('/api/markShareable', {reservationID: $scope.resrevations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id}).then(function(response) {
+    		
+    	});
+    }
     $scope.fetchReservations = function() {
     	$scope.sessionData = $scope.session.updateSession();
 		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
@@ -628,12 +633,12 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
  
         $http.post('/api/addReservation', {roomID: room.roomid, username: $scope.sessionData.username, date:dateChosen, startTime: start, endTime: end, shareable:share}).then(function(response) {
         	if (typeof response.data.err == "undefined") {
-        		console.log(response);
+        		location.reload();
         	}
         	else {
         		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
         	}
-        	
+        	location.reload();
         });
         
     };
