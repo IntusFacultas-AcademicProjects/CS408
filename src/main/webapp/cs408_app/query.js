@@ -208,6 +208,30 @@ var setRoomBlockedStatus = function(roomID, status, connection, callback){
 
 };
 
+var setReservationShareable = function(reservationID, status, connection, callback){
+
+
+    //TODO check reservationID exists
+
+    status = (status ? 1 : 0);
+    
+    connection.query('UPDATE reservations SET shareable=? WHERE reservation_id=?', [status, reservationID], function(error,results,fields){
+
+	if(error)
+	    callback(error)
+
+	if(results.affectedRows == 1)
+	    callback(null, {"message":"success"});
+	else if(results.affectedRows == 0)
+	    callback(new Error("Could not get set sharable status for reservation_id: " + reservationID));
+	else
+	    callback(new Error('illegal state: duplicate shareable values'));
+
+    });
+
+
+};
+
 
 var getAllRooms = function(date, connection, callback){
 
@@ -477,6 +501,7 @@ exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
+exports.setReservationShareable = setReservationShareable;
 exports.getUserHours = getUserHours;
 exports.getRoomBlockedStatus = getRoomBlockedStatus;
 exports.setRoomBlockedStatus = setRoomBlockedStatus;

@@ -171,6 +171,22 @@ router.route('/setRoomBlockedStatus')
 	
     });
 
+router.route('/setReservationShareable')
+    .post(function(req, res) {
+	query.setReservationShareable(req.body.reservationID, req.body.status, con, function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
+
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	    
+	});
+	
+    });
+
+
 
 
 router.route('/getRoomSchedule')
