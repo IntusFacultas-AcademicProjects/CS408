@@ -185,6 +185,26 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 
 };
 
+var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
+
+
+    connection.query('UPDATE accounts SET password=? WHERE username=? AND password=?', [newPassword, username, oldPassword], function(error,results,fields){
+
+	if(error)
+	    callback(error)
+	if(results.affectedRows == 0)
+	    callback(null, {"err":"invalid credentials"});
+	else if(results.affectedRows == 1)
+	    callback(null, {"message":"success"});
+	else
+	    callback(new Error('illegal state: multiple results for user and pass'));
+
+    });
+
+
+};
+
+
 var setRoomBlockedStatus = function(roomID, status, connection, callback){
 
 
@@ -501,6 +521,7 @@ exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
+exports.updateAccountPassword = updateAccountPassword;
 exports.setReservationShareable = setReservationShareable;
 exports.getUserHours = getUserHours;
 exports.getRoomBlockedStatus = getRoomBlockedStatus;
