@@ -249,7 +249,7 @@ router.route('/cancelReservation')
 		res.json({ err: err.message });
 	    }
 	    else{
-		res.json({message: 'Success' });
+		res.json(res);
 	    }
 
 	});

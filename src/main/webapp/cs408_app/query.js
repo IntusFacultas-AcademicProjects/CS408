@@ -464,7 +464,7 @@ var cancelReservation = function(reservationID, connection, callback)
 	if(results.affectedRows == 0)
 	    callback(new Error("reservation doesnt exist"));
 	else if(results.affectedRows == 1)
-	    callback(null, true);
+	    callback(null, {"message":"success"});
 	else
 	    callback(new Error('illegal state: duplicate resvation IDs'));
 	
