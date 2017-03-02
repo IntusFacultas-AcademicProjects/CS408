@@ -232,6 +232,10 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.updateAdminRooms = function() {
 		var datePieces= $scope.adminDate.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		if(datePieces[2] < 2017){
+			alert("invalid year requested");
+			return;
+		}
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
