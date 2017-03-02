@@ -46,7 +46,9 @@
 	</head>
     
 	<body ng-app="myApp">
-        <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_loggedin.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_notloggedin.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_admin.html'"></div>
 		<div ng-controller="reservation" class="container">
             <div class="container">
                 <div class="row">
