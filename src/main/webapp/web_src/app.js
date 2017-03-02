@@ -306,7 +306,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         }
     };
     //admin block options
-    	$scope.adminoption = function() {
+   	$scope.adminoption = function() {
 
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
