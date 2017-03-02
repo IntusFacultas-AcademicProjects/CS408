@@ -694,7 +694,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     	if (typeof roomData != 'undefined') {
     		var room = roomData.res;
 		    for (var i = 0; i < room.length; i++) {
-		        if (room[i].start <= hour && room[i].end >= hour){
+		        if (room[i].startTime <= hour && room[i].endTime >= hour){
                     console.log(hour, " true");
 		            return true;
 		        }
