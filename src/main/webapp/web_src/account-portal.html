@@ -73,30 +73,29 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div style="overflow-y:scroll; height: 500px;">
-                                    <div ng-repeat="reservation in reservations">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <h6>{{reservation.date}}: {{reservation.start}} - {{reservation.end}}</h6>
-                                            </div>
-                                            <div class="col-sm-2">
-                                            	<h6>{{reservation.roomName}}</h6>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <button id="{{$index}}" ng-click="cancel($index)" class="btn btn-danger">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <div class="form-group">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" checked="{{reservation.shareable}}"> Shareable
-                                                        </label>
-                                                    </div>
-                                                    <p class="help-block">Allow others to share the room</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            	<div class="col-lg-12">
+		                            <div style="overflow-y:scroll; height: 500px;">
+		                                <div ng-repeat="reservation in reservations">
+		                                    <div class="row">
+		                                        <div class="col-sm-4">
+		                                            <h6>{{reservation.date}}: {{reservation.startTime}} - {{reservation.endTime}}</h6>
+		                                        </div>
+		                                        <div class="col-sm-2">
+		                                        	<h6>{{reservation.roomName}}</h6>
+		                                        </div>
+		                                        <div class="col-sm-3">
+		                                            <button  id="{{$index}}" ng-click="cancel($event)" class="btn btn-danger btn-raised" style="margin-top:15px">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+		                                        </div>
+		                                        <div class="col-sm-3">                                                
+		                                                <div class="checkbox" style="margin-top:18px">
+		                                                    <label>
+		                                                        <input id="checked{{$index}}" ng-click="share($event)" type="checkbox"  ng-checked="{{reservation.shareable}} == 1"> Shareable
+		                                                    </label>
+		                                                </div>                                              
+		                                        </div>
+		                                    </div>
+		                                </div>
+		                            </div>
                                 </div>
                             </div>
                         </div>
