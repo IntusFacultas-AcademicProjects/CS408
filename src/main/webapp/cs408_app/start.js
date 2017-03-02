@@ -126,7 +126,7 @@ router.route('/deleteAccount')
 	
     });
 
-router.route('/getUserhours')
+router.route('/getUserHours')
     .post(function(req, res) {
 	query.getUserHours(req.body.username,con,function(err,result){
 	    if(err){
@@ -140,6 +140,37 @@ router.route('/getUserhours')
 	});
 	
     });
+
+router.route('/getRoomBlockedStatus')
+    .post(function(req, res) {
+	query.getRoomBlockedStatus(req.body.roomID,con,function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
+
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	    
+	});
+	
+    });
+
+router.route('/setRoomBlockedStatus')
+    .post(function(req, res) {
+	query.setRoomBlockedStatus(req.body.roomID, req.body.status, con, function(err,result){
+	    if(err){
+		console.error('Request generated an error: ' + err.message);
+		res.json({ Err: err.message });
+	    }
+
+	    console.log("<<<[RESPONSE]: %j", result);
+	    res.json(result);
+	    
+	});
+	
+    });
+
 
 
 router.route('/getRoomSchedule')

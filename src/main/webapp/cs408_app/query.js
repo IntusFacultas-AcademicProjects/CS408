@@ -167,6 +167,48 @@ var deleteAccount = function(email,connection,callback)
     });
 };
 
+var getRoomBlockedStatus = function(roomID, connection, callback){
+
+    //TODO check roomID exists
+    
+    connection.query('SELECT blocked_status FROM rooms WHERE room_id=?', [roomID], function(error,results,fields){
+
+	if(results.length == 1){
+	    callback(null,{"data":(results[0].blocked_status == 1 ? true: false)});
+	}
+	else{
+	    callback(new Error("Illegal state: multiple blocked results for roomID: " + roomID));
+	}
+	
+    });
+
+
+};
+
+var setRoomBlockedStatus = function(roomID, status, connection, callback){
+
+
+    //TODO check roomID exists
+
+    status = (status ? 1 : 0);
+    
+    connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
+
+	if(error)
+	    callback(error)
+	if(results.affectedRows == 0)
+	    callback(new Error("Could not get set blocked status for room_id"));
+	else if(results.affectedRows == 1)
+	    callback(null, {"message":"success"});
+	else
+	    callback(new Error('illegal state: duplicate blocked_status values'));
+
+    });
+
+
+};
+
+
 var getAllRooms = function(date, connection, callback){
 
     var roomsData = {
@@ -436,6 +478,8 @@ exports.addAccount = addAccount;
 exports.authAccount = authAccount;
 exports.deleteAccount = deleteAccount;
 exports.getUserHours = getUserHours;
+exports.getRoomBlockedStatus = getRoomBlockedStatus;
+exports.setRoomBlockedStatus = setRoomBlockedStatus;
 exports.getRoomSchedule = getRoomSchedule;
 exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
