@@ -24,7 +24,13 @@ app.factory('Session', function($http) {
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
-	$scope.save = false;
+	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
+		$scope.save = true;
+	}
+	else {
+		$scope.save = false;
+	}
+	
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
