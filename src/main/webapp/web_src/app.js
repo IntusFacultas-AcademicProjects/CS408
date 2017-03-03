@@ -89,6 +89,9 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     }
     $scope.register = function()
     {	
+		if(!$scope.email.match(/^\w+([\.-]?\w+)*@purdue.edu$/)){
+			alert("Invalid Email");
+		}
         if ($scope.password == $scope.confirmpassword)
         {
 			$scope.userinfo.username = $scope.username;
