@@ -24,7 +24,13 @@ app.factory('Session', function($http) {
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
-	$scope.save = false;
+	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
+		$scope.save = true;
+	}
+	else {
+		$scope.save = false;
+	}
+	
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -59,7 +65,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		}
 		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
-    	console.log($scope.userinfo);
+    	
 		if($scope.username.contains('%') || $scope.password.contains('%')){
 			alert("Invalid Credentials");
 			return;
@@ -70,7 +76,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
 				$scope.session.saveSession(true, $scope.username, response.data.data);
-				console.log(JSON.parse(sessionStorage.getItem('data')));
+				
 				window.location.href = '/reserve.html';									
 			}
 			else {
@@ -118,48 +124,48 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 
 app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http, Session)  {
 	$scope.session = Session;
-	console.log(Session);
+	
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.boolVal = true;
 	$scope.check = function() {
 		return true;
 	}
 	$scope.notLogged = function() {
-		console.log("Checking Not Logged NavBar");
+		
 		if ($scope.sessionData.loggedIn) {
-			console.log("false");
+		
 			return false;
 		}
-		console.log("true");
+		
 		return true;
 	}
 	$scope.logged = function() {
-		// TODO return false if admin
-		console.log("Checking Logged NavBar");
+		
+		
 		if ($scope.sessionData.loggedIn) {
 			if ($scope.sessionData.admin == false) {
-				console.log("true");
+		
 				return true;
 			}
-			console.log("false");
+		
 			return false;		
 		}
-		console.log("false");
+		
 		return false;
 	}
 	$scope.adminLog = function() {
-		console.log("Checking Admin NavBar");
+		
 		if ($scope.sessionData.loggedIn && $scope.sessionData.admin) {
-			console.log("true");
+		
 			return true;
 		}
-		console.log("false");
+		
 		return false;
 	}
 	$scope.logout = function() {
 		$scope.session.closeSession();
 		$scope.sessionData = $scope.session.updateSession();
-		console.log($scope.sessionData.username);
+		
 		//window.location.reload();
 		window.location.href = "/login.html";
 	}
@@ -193,7 +199,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     $scope.oldPassword;
     $scope.newPassword;
     $scope.cancel = function(event) {
-    	console.log(event.target.id);
+    	
     	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
     		location.reload();
     	});
@@ -413,11 +419,18 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     }
     $scope.unblockRoom = function(id) {
     		//int id : roomId
-    		console.log(id);
+    		
     		if(id < 0 || id > 20){
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: false}).then(function(response) {
+        		if (typeof response.data.err == "undefinfed") {
+        		}
+        		else {
+        			alert("An error has occurred \n Contact the System Administrator");
+        		}
+        	});
             $scope.roomsData[id].blocked = false;
             return true;
         }else{
@@ -431,9 +444,13 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
-        	/*$http.post('/api/setRoomBlockedStatus', {roomid: id, status: true}).then(function(response) {
-        		
-        	});*/
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: true}).then(function(response) {
+        		if (typeof response.data.err == "undefinfed") {
+        		}
+        		else {
+        			alert("An error has occurred \n Contact the System Administrator");
+        		}
+        	});
             $scope.roomsData[id].blocked = true;
             return true;
         }else{
@@ -446,15 +463,17 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
             $scope.unblockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            
             alert("Unblock successfully");
+            window.location.reload();
 			return true;
         }
         else
         {
             $scope.blockRoom($scope.roomIndex);
-            console.log($scope.roomsData[$scope.roomIndex].blocked)
+            
             alert("Block successfully");
+            window.location.reload();
 			return true;
         }
     };
@@ -462,7 +481,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
-        console.log(num);
+        
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
          if ($scope.roomsData[num].blocked)
         {
@@ -566,7 +585,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
-				console.log($scope.roomsData);
+				
 				angular.forEach($scope.roomsData, function(room, index) {
 					    if (room.blocked) {
 					        var roomName = "#room" + room.roomid + "a";
@@ -696,12 +715,12 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
     
         if ($scope.roomsData[num].blocked == false) {
-        	console.log($scope.roomSelected);
+        	
             $("#reserve-modal").modal("toggle");
         } 
         else {
             var room = $scope.roomsData[num];
-            console.log("attempting to open blocked room modal.")
+            
             if ($scope.user.admin) {
                 $("#reserve-block-modal").modal("toggle");
             } 
@@ -762,11 +781,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		share = 0;
     	}
         $scope.sessionData = $scope.session.updateSession();
-        console.log(start);
-        console.log(end);
-        console.log(share);
-        console.log(dateChosen);
-        console.log($scope.sessionData.username);
+
  
         $http.post('/api/addReservation', {roomID: room.roomid, username: $scope.sessionData.username, date:dateChosen, startTime: start, endTime: end, shareable:share}).then(function(response) {
         	if (typeof response.data.err == "undefined") {
@@ -848,17 +863,17 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     	// roomData is temporarily undefined on page load
     	if (typeof roomData != 'undefined') {
     		var room = roomData.res;
-    		console.log("shareable checking for room res ", room, " hour ", hour);
+    		
 		    for (var i = 0; i < room.length; i++) {
-		    	console.log("currently checking room ", room[i]);
+		    	
 		        if (room[i].startTime <= hour && room[i].endTime >= hour){
 		            if (room[i].shareable == 1) {
-		            	console.log(hour, " is shareable");
+		            	
 		                return true
 		            }
 		        }
 		    }
-		    console.log(hour, " is not shareable");
+		    
 		    return false;
     	}
     };
@@ -965,18 +980,3 @@ app.directive('timetable', function() {
 });
 
 
-/*
- * POST HOOKING UP WITH BACKEND
-var resApp = angular.module('resMod', []);
-resApp.controller('resCtrl', ['$scope', '$http', function($scope, $http) {
-	$scope.firstName = "John";
- 	$scope.lastName = "Doe";
-	//functions go in here...
-  	$scope.editRoom = function(id) {
-		console.log("editting room id: " + id);
-    	$http.get('/roomlist/' + id).success(function(response) {
-    		$scope.roomsData = response;
-  		});
-  	};
-}]);﻿
-*/
