@@ -486,8 +486,9 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     
 //    Bound to datepicker, serves as onchange function and loads new room information
     $scope.updateRooms = function() {
-		var datePieces= $scope.date.split('/');
-		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		//var datePieces= $scope.date.split('/');
+		//var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		var date = parseDate();
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -579,7 +580,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		return today;
 	};
 
-	function parseDate(date){
+	function parseDate(){
 		var datePieces= $scope.date.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		return date;
