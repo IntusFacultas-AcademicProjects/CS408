@@ -45,7 +45,9 @@
 		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
     </head>
     <body ng-app="myApp" style="background-color:#60553F">
-        <div ng-controller="navbar" ng-include src="'navbar.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_loggedin.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_notloggedin.html'"></div>
+        <div ng-controller="navbar" ng-include src="'navbar_admin.html'"></div>
         <div class="row">
             <div class="col-lg-4">
             </div>
