@@ -61,6 +61,34 @@
 			"password":"resTest3"
 		      };
 
+    //First test date. These entries are to remain in the database
+    var testDate1 = {
+	   {"username": "test1",
+	    "roomID": 1,
+	    "date": "2018-01-01",
+	    "startTime":7,
+	    "endTime":9,
+	    "shareable":1
+	   },
+	   {"username": "test1",
+	    "roomID": 2,
+	    "date": "2018-01-01",
+	    "startTime":7,
+	    "endTime":9,
+	    "shareable":1
+	   },
+           {"username": "test1",
+	    "roomID": 3,
+	    "date": "2018-01-01",
+	    "startTime":7,
+	    "endTime":9,
+	    "shareable":1
+	   }
+    }
+
+    //Second test date. Database is to remain free of any reservations on this date
+    var testDate2 = "2018-02-01";
+
     //Get reservations from user with 1 hr of reservations
     TEST&_PASS:function(callback){
    	query.getUserReservations(resGetUser1.username, con, function(err, res){
@@ -174,7 +202,7 @@
 
 //Get all rooms for a valid date with some reservations
 TEST&_PASS:function(callback){
-	query.getAllRooms(moment("01 01 2018").format("MM DD YYYY"), con, function(err, res){
+	query.getAllRooms(testDate1[0].date, con, function(err, res){
 	    if(err)
 	        callback(null, true);
             else
@@ -184,7 +212,7 @@ TEST&_PASS:function(callback){
 
 //Get all rooms for a date with no reservations
 TEST&_PASS:function(callback){
-	query.getAllRooms(moment("02 01 2018").format("MM DD YYYY"), con, function(err, res){
+	query.getAllRooms(testDate2, con, function(err, res){
 	    if(err)
 	        callback(null, true);
             else
@@ -200,5 +228,5 @@ TEST&_PASS:function(callback){
             else
 	        callback(null, false);
 	});
-},
+}
 
