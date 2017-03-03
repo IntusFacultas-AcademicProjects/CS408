@@ -489,6 +489,10 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		//var datePieces= $scope.date.split('/');
 		//var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		var date = $scope.parseDate();
+		if(date == -1){
+			alert("invalid date supplied.");
+			return false;
+		}
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -581,7 +585,13 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 	};
 
 	$scope.parseDate = function(){
+		if($scope.date == undefined){
+        	return -1;
+        }
 		var datePieces= $scope.date.split('/');
+        if(datePieces.length != 3){
+            return -1;
+        }
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		return date;
 	};
