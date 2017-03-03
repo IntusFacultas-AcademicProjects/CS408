@@ -88,7 +88,7 @@ router.route('/authAccount')
 	query.authAccount(req.body.username,req.body.password,con,function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
-		res.json({ Err: err.message });
+		res.json({ err: err.message });
 	    }
 	    else{
 		console.log("<<<[RESPONSE]: %j", result);

@@ -129,7 +129,8 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		$scope.session.closeSession();
 		$scope.sessionData = $scope.session.updateSession();
 		console.log($scope.sessionData.username);
-		window.location.reload();
+		//window.location.reload();
+		window.location.href = "/login.html";
 	}
 	$scope.login = function() {
 		localStorage["firstPageLoad"] = false;
@@ -374,8 +375,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	
 	$scope.blockRoom = function(id) {
   			//int id : roomId
-  			console.log("id ", id," roomsData[id].roomid ", roomsData[id].roomid );
-    		if(id < 0 || id > 20){
+    	if(id < 0 || id > 20){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
