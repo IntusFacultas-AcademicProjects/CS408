@@ -7,7 +7,8 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName, adminPriv) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
+    saveSession: function(logIn, uName, adminPriv) {
+	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
@@ -38,10 +39,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         $scope.userinfo.password = $scope.password;
     	console.log($scope.userinfo);
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
+			
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username, response.data.results);
+				$scope.session.saveSession(true, $scope.username, response.data.data);
 				console.log(JSON.parse(sessionStorage.getItem('data')));
 				window.location.href = '/reserve.html';									
 			}
