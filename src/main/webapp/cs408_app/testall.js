@@ -206,7 +206,7 @@ async.series({
     TEST11_PASS:function(callback){		
 
 	query.authAccount(account1.username, account1.password, con, function(err, res){
-	    callback(null, res == true);
+	    callback(null, res.message == "Authenticated");
 	})
     }, 
 
@@ -214,7 +214,7 @@ async.series({
     TEST12_PASS:function(callback){
 
 	query.authAccount(account3.email, account3.password, con, function(err,res){
-	    callback(null, res == false);
+	    callback(null, err.message == "Invalid Credentials");
 	})
     },
     
