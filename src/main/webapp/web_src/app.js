@@ -24,6 +24,7 @@ app.factory('Session', function($http) {
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
+	$scope.save = false;
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -37,10 +38,25 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		if ($scope.sessionData.loggedIn) {
     		window.location.href = '/reserve.html';
     	}
+    	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
+    		var data = JSON.parse(localStorage.getItem('login'));
+			$("#remember").prop('checked', true);
+			$("#usernameDiv").addClass("is-focused");
+			$("#passwordDiv").addClass("is-focused");
+    		$scope.username = data.username;
+    		$scope.password = data.password;
+    	}
     }
     $scope.login = function()
     {
-
+		if ($scope.save) {
+			localStorage.setItem('login', JSON.stringify({username: $scope.username, password: $scope.password}));
+			localStorage.setItem('saveFlag', JSON.stringify({save: true}));
+		}
+		else if ($scope.save == false) {
+			localStorage.setItem('login', JSON.stringify({username: "", password: ""}));
+			localStorage.setItem('saveFlag', JSON.stringify({save: false}));
+		}
 		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
     	console.log($scope.userinfo);
@@ -60,10 +76,12 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			//load response
 		});
     }
-
+	$scope.remember = function() {
+		$scope.save = $('#remember').is(":checked");
+	}
     $scope.recover = function()
     {
-        console.log($scope.email);
+        
     }
     $scope.register = function()
     {	
