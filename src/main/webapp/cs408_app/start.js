@@ -90,20 +90,11 @@ router.route('/authAccount')
 		console.error('Request generated an error: ' + err.message);
 		res.json({ Err: err.message });
 	    }
-
-	    var response;
-	    
-	    if(result){
-		response = { message: "authenticated" };
-		console.log("<<<[RESPONSE]: %j", response);
-		res.sendStatus(200);
-		//res.sendFile(path.join(__dirname, '/../web_src/reserve.html'));
-	    }
 	    else{
-		response = { err: "invalid credentials" };
-		console.log("<<<[RESPONSE]: %j", response);
-		res.json(response);
+		console.log("<<<[RESPONSE]: %j", result);
+		res.json(result);
 	    }
+
 	});
 	
     });
