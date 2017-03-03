@@ -600,6 +600,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		alert("Session has expired.");
             $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
+            return;
     	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
