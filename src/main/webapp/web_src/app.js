@@ -41,6 +41,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					password: String
     					};
     $scope.confirmLogin = function() {
+    	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    		return;
+    	}
 		if ($scope.sessionData.loggedIn) {
     		window.location.href = '/reserve.html';
     	}
@@ -202,6 +207,11 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	});
     };
      $scope.confirmLogin = function() {
+     	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    		return;
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -326,6 +336,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     }
     $scope._init();
     $scope.confirmLogin = function() {
+    	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    		return;
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -355,9 +370,16 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 					        $('#map').mapster('set_options', {
 					            areas: [{
 					                key: room.roomid,
-					                fillColor: 'ffffff'
-					            }]
-					        });        
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 					    }
 					}
 
@@ -395,12 +417,19 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 						        var roomTable = "#room" + room.roomid + "c";
 						        $(roomName).mapster('set', true);
 						        $(roomName).css("background-color", 'black');
-						        $('#map').mapster('set_options', {
-						            areas: [{
-						                key: room.roomid,
-						                fillColor: 'ffffff'
-						            }]
-						        });        
+						         $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 						    }
 						}
 
@@ -566,6 +595,10 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.lastName = "Fellers";
 //    end fake data
     $scope.confirmLogin = function() {
+    	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -592,9 +625,16 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 					        $('#map').mapster('set_options', {
 					            areas: [{
 					                key: room.roomid,
-					                fillColor: 'ffffff'
-					            }]
-					        });        
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 					    }
 					}
 
@@ -637,12 +677,19 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 						        var roomTable = "#room" + room.roomid + "c";
 						        $(roomName).mapster('set', true);
 						        $(roomName).css("background-color", 'black');
-						        $('#map').mapster('set_options', {
-						            areas: [{
-						                key: room.roomid,
-						                fillColor: 'ffffff'
-						            }]
-						        });        
+						         $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 						    }
 						}
 
@@ -731,6 +778,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.mouseOver = function(event) {
         var room = "#room" + event + "a";
         $(room).mapster('select');
+        $(room).attr('title', 'This is the hover-over text');
         return true;
     };
 
