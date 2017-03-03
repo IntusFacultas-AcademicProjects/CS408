@@ -161,6 +161,7 @@ var authAccount = function(username,password,connection,callback)
     });
 };
 
+
 var deleteAccount = function(email,connection,callback) 
 {
     connection.query('DELETE FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
@@ -540,3 +541,4 @@ exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
+

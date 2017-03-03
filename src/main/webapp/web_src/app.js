@@ -7,13 +7,13 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName}));},
+    saveSession: function(logIn, uName, adminPriv) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
     },
     closeSession: function() {
-    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" }));
+    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false}));
     }
   };
   Session.updateSession();
@@ -41,7 +41,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username);
+				$scope.session.saveSession(true, $scope.username, response.data.admin);
 				console.log(JSON.parse(sessionStorage.getItem('data')));
 				window.location.href = '/reserve.html';									
 			}
@@ -103,6 +103,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		// TODO return false if admin
 		console.log("Checking Logged NavBar");
 		if ($scope.sessionData.loggedIn) {
+			
 			console.log("true");
 			return true;
 		}
@@ -168,7 +169,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 				else {
 					alert("Password not changed.\n" + response.data.err);
 				}
-				
+				window.location.reload();
 			});
     	}
     	else {
@@ -354,6 +355,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     }
     $scope.unblockRoom = function(id) {
     		//int id : roomId
+    		console.log(id);
     		if(id < 0 || id > 20){
         	return false;
         }
@@ -367,10 +369,14 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	
 	$scope.blockRoom = function(id) {
   			//int id : roomId
+  			console.log("id ", id," roomsData[id].roomid ", roomsData[id].roomid );
     		if(id < 0 || id > 20){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
+        	/*$http.post('/api/setRoomBlockedStatus', {roomid: id, status: true}).then(function(response) {
+        		
+        	});*/
             $scope.roomsData[id].blocked = true;
             return true;
         }else{
@@ -489,6 +495,10 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		//var datePieces= $scope.date.split('/');
 		//var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		var date = $scope.parseDate();
+		if(date == -1){
+			alert("invalid date supplied.");
+			return false;
+		}
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -581,7 +591,13 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 	};
 
 	$scope.parseDate = function(){
+		if($scope.date == undefined){
+        	return -1;
+        }
 		var datePieces= $scope.date.split('/');
+        if(datePieces.length != 3){
+            return -1;
+        }
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		return date;
 	};
