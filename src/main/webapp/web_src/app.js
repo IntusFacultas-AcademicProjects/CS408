@@ -488,7 +488,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.updateRooms = function() {
 		//var datePieces= $scope.date.split('/');
 		//var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
-		var date = parseDate();
+		var date = $scope.parseDate();
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -537,7 +537,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 
 			today = yyyy+ '-'+mm+'-'+dd;
 			*/
-			var today = getToday();
+			var today = $scope.getToday();
 			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					$scope.roomsData = response.data.rooms;
@@ -567,7 +567,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    });
 		};
 
-	function getToday(){
+	$scope.getToday = function(){
 		var today = new Date();
 		var dd = today.getDate();
 		var mm = today.getMonth()+1;
@@ -580,7 +580,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		return today;
 	};
 
-	function parseDate(){
+	$scope.parseDate = function(){
 		var datePieces= $scope.date.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		return date;
