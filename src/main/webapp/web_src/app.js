@@ -385,12 +385,14 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             $scope.unblockRoom($scope.roomIndex);
             console.log($scope.roomsData[$scope.roomIndex].blocked)
             alert("Unblock successfully");
+			return true;
         }
         else
         {
             $scope.blockRoom($scope.roomIndex);
             console.log($scope.roomsData[$scope.roomIndex].blocked)
             alert("Block successfully");
+			return true;
         }
     };
     $scope.openAdminModal = function(event) {
