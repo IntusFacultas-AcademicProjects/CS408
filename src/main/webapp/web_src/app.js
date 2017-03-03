@@ -184,9 +184,10 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		}
     		else {
     			alert("An error has occurred. Please contact the System Administrator\n" + response.data.err);
+				$scope.status = "error : shareable";
     		}
     	});
-    }
+    };
     $scope.fetchReservations = function() {
     	$scope.sessionData = $scope.session.updateSession();
 		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
@@ -491,8 +492,13 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     
 //    Bound to datepicker, serves as onchange function and loads new room information
     $scope.updateRooms = function() {
-		var datePieces= $scope.date.split('/');
-		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		//var datePieces= $scope.date.split('/');
+		//var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		var date = $scope.parseDate();
+		if(date == -1){
+			alert("invalid date supplied.");
+			return false;
+		}
 		$http.post('/api/getAllRooms', {date:date}).then(function(response) {
 			if (typeof response.data.err == "undefined") {
 				$scope.roomsData = response.data.rooms;
@@ -525,6 +531,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     
 //    Bound to datepicker, serves as init function and loads room information on page load for the current date
     $scope.loadRooms = function() {
+			/*
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -539,6 +546,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 			} 
 
 			today = yyyy+ '-'+mm+'-'+dd;
+			*/
+			var today = $scope.getToday();
 			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					$scope.roomsData = response.data.rooms;
@@ -566,7 +575,32 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 				}  
 			    //load response
 		    });
-		}
+		};
+
+	$scope.getToday = function(){
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		if(dd<10) {	dd='0'+dd;	} 
+		if(mm<10) { mm='0'+mm;	} 
+		today = yyyy + '-' + mm + '-' + dd;
+
+		return today;
+	};
+
+	$scope.parseDate = function(){
+		if($scope.date == undefined){
+        	return -1;
+        }
+		var datePieces= $scope.date.split('/');
+        if(datePieces.length != 3){
+            return -1;
+        }
+		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		return date;
+	};
 
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
