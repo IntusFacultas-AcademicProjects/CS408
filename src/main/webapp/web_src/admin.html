@@ -49,11 +49,11 @@
         <div ng-controller="navbar" ng-include src="'navbar_loggedin.html'"></div>
         <div ng-controller="navbar" ng-include src="'navbar_notloggedin.html'"></div>
         <div ng-controller="navbar" ng-include src="'navbar_admin.html'"></div>
-		<div ng-controller="administration" ng-init="adminLoadRooms()" class="container">
+		<div ng-controller="administration" ng-init="confirmLogin()" class="container">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-5">
-						<p>Welcome to the Admin Control Panel, {{user.username}}</p>
+						<p>Welcome to the Admin Control Panel, {{sessionData.username}}</p>
 					</div>
                     <div class="col-sm-2">
                         <div class="form-group">

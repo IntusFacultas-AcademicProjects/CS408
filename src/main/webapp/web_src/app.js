@@ -7,7 +7,8 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName, adminPriv) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
+    saveSession: function(logIn, uName, adminPriv) {
+	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
@@ -22,6 +23,7 @@ app.factory('Session', function($http) {
 
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -31,6 +33,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					username: String,
     					password: String
     					};
+    $scope.confirmLogin = function() {
+		if ($scope.sessionData.loggedIn) {
+    		window.location.href = '/reserve.html';
+    	}
+    }
     $scope.login = function()
     {
 
@@ -38,10 +45,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         $scope.userinfo.password = $scope.password;
     	console.log($scope.userinfo);
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
+			
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username, response.data.admin);
+				$scope.session.saveSession(true, $scope.username, response.data.data);
 				console.log(JSON.parse(sessionStorage.getItem('data')));
 				window.location.href = '/reserve.html';									
 			}
@@ -85,6 +93,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 
 app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http, Session)  {
 	$scope.session = Session;
+	console.log(Session);
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.boolVal = true;
 	$scope.check = function() {
@@ -103,20 +112,22 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		// TODO return false if admin
 		console.log("Checking Logged NavBar");
 		if ($scope.sessionData.loggedIn) {
-			
-			console.log("true");
-			return true;
+			if ($scope.sessionData.admin == false) {
+				console.log("true");
+				return true;
+			}
+			console.log("false");
+			return false;		
 		}
 		console.log("false");
 		return false;
 	}
 	$scope.adminLog = function() {
 		console.log("Checking Admin NavBar");
-		/*if ($scope.sessionData.loggedIn) {
-			console.log("false");
+		if ($scope.sessionData.loggedIn && $scope.sessionData.admin) {
+			console.log("true");
 			return true;
-		}*/
-		// TODO: Connect with Database and check privileges
+		}
 		console.log("false");
 		return false;
 	}
@@ -124,7 +135,8 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		$scope.session.closeSession();
 		$scope.sessionData = $scope.session.updateSession();
 		console.log($scope.sessionData.username);
-		window.location.reload();
+		//window.location.reload();
+		window.location.href = "/login.html";
 	}
 	$scope.login = function() {
 		localStorage["firstPageLoad"] = false;
@@ -149,6 +161,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 }]);
 app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $http, Session){
 	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
     $scope.allowance = 0;
     $scope.reservations = [];
     $scope.confirmPassword;
@@ -160,6 +173,14 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		location.reload();
     	});
     };
+     $scope.confirmLogin = function() {
+    	if (!$scope.sessionData.loggedIn) {
+    		window.location.href = '/login.html';	
+    	}
+    	else {
+    		$scope.fetchReservations();
+    	}
+    }
     $scope.changePassword = function() {
     	if ($scope.newPassword == $scope.confirmPassword) {
 			$http.post('/api/updateAccountPassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
@@ -189,7 +210,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	});
     };
     $scope.fetchReservations = function() {
-    	$scope.sessionData = $scope.session.updateSession();
+    	
 		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
 			$scope.reservations = response.data.res;
 			var start = ["00:00", "01:00", "02:00", 
@@ -230,6 +251,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 
 app.controller('administration', ['$scope', '$http', 'Session', function ($scope, $http, Session) {
     $scope.session = Session;
+    $scope.sessionData = $scope.session.updateSession();
 	$scope.date;
 	$scope.adminDate;
 	$scope.user = {
@@ -275,6 +297,17 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         return true;
     }
     $scope._init();
+    $scope.confirmLogin = function() {
+    	if (!$scope.sessionData.loggedIn) {
+    		window.location.href = '/login.html';	
+    	}
+    	else if (!$scope.sessionData.admin && $scope.sessionData.loggedIn) {
+    		window.location.href = '/reserve.html';
+    	}
+    	else {
+    		$scope.adminLoadRooms();
+    	}
+    }
     $scope.updateAdminRooms = function() {
 		var datePieces= $scope.adminDate.split('/');
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
@@ -369,8 +402,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	
 	$scope.blockRoom = function(id) {
   			//int id : roomId
-  			console.log("id ", id," roomsData[id].roomid ", roomsData[id].roomid );
-    		if(id < 0 || id > 20){
+    	if(id < 0 || id > 20){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
@@ -391,12 +423,14 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             $scope.unblockRoom($scope.roomIndex);
             console.log($scope.roomsData[$scope.roomIndex].blocked)
             alert("Unblock successfully");
+			return true;
         }
         else
         {
             $scope.blockRoom($scope.roomIndex);
             console.log($scope.roomsData[$scope.roomIndex].blocked)
             alert("Block successfully");
+			return true;
         }
     };
     $scope.openAdminModal = function(event) {
@@ -438,6 +472,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 
 app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $http, Session){
 	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
 	$scope.date;
  	
     var _slots = [
@@ -489,7 +524,11 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.firstName = "Sam";
     $scope.lastName = "Fellers";
 //    end fake data
-    
+    $scope.confirmLogin = function() {
+    	if (!$scope.sessionData.loggedIn) {
+    		window.location.href = '/login.html';	
+    	}
+    }
 //    Bound to datepicker, serves as onchange function and loads new room information
     $scope.updateRooms = function() {
 		//var datePieces= $scope.date.split('/');
@@ -725,7 +764,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         					"12:00-12:59", "13:00-13:59", "14:00-14:59", 
         					"15:00-15:59", "16:00-16:59", "17:00-17:59", 
         					"18:00-18:59", "19:00-19:59", "20:00-20:59", 
-        					"21:00-21:59", "23:00-22:59", "23:00-23:59"];
+        					"21:00-21:59", "22:00-22:59", "23:00-23:59"];
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.hourSelected = startTime;
         var room = roomSelected;
