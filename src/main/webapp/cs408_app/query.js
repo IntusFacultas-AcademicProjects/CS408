@@ -140,6 +140,7 @@ var addAccount = function(email,username,password,connection,callback) {
 
 var authAccount = function(username,password,connection,callback) 
 {
+	console.log("SELECT * FROM accounts WHERE username LIKE %s AND password LIKE %s\n", username, password);
     connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
