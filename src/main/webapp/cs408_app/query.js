@@ -151,20 +151,8 @@ var authAccount = function(username,password,connection,callback)
 	
     });
 };
-var authAdmin = function(username, connection, callback) 
-{
-	connection.query('SELECT is_admin FROM accounts WHERE username LIKE ?', [username], function(error, results, fields) {
-		if(error)
-			callback(error)
-			
-		if(results.length == 1)
-			callback(null, true);
-		else
-			callback(null, false);
-	
-		});
-	}
-}
+
+
 var deleteAccount = function(email,connection,callback) 
 {
     connection.query('DELETE FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
@@ -544,3 +532,4 @@ exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
+

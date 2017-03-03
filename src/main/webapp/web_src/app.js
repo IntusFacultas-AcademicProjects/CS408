@@ -7,13 +7,13 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName}));},
+    saveSession: function(logIn, uName, adminPriv) { sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
     },
     closeSession: function() {
-    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" }));
+    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false}));
     }
   };
   Session.updateSession();
@@ -41,7 +41,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username);
+				$scope.session.saveSession(true, $scope.username, response.data.admin);
 				console.log(JSON.parse(sessionStorage.getItem('data')));
 				window.location.href = '/reserve.html';									
 			}
@@ -103,6 +103,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		// TODO return false if admin
 		console.log("Checking Logged NavBar");
 		if ($scope.sessionData.loggedIn) {
+			
 			console.log("true");
 			return true;
 		}
