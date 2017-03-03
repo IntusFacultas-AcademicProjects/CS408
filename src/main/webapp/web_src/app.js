@@ -183,9 +183,10 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		}
     		else {
     			alert("An error has occurred. Please contact the System Administrator\n" + response.data.err);
+				$scope.status = "error : shareable";
     		}
     	});
-    }
+    };
     $scope.fetchReservations = function() {
     	$scope.sessionData = $scope.session.updateSession();
 		$http.post('/api/getUserReservations', {username:$scope.sessionData.username}).then(function(response) {
@@ -519,6 +520,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     
 //    Bound to datepicker, serves as init function and loads room information on page load for the current date
     $scope.loadRooms = function() {
+			/*
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -533,6 +535,8 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 			} 
 
 			today = yyyy+ '-'+mm+'-'+dd;
+			*/
+			var today = getToday();
 			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					$scope.roomsData = response.data.rooms;
@@ -560,7 +564,26 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 				}  
 			    //load response
 		    });
-		}
+		};
+
+	function getToday(){
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		if(dd<10) {	dd='0'+dd;	} 
+		if(mm<10) { mm='0'+mm;	} 
+		today = yyyy + '-' + mm + '-' + dd;
+
+		return today;
+	};
+
+	function parseDate(date){
+		var datePieces= $scope.date.split('/');
+		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
+		return date;
+	};
 
     // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
