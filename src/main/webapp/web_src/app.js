@@ -23,6 +23,7 @@ app.factory('Session', function($http) {
 
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
     $scope.config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -32,6 +33,14 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					username: String,
     					password: String
     					};
+    $scope.confirmLogin = function() {
+    	if (!$scope.sessionData.loggedIn) {
+    		window.location.href = '/login.html';	
+    	}
+    	else if ($scope.sessionData.loggedIn) {
+    		window.location.href = '/reserve.html';
+    	}
+    }
     $scope.login = function()
     {
 

@@ -46,7 +46,7 @@
     </head>
     <body ng-app="myApp" style="background-color:#60553F">
         <div ng-controller="navbar" ng-include src="'navbar_login.html'"></div>
-        <div class="row" ng-controller="user">
+        <div class="row" ng-controller="user" ng-init="confirmLogin()">
             <div class="col-lg-4">
             </div>
             <div class="col-lg-4 shadowed" style="background-color:white">
