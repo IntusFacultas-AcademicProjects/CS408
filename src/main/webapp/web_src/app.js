@@ -421,7 +421,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
-        	$http.post('/api/setRoomBlockedStatus', {roomid: $scope.roomsData[id].roomid, status: false}).then(function(response) {
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: false}).then(function(response) {
         		if (typeof response.data.err == "undefinfed") {
         		}
         		else {
@@ -441,7 +441,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
-        	$http.post('/api/setRoomBlockedStatus', {roomid: $scope.roomsData[id].roomid, status: true}).then(function(response) {
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: true}).then(function(response) {
         		if (typeof response.data.err == "undefinfed") {
         		}
         		else {
