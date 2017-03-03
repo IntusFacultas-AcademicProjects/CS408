@@ -42,12 +42,13 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					};
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
-            $scope.sessionData.closeSession();
-    		return;
+    		
     	}
-		if ($scope.sessionData.loggedIn) {
-    		window.location.href = '/reserve.html';
-    	}
+        else {
+            if ($scope.sessionData.loggedIn) {
+                window.location.href = '/reserve.html';
+            }    
+        }
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
     		var data = JSON.parse(localStorage.getItem('login'));
 			$("#remember").prop('checked', true);
@@ -208,7 +209,6 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
      $scope.confirmLogin = function() {
      	if ($scope.sessionData === null) {
     		alert("Session has expired.");
-            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
     		return;
     	}
@@ -338,7 +338,6 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
-            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
     		return;
     	}
@@ -598,7 +597,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
-            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
             return;
     	}
