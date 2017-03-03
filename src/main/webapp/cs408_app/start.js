@@ -141,7 +141,7 @@ router.route('/getUserHours')
 	query.getUserHours(req.body.username,con,function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
-		res.json({ Err: err.message });
+		res.json({ err: err.message });
 	    }
 
 	    console.log("<<<[RESPONSE]: %j", result);
@@ -156,7 +156,7 @@ router.route('/getRoomBlockedStatus')
 	query.getRoomBlockedStatus(req.body.roomID,con,function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
-		res.json({ Err: err.message });
+		res.json({ err: err.message });
 	    }
 
 	    console.log("<<<[RESPONSE]: %j", result);
@@ -171,7 +171,7 @@ router.route('/setRoomBlockedStatus')
 	query.setRoomBlockedStatus(req.body.roomID, req.body.status, con, function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
-		res.json({ Err: err.message });
+		res.json({ err: err.message });
 	    }
 
 	    console.log("<<<[RESPONSE]: %j", result);
@@ -186,7 +186,7 @@ router.route('/setReservationShareable')
 	query.setReservationShareable(req.body.reservationID, req.body.status, con, function(err,result){
 	    if(err){
 		console.error('Request generated an error: ' + err.message);
-		res.json({ Err: err.message });
+		res.json({ err: err.message });
 	    }
 
 	    console.log("<<<[RESPONSE]: %j", result);
