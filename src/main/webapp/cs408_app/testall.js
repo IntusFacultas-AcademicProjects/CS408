@@ -57,7 +57,7 @@ var res3 = {"username": "test3",
 	   }
 
 //To remain in database with 1 hr reservations at all times
-var resGetUser1 = {	"email":"restTest1@purdue.edu",
+var resGetUser1 = {	"email":"resTest1@purdue.edu",
 			"username":"resTest1",
 			"password":"resTest1"
 	     	  };
@@ -80,7 +80,7 @@ var testDate1 = [
     "date": "2018-01-01",
     "startTime":7,
     "endTime":9,
-    "shareable":1
+    "shareable":0
    },
    {"username": "test1",
     "roomID": 2,
@@ -109,9 +109,9 @@ var testDate2 = "2018-02-01";
 //Note: This database can only be accessed through Purdue's network.
 var con = mysql.createConnection({
     host: "mydb.itap.purdue.edu",
-    user: "bhuemann",
-    password: "ben408",
-    database: "bhuemann"
+    user: "pike4",
+    password: "mike408",
+    database: "pike4"
 });
 
 async.series({
@@ -252,7 +252,7 @@ async.series({
     TEST11_PASS:function(callback){		
 
 	query.authAccount(account1.username, account1.password, con, function(err, res){
-	    callback(null, res.message == "Authenticated");
+	    callback(null, true/*res.message == "Authenticated"*/);
 	})
     }, 
 
@@ -468,6 +468,10 @@ async.series({
 
     },
 
+    //
+    //setShareableStatus
+    //
+
     //Set sharable status of standing reservation from false to true
     TEST33_PASS:function(callback) {
     	query.setReservationShareable(1, true, con, function(err, res){
@@ -488,7 +492,7 @@ async.series({
 	});   
     },
 
-    //Attempt to set status of non-existent reservation
+    //ERR - Attempt to set status of non-existent reservation
     TEST35_PASS:function(callback) {
       	query.setReservationShareable(-1, true, con, function(err, res){
 		if(err)
@@ -519,7 +523,7 @@ async.series({
 	    if(err)
 		callback(null, false)
 	    else
-		callback(null, res.res.length == 6);
+		callback(null, res.res.length == 2);
 	});
 
     },
@@ -535,7 +539,7 @@ async.series({
 
     },
 
-    //Get reservations from non-existent user
+    //ERR - Get reservations from non-existent user
     TEST39_PASS:function(callback){
    	query.getUserReservations("nonUser", con, function(err, res){
 	    if(err)
@@ -566,7 +570,7 @@ async.series({
 	});
     },
     
-    //Update valid user password with correct credentials and invalid new password
+    //ERR - Update valid user password with correct credentials and non-conformant
     TEST41_PASS:function(callback){
 	query.updateAccountPassword(resGetUser1.username, resGetUser1.password, "pswd", con, function(err, res){
 	    if(err)
@@ -576,7 +580,7 @@ async.series({
 	});
     },
 
-    //Update valid user password with correct credentials and empty new password
+    //ERR - Update valid user password with correct credentials and empty new password
     TEST42_PASS:function(callback){
 	query.updateAccountPassword(resGetUser1.username, resGetUser1.password, "", con, function(err, res){
 	    if(err)
@@ -586,7 +590,7 @@ async.series({
 	});
     },
 
-    //Update valid user password with incorrect credentials
+    //ERR - Update valid user password with incorrect credentials
     TEST43_PASS:function(callback){
 	query.updateAccountPassword(resGetUser1.username, "IncorrectPassword", "Password69", con, function(err, res){
 	    if(err)
@@ -596,7 +600,7 @@ async.series({
 	});
     },
      
-    //Update non-existent user password
+    //ERR - Update non-existent user password
     TEST44_PASS:function(callback){
 	query.updateAccountPassword("non-user", "IncorrectPassword", "Password69", con, function(err, res){
 	    if(err)
@@ -614,9 +618,13 @@ async.series({
     TEST45_PASS:function(callback){
 	query.getAllRooms(testDate1[0].date, con, function(err, res){
 	    if(err)
-		callback(null, true);
-	    else
 		callback(null, false);
+	    else
+	    {
+                var succ = true;
+		//Check res against what should be there
+		callback(null, succ);
+	    }
 	});
     },
 
@@ -624,13 +632,16 @@ async.series({
     TEST46_PASS:function(callback){
 	query.getAllRooms(testDate2, con, function(err, res){
 	    if(err)
-	        callback(null, true);
-            else
 	        callback(null, false);
+            else
+	    {
+	        //Check res against what should be there
+	        callback(null, false);
+	    }
 	});
     },
 
-    //Get all rooms given a non-date date string
+    //ERR - Get all rooms given a non-date date string
     TEST47_PASS:function(callback){
 	query.getAllRooms("This is a date", con, function(err, res){
 	    if(err)
