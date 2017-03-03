@@ -49,7 +49,7 @@
         <div ng-controller="navbar" ng-include src="'navbar_loggedin.html'"></div>
         <div ng-controller="navbar" ng-include src="'navbar_notloggedin.html'"></div>
         <div ng-controller="navbar" ng-include src="'navbar_admin.html'"></div>
-		<div ng-controller="reservation" class="container">
+		<div ng-controller="reservation" ng-init="confirmLogin()" class="container">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-5"></div>
