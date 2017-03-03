@@ -34,10 +34,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					password: String
     					};
     $scope.confirmLogin = function() {
-    	if (!$scope.sessionData.loggedIn) {
-    		window.location.href = '/login.html';	
-    	}
-    	else if ($scope.sessionData.loggedIn) {
+		if ($scope.sessionData.loggedIn) {
     		window.location.href = '/reserve.html';
     	}
     }
