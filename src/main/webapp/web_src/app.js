@@ -85,6 +85,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 
 app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http, Session)  {
 	$scope.session = Session;
+	console.log(Session);
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.boolVal = true;
 	$scope.check = function() {
@@ -103,20 +104,22 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		// TODO return false if admin
 		console.log("Checking Logged NavBar");
 		if ($scope.sessionData.loggedIn) {
-			
-			console.log("true");
-			return true;
+			if ($scope.sessionData.admin == false) {
+				console.log("true");
+				return true;
+			}
+			console.log("false");
+			return false;		
 		}
 		console.log("false");
 		return false;
 	}
 	$scope.adminLog = function() {
 		console.log("Checking Admin NavBar");
-		/*if ($scope.sessionData.loggedIn) {
-			console.log("false");
+		if ($scope.sessionData.loggedIn && $scope.sessionData.admin) {
+			console.log("true");
 			return true;
-		}*/
-		// TODO: Connect with Database and check privileges
+		}
 		console.log("false");
 		return false;
 	}
