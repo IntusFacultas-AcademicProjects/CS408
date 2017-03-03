@@ -42,7 +42,6 @@ var emailExists = function(email,connection,callback) {
 
 var getUserHours = function(username,connection,callback) {
 
-    //TODO check if username exists
     
    connection.query('SELECT hours_remain FROM accounts WHERE username=?', [username], function(error,results,fields){
 
@@ -53,6 +52,8 @@ var getUserHours = function(username,connection,callback) {
 
        if(results.length == 1)
 	   callback(null, {"data":results[0].hours_remain});
+       if(results.length == 0)
+	   callback(null, {"err":"username doesn't exist"});
        else
 	   callback(new Error("Illegal State: multiple hours results from username " + username));
 	
@@ -140,13 +141,14 @@ var addAccount = function(email,username,password,connection,callback) {
 
 var authAccount = function(username,password,connection,callback) 
 {
+	console.log("SELECT * FROM accounts WHERE username LIKE %s AND password LIKE %s\n", username, password);
     connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
 
 
 	if(results.length == 0){
-	    callback(new Error("Invalid Credentials"));
+	    callback(null, {"err":"Invalid Credentials"});
 	    return
 	}
 	    
@@ -218,8 +220,6 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
 var setRoomBlockedStatus = function(roomID, status, connection, callback){
 
 
-    //TODO check roomID exists
-
     status = (status ? 1 : 0);
     
     connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
@@ -227,7 +227,7 @@ var setRoomBlockedStatus = function(roomID, status, connection, callback){
 	if(error)
 	    callback(error)
 	if(results.affectedRows == 0)
-	    callback(new Error("Could not get set blocked status for room_id"));
+	    callback(null, {"err":"roomID doesn't exist"});
 	else if(results.affectedRows == 1)
 	    callback(null, {"message":"success"});
 	else
@@ -253,7 +253,7 @@ var setReservationShareable = function(reservationID, status, connection, callba
 	if(results.affectedRows == 1)
 	    callback(null, {"message":"success"});
 	else if(results.affectedRows == 0)
-	    callback(new Error("Could not get set sharable status for reservation_id: " + reservationID));
+	    callback(new Error("Could not get sharable status for reservation_id: " + reservationID));
 	else
 	    callback(new Error('illegal state: duplicate shareable values'));
 
@@ -377,6 +377,12 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 
     var roomObj = {}
 
+    if(!moment(date, "YYYY-MM-DD", true).isValid()){
+	callback(new Error("invalid date"));
+	return;
+    }
+    
+    
     connection.query('SELECT * FROM rooms WHERE room_id = ?', [roomID], function(error,results,fields){
 
 	if(error){
@@ -384,13 +390,14 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 	    return;
 	}
 	else if(results.length == 0){
-	    callback(new Error("room does not exist"));
+	    callback(null, {"err":"room does not exist"});
 	    return;
 	}
 	else if(results.length > 1){
 	    callback(new Error("invalid state: duplicate rooms in database"));
 	    return;
 	}
+	
 	
 	
 	//Set room data here
