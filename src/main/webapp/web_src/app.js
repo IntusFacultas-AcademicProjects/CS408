@@ -42,8 +42,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					};
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
-    		alert("Session has expired.");
-    		window.location.href= '/login.html';
+            $scope.sessionData.closeSession();
     		return;
     	}
 		if ($scope.sessionData.loggedIn) {
@@ -209,6 +208,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
      $scope.confirmLogin = function() {
      	if ($scope.sessionData === null) {
     		alert("Session has expired.");
+            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
     		return;
     	}
@@ -338,6 +338,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
+            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
     		return;
     	}
@@ -597,6 +598,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
+            $scope.sessionData.closeSession();
     		window.location.href= '/login.html';
     	}
     	if (!$scope.sessionData.loggedIn) {
