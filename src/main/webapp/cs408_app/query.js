@@ -143,11 +143,20 @@ var authAccount = function(username,password,connection,callback)
     connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
+
+
+	if(results.length == 0){
+	    callback(new Error("Invalid Credentials"));
+	    return
+	}
 	    
+	    
+	var isAdmin = (results[0].is_admin == 1 ? true : false);
+	
 	if(results.length == 1)
-	    callback(null, true);
+	    callback(null, {"message":"Authenticated","data":isAdmin});
 	else
-	    callback(null, false);
+	    callback(new Error("Illegal State: multiple values for credential pair"));
 	
     });
 };
