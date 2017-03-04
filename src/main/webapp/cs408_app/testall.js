@@ -260,7 +260,7 @@ async.series({
     TEST12_PASS:function(callback){
 
 	query.authAccount(account3.email, account3.password, con, function(err,res){
-	    callback(null, err.message == "Invalid Credentials");
+	    callback(null, err != null && err.message == "Invalid Credentials");
 	})
     },
     
@@ -623,6 +623,32 @@ async.series({
 	    {
                 var succ = true;
 		//Check res against what should be there
+		//
+		var rooms = res.rooms;
+		
+		var room1Reservations = rooms.filter(function(room) {
+			return room.roomid == 1;
+		});
+
+		var room2Reservations = rooms.filter(function(room) {
+			return room.roomid == 2;
+		});
+
+		var room3Reservations = rooms.filter(function(room) {
+			return room.roomid == 3;
+		});
+
+		var res1 = room1Reservations[0].res;
+		var res2 = room2Reservations[0].res;
+		var res3 = room3Reservations[0].res;
+
+		if(res1.length != 1 || res2.length != 1 || res3.length != 1)
+			console.log("WRONG LENGTH");
+
+		succ = (res1.length == 1 && res1[0].start == testDate1[0].start && res1[0].end == testDate1[0].end && res1[0].sharable == testDate1[0].sharable);
+		succ = (succ && res2.length == 1 && res2[0].startTime == 7 && res2[0].endTime == 9 && res2[0].shareable == 1);
+		succ = (succ && res3.length == 1 && res3[0].startTime == 7 && res3[0].endTime == 9 && res3[0].shareable == 1);
+		
 		callback(null, succ);
 	    }
 	});
@@ -636,7 +662,19 @@ async.series({
             else
 	    {
 	        //Check res against what should be there
-	        callback(null, false);
+                var succ = true;
+		//Check res against what should be there
+		//
+		var rooms = res.rooms;
+
+		for(var i = 1; i < rooms.length; i++){
+			var room = rooms[i];
+			if(room.res.length != 0) {
+				succ = false;
+			}
+		}
+		
+		callback(null, succ);
 	    }
 	});
     },

@@ -3,5 +3,6 @@ test 40 - updateAcountPasword allows password change to non-conformant password
 test 41 - updateAcountPasword allows password change to empty password
 test 43 - updateAcountPasword allows password change given incorrect credentials
 test 44 - updateAcountPasword allows password change for non-existant user
-test 45 - Get all rooms for a valid date with some reservations
+test 45 - Get all rooms returns all rooms for each room in the database rather
+	  than each room once
 test 46 - Get all rooms for a date with no reservations
