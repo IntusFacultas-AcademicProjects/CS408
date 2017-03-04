@@ -52,7 +52,7 @@ var getUserHours = function(username,connection,callback) {
 
        if(results.length == 1)
 	   callback(null, {"data":results[0].hours_remain});
-       if(results.length == 0)
+       else if(results.length == 0)
 	   callback(null, {"err":"username doesn't exist"});
        else
 	   callback(new Error("Illegal State: multiple hours results from username " + username));
