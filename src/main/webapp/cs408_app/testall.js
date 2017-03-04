@@ -474,7 +474,7 @@ async.series({
 
     //Set sharable status of standing reservation from false to true
     TEST33_PASS:function(callback) {
-    	query.setReservationShareable(1, true, con, function(err, res){
+    	query.setReservationShareable(300, true, con, function(err, res){
 		if(err)
 			callback(null, false);
 		else
@@ -484,9 +484,10 @@ async.series({
 
     //Set sharable status of standing reservation from true to false
     TEST34_PASS:function(callback) {
-     	query.setReservationShareable(1, false, con, function(err, res){
+     	query.setReservationShareable(300, false, con, function(err, res){
 		if(err)
 			callback(null, false);
+
 		else
 			callback(null, res.message == "success");
 	});   
@@ -545,7 +546,10 @@ async.series({
 	    if(err)
 		callback(null, true)
 	    else
+	    {
+		console.log(JSON.stringify(res));
 		callback(null, false);
+	    }
 	});
 
     },
@@ -641,9 +645,6 @@ async.series({
 		var res1 = room1Reservations[0].res;
 		var res2 = room2Reservations[0].res;
 		var res3 = room3Reservations[0].res;
-
-		if(res1.length != 1 || res2.length != 1 || res3.length != 1)
-			console.log("WRONG LENGTH");
 
 		succ = (res1.length == 1 && res1[0].start == testDate1[0].start && res1[0].end == testDate1[0].end && res1[0].sharable == testDate1[0].sharable);
 		succ = (succ && res2.length == 1 && res2[0].startTime == 7 && res2[0].endTime == 9 && res2[0].shareable == 1);

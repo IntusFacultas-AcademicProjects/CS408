@@ -47,6 +47,7 @@ var res1 = {"username": "test1",
     //TEST 8 TRUE - username exists
     query.usernameExists(account1.username, con, function(res)
      			 {
+					 console.log(account1.username);
      			     assert.ok(res);
      			     console.log("Passed Username Existence Test 1");
      			     //TEST 9 FALSE - username does not exist

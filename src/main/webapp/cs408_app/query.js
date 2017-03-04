@@ -199,18 +199,29 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 };
 
 var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
-
+	
 
     connection.query('UPDATE accounts SET password=? WHERE username=? AND password=?', [newPassword, username, oldPassword], function(error,results,fields){
 
 	if(error)
+	{
+	    console.log("ERROR NOT NULL");
 	    callback(error)
+	}
 	if(results.affectedRows == 0)
-	    callback(null, {"err":"invalid credentials"});
+	{
+	    callback(new Error("invalid credentials"));
+	}
 	else if(results.affectedRows == 1)
+	{
+	    console.log("1 ROWS");
 	    callback(null, {"message":"success"});
+	}
 	else
+	{
+	    console.log("ELSE");
 	    callback(new Error('illegal state: multiple results for user and pass'));
+	}
 
     });
 

@@ -6,3 +6,4 @@ test 44 - updateAcountPasword allows password change for non-existant user
 test 45 - Get all rooms returns all rooms for each room in the database rather
 	  than each room once
 test 46 - Get all rooms for a date with no reservations
+updateAccountPassword always return null
