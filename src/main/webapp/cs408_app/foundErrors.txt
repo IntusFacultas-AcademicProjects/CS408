@@ -7,3 +7,4 @@ test 45 - Get all rooms returns all rooms for each room in the database rather
 	  than each room once
 test 46 - Get all rooms for a date with no reservations
 updateAccountPassword always return null
+updateAccountPassword doesn't check for poorly formatted password

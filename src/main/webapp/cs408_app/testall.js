@@ -544,11 +544,10 @@ async.series({
     TEST39_PASS:function(callback){
    	query.getUserReservations("nonUser", con, function(err, res){
 	    if(err)
-		callback(null, true)
+		callback(null, false)
 	    else
 	    {
-		console.log(JSON.stringify(res));
-		callback(null, false);
+		callback(null, res.res.length == 0);
 	    }
 	});
 
@@ -562,14 +561,19 @@ async.series({
     TEST40_PASS:function(callback){
         var tempPassword = resGetUser1.password;
 	query.updateAccountPassword(resGetUser1.username, resGetUser1.password, "Password69", con, function(err, res){
+	    query.updateAccountPassword(resGetUser1.username, "Password69", tempPassword, con, function(err,res){});
 	    if(err)
+	    {
+	        console.log(err);
 		callback(null, false)
+	    }
 	    else
 	    {
+	    	console.log("ERRR");
 		callback(null, res.message == "success");
 
 		//Reset password to previous value so this doesn't fail on subsequent tests
-		//query.updateAccountPassword(resGetUser1.username, "Password69", tempPassword, con, function(err,res){});
+		
 	    }
 	});
     },
