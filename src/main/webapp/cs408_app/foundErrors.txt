@@ -1,0 +1,7 @@
+test 39 - getUserReservations returns success when getting reservations for non-existent user
+test 40 - updateAcountPasword allows password change to non-conformant password
+test 41 - updateAcountPasword allows password change to empty password
+test 43 - updateAcountPasword allows password change given incorrect credentials
+test 44 - updateAcountPasword allows password change for non-existant user
+test 45 - Get all rooms for a valid date with some reservations
+test 46 - Get all rooms for a date with no reservations
