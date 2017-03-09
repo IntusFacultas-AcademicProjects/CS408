@@ -13,6 +13,11 @@ var fs = require('fs');
 
 
 var app        = express();                 // define our app using express
+
+
+const MSG_SUCCESS = {'message':'success'};
+
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,8 +44,27 @@ con.connect(function(err){
 	console.log('Error connecting to Db');
 	return;
     }
-    console.log('Connection established');
 });
+console.log('Connection established');
+
+
+//Create Universal response functions
+app.response.logAndSend = function(obj) {
+    console.log('<<<[RESPONSE]: %j', obj);
+    this.json(obj);
+};
+app.response.errAndSend = function(err) {
+
+    var obj = {};
+    obj.err = err.message;
+    
+    console.log('\x1b[33m%s\x1b[0m: ', 'Request generated an Error: ' + err.message);    
+    console.log('<<<[RESPONSE]: %j', obj);
+    this.json(obj);
+
+};
+
+
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -58,7 +82,7 @@ router.use(function(req, res, next) {
     }
     else {
 
-	// do logging and validation here
+	//Do Request logging here
 	console.log('>>>[%s]: %s with data: %s',req.method.toUpperCase(), req.url, JSON.stringify(req.body));
 	next();
     }
@@ -69,217 +93,158 @@ router.use(function(req, res, next) {
 router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		var response = {message: 'Success' };
-		console.log("<<<[RESPONSE]: %j", response);
-		res.json(response);
-	    }
+
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(MSG_SUCCESS);
 
 	});
-	
     });
 
 router.route('/authAccount')
     .post(function(req, res) {
 	query.authAccount(req.body.username,req.body.password,con,function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
+
+	    if(err)
+	    	res.errAndSend(err);
+	    else
+	    	res.logAndSend(result);
 
 	});
-	
     });
 
 router.route('/deleteAccount')
     .delete(function(req, res) {
 	query.deleteAccount(req.body.email,req.body.password,con,function(err,result){
 
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
+	    if(err)
+	    	res.errAndSend(err);
+	    else
+	    	res.logAndSend(result);
 
 	});
-
-	
     });
 
 router.route('/updateAccountPassword')
     .post(function(req, res) {
 	query.updateAccountPassword(req.body.username,req.body.oldPassword,req.body.newPassword,con,function(err,result){
 
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
-
+	    if(err)
+	    	res.errAndSend(err);
+	    else
+	    	res.logAndSend(result);
 	    
 	});
-	
     });
-
 
 router.route('/getUserHours')
     .post(function(req, res) {
 	query.getUserHours(req.body.username,con,function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
 
-	    console.log("<<<[RESPONSE]: %j", result);
-	    res.json(result);
+	    if(err)
+	    	res.errAndSend(err);
+	    else
+	    	res.logAndSend(result);
 	    
 	});
-	
     });
 
 router.route('/getRoomBlockedStatus')
     .post(function(req, res) {
 	query.getRoomBlockedStatus(req.body.roomID,con,function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
 
-	    console.log("<<<[RESPONSE]: %j", result);
-	    res.json(result);
-	    
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
+
 	});
-	
     });
 
 router.route('/setRoomBlockedStatus')
     .post(function(req, res) {
 	query.setRoomBlockedStatus(req.body.roomID, req.body.status, con, function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
 
-	    console.log("<<<[RESPONSE]: %j", result);
-	    res.json(result);
-	    
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
+
 	});
-	
     });
 
 router.route('/setReservationShareable')
     .post(function(req, res) {
 	query.setReservationShareable(req.body.reservationID, req.body.status, con, function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
 
-	    console.log("<<<[RESPONSE]: %j", result);
-	    res.json(result);
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
 	    
 	});
-	
     });
-
-
 
 
 router.route('/getRoomSchedule')
     .post(function(req, res) {
 	query.getRoomSchedule(req.body.roomID, req.body.date, con, function(err, result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
 
+ 	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
+	     	     
 	});
-
     });
-
 
 router.route('/getUserReservations')
     .post(function(req, res) {
 	query.getUserReservations(req.body.username, con, function(err, result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
+
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
 
 	});
-
     });
-
-
 
 router.route('/getAllRooms')
     .post(function(req, res) {
-    
 	query.getAllRooms(req.body.date, con, function(err, result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		console.log("<<<[RESPONSE]: %j", result);
-		res.json(result);
-	    }
+
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
 
 	});
-
     });
 
 router.route('/addReservation')
     .post(function(req, res) {
 	query.addReservation(req.body.roomID, req.body.username, req.body.date, req.body.startTime, req.body.endTime, req.body.shareable, con,function(err,result){
-	    if(err){
-		console.error('Request generated an error: ' + err.message);
-		res.json({ err: err.message });
-	    }
-	    else{
-		var response = {message: 'Success',reservationID: result};
-		console.log("<<<[RESPONSE]: %j", response);
-		res.json(response);
-	    }
+
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
 
 	});
-	
     });
 
 router.route('/cancelReservation')
     .post(function(req, res) {
 	query.cancelReservation(req.body.reservationID,con,function(err,result){
-	    if(err){
-		res.json({ err: err.message });
-	    }
-	    else{
-		res.json(result);
-	    }
+
+	    if(err)
+		res.errAndSend(err);
+	    else
+		res.logAndSend(result);
 
 	});
-	
     });
 
 // REGISTER OUR ROUTES -------------------------------

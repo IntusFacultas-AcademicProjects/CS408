@@ -8,7 +8,7 @@ var moment = require('moment');
 var async = require('async');
 
 var usernameExists = function(username,connection,callback) {
-   connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username], function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE username=?', [username], function(error,results,fields){
        if(error){
 	   callback(error);
 	   return;
@@ -24,7 +24,7 @@ var usernameExists = function(username,connection,callback) {
 
 var emailExists = function(email,connection,callback) {
 
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE email=?', [email], function(error,results,fields){
 
        if(error){
 	   callback(error);
@@ -163,11 +163,13 @@ var addAccount = function(email,username,password,connection,callback) {
 
 var authAccount = function(username,password,connection,callback) 
 {
-	console.log("SELECT * FROM accounts WHERE username LIKE %s AND password LIKE %s\n", username, password);
-    connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
-	if(error)
-	    callback(error)
+    
+    connection.query('SELECT * FROM accounts WHERE username=? AND password=?', [username,password] ,function(error,results,fields){
 
+	if(error){
+	    callback(error)
+	    return;
+	}
 
 	if(results.length == 0){
 	    callback(null, {"err":"Invalid Credentials"});
@@ -188,7 +190,7 @@ var authAccount = function(username,password,connection,callback)
 
 var deleteAccount = function(email,connection,callback) 
 {
-    connection.query('DELETE FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+    connection.query('DELETE FROM accounts WHERE email=?', [email], function(error,results,fields){
 	if(error)
 	    throw error;
 	if(results.affectedRows == 1)
@@ -357,15 +359,16 @@ var getAllRooms = function(date, connection, callback){
 var getUserReservations = function(username, connection, callback){
 
 
-    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date > CURDATE()', [username], function(error,results,fields){		
+    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date >= CURDATE()', [username], function(error,results,fields){		
 
 	if(error){
 	    callback(error);
 	    return;
 	}
-
+	
 	if(results.length == 0){
 	    callback(null, {"res":[]});
+	    return;
 	}
 	
 	results.forEach(function(element, index, array){
@@ -568,18 +571,17 @@ var cancelReservation = function(reservationID, connection, callback)
 {
 
 
-    async.series({
-
+    async.waterfall([
 	
-	hourData: function(callback) {
-	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
-		console.log(results);
+	//Get reservation data
+	function(callback) {
+	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id=?', [reservationID], function(error,results,fields){
 		if(error)
 		    callback(error)
 		else if(results.length == 1)
-		    callback(null, {"username":results[0].username, "offset":results[0].endTime-results[0].startTime});
+		    callback(null, results[0].username, results[0].endTime-results[0].startTime);
 		else if(results.length == 0)
-		    callback(new Error("User doesn't exist"));
+		    callback(new Error("Reservation doesn't exist"));
 		else
 		    callback(new Error("illegal state: multiple results for unique reservation_id"));
 	    });
@@ -587,15 +589,32 @@ var cancelReservation = function(reservationID, connection, callback)
 	    
 	},
 
-	deleteReservation: function(callback) {
-	    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+	//Return user hours
+	function(username, value, callback){
+	    connection.query('UPDATE accounts SET hours_remain=hours_remain+? WHERE username=?', [value,username], function(error,results,fields){
+		
+		if(error)
+		    callback(error);
+		else if(results.affectedRows == 1)
+		    callback(null);
+		else if(results.affectedRows == 0)
+		    callback(new Error("User doesn't exist"));
+		else
+		    callback(new Error("Illegal State: multiple results from username " + username));
+		
+	    });	    
+	},
+
+	//Delete reservation
+	function(callback) {
+	    connection.query('DELETE FROM reservations WHERE reservation_id=?', [reservationID], function(error,results,fields){
 
 		if(error)
 		    callback(error)
 		if(results.affectedRows == 0)
 		    callback(new Error("reservation doesnt exist"));
 		else if(results.affectedRows == 1)
-		    callback(null, "success");
+		    callback(null, {"message":"success"});
 		else
 		    callback(new Error('illegal state: duplicate resvation IDs'));
 	    
@@ -603,37 +622,14 @@ var cancelReservation = function(reservationID, connection, callback)
 
 	}
 	    
-    },function(err, results) {
+    ],function(err, results) {
 
-	if(results.deleteReservation != 'success'){
-	    callback(new Error("Could not cancel reservation"));
-	    return;
-	}
-	
-	addDeltaUserHours(results.hourData.username, results.hourData.offset, connection, function(err, res){
-
-	    if(err){
-		callback(err);
-		return;
-	    }
-	    else{
-		callback(null, res);
-	    }
-	    
-	});
+	if(err)
+	    callback(err);
+	else
+	    callback(null, results);
 
     });
-    
-
-
-
-
-
-
-
-	
-
-
 };
 
 exports.emailExists = emailExists;
