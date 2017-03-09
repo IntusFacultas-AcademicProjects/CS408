@@ -71,7 +71,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
     	
-		if ($scope.username.includes('%') || $scope.password.includes('%')){
+		if ($scope.username.indexOf('%') >= 0 || $scope.password.indexOf('%') >= 0){
 			alert("Invalid Credentials");
             window.location.reload();
 			return;
