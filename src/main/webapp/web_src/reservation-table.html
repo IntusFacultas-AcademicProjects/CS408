@@ -22,7 +22,7 @@
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 19)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.19" ng-disabled="validate(roomData, 19)"> 19:00-19:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 20)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.20" ng-disabled="validate(roomData, 20)"> 20:00-20:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 21)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.21" ng-disabled="validate(roomData, 21)"> 21:00-21:59</button>
-    <button type="button" ng-class="{'shareable': validateShareable(roomData, 22)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.22" ng-disabled="validate(roomData, 22)"> 23:00-22:59</button>
+    <button type="button" ng-class="{'shareable': validateShareable(roomData, 22)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.22" ng-disabled="validate(roomData, 22)"> 22:00-22:59</button>
     <button type="button" ng-class="{'shareable': validateShareable(roomData, 23)}" ng-click="openHours($event, roomData)" class="list-group-item" id="roomModal.23" ng-disabled="validate(roomData, 23)"> 23:00-23:59</button>
     <div class="modal fade" id="reserve-input-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
@@ -38,7 +38,7 @@
                             <br />
                                 <label for="endTime" style="margin-left:3%">Reservation End Time</label>
                                 <select id="endTime" class="mdb-select form-control" onchange="changeFunc()">
-                                      <option ng-repeat="hour in availableHours" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
+                                      <option ng-repeat="hour in availableHoursEnd" value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
                                 </select>
                             <br />
                             <div class="form-group">

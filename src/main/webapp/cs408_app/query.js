@@ -475,7 +475,22 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 {
 
     //TODO: check hours
+	/*connection.query('SELECT hours_remain FROM accounts WHERE username=?', [username], function(error,results,fields){
 
+       if(error){
+	   callback(error);
+	   return;
+       }
+
+
+       if(results.length == 1)
+	   callback(null, {"data":results[0].hours_remain});
+       else if(results.length == 0)
+	   callback(null, {"err":"username doesn't exist"});
+       else
+	   callback(new Error("Illegal State: multiple results from username " + username));
+
+    });*/
     //We need synchronous execution here because we need to make sure 
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
@@ -487,10 +502,10 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-	    else if(endTime < 0 || endTime > 23){
+	    /*else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
-	    }
+	    }*/
 	    else if(startTime >= endTime){
 		callback(new Error("startTime must be less than endTime"));
 		return;
