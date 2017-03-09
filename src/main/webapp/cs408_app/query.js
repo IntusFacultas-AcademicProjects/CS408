@@ -1,6 +1,6 @@
 /*
 * This file should contain all api calls that query the database.
-* All functions should include a connection argument. This is 
+* All functions should include a connection argument. This is
 * the database connection in which to be used in querying.
 */
 var util = require('util');
@@ -18,7 +18,7 @@ var usernameExists = function(username,connection,callback) {
 	   callback(null,true);
        else
 	   callback(null,false);
-	
+
     });
 };
 
@@ -35,14 +35,14 @@ var emailExists = function(email,connection,callback) {
 	   callback(null, true);
        else
 	   callback(null, false);
-	
+
     });
 };
 
 
 var getUserHours = function(username,connection,callback) {
 
-    
+
    connection.query('SELECT hours_remain FROM accounts WHERE username=?', [username], function(error,results,fields){
 
        if(error){
@@ -64,7 +64,7 @@ var getUserHours = function(username,connection,callback) {
 
 var addDeltaUserHours = function(username,value,connection,callback) {
 
-    
+
     connection.query('UPDATE accounts SET hours_remain=hours_remain+? WHERE username=?', [value,username], function(error,results,fields){
 
 	if(error){
@@ -78,7 +78,7 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 	    callback(null, {"err":"username doesn't exist"});
 	else
 	    callback(new Error("Illegal State: multiple results from username " + username));
-	
+
     });
 };
 
@@ -86,7 +86,7 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 
 
 var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
-    
+
     connection.query("SELECT * FROM reservations " +
 		     "WHERE room_id = ? " +
 		     "AND date = ? " +
@@ -100,14 +100,14 @@ var isConflictingTime = function(roomID, date, startTime, endTime, connection, c
 			     callback(err)
 			     return;
 			 }
-			     
+
 			 if(res.length == 0){
 			     callback(null, false);
 			 }
 			 else {
 			     callback(null, true);
 			 }
-			     
+
 		     });
 
 }
@@ -130,12 +130,12 @@ var addAccount = function(email,username,password,connection,callback) {
 		callback(err, res);
 	    });
 	}
-	
-	
+
+
     },
     // ...and get the results here
     function(err, results) {
-		     
+
 	if(results.usercheck){
 	    callback(new Error("username already exists"));
 	    return;
@@ -144,7 +144,7 @@ var addAccount = function(email,username,password,connection,callback) {
 	    callback(new Error("email already exists"));
 	    return;
 	}
-	
+
 	connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
     	    if(error){
     		callback(error);
@@ -153,17 +153,17 @@ var addAccount = function(email,username,password,connection,callback) {
     	    else{
     		callback(null,{message:'success'});
 	    }
-		
+
     	    console.log('Added account: ' + email + ', password: ' + password + '\n');
 	});
-	
+
     });
-    
+
 };
 
-var authAccount = function(username,password,connection,callback) 
+var authAccount = function(username,password,connection,callback)
 {
-    
+
     connection.query('SELECT * FROM accounts WHERE username=? AND password=?', [username,password] ,function(error,results,fields){
 
 	if(error){
@@ -175,20 +175,20 @@ var authAccount = function(username,password,connection,callback)
 	    callback(null, {"err":"Invalid Credentials"});
 	    return
 	}
-	    
-	    
+
+
 	var isAdmin = (results[0].is_admin == 1 ? true : false);
-	
+
 	if(results.length == 1)
 	    callback(null, {"message":"Authenticated","data":isAdmin});
 	else
 	    callback(new Error("Illegal State: multiple values for credential pair"));
-	
+
     });
 };
 
 
-var deleteAccount = function(email,connection,callback) 
+var deleteAccount = function(email,connection,callback)
 {
     connection.query('DELETE FROM accounts WHERE email=?', [email], function(error,results,fields){
 	if(error)
@@ -199,14 +199,14 @@ var deleteAccount = function(email,connection,callback)
 	    callback(new Error('account doesnt exist'));
 	else
 	    callback(new Error('Illegal state'));
-	
+
     });
 };
 
 var getRoomBlockedStatus = function(roomID, connection, callback){
 
     //TODO check roomID exists
-    
+
     connection.query('SELECT blocked_status FROM rooms WHERE room_id=?', [roomID], function(error,results,fields){
 
 	if(results.length == 1){
@@ -215,7 +215,7 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 	else{
 	    callback(new Error("Illegal state: multiple blocked results for roomID: " + roomID));
 	}
-	
+
     });
 
 
@@ -223,33 +223,40 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 
 var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
 
-    if(!newPassword.match(/[a-z]/i) || !newPassword.match(/[0-9]/i))
-    {
-        callback(new Error("invalid password"));
-	return;
-    }
-    connection.query('UPDATE accounts SET password=? WHERE username=? AND password=?', [newPassword, username, oldPassword], function(error,results,fields){
+  if(!newPassword.match(/[a-z]/i) || !newPassword.match(/[0-9]/i || !newPassword.match(/[A-Z]/i))) {
+      callback(new Error("invalid password"));
+      return;
+  }
 
-	if(error)
-	{
-	    callback(new Error(error));
-	}
-	if(results.affectedRows == 0)
-	{
-	    callback(new Error("invalid credentials"));
-	}
-	else if(results.affectedRows == 1)
-	{
-	    callback(null, {"message":"success"});
-	}
-	else
-	{
-	    callback(new Error('illegal state: multiple results for user and pass'));
-	}
+  if(newPassword.length < 5) {
+    callback(new Error("password must be at least 5 characters in length"));
+    return;
+  }
 
-    });
+  if(newPassword.match(/[^0-9a-zA-Z\?\!\.]/i)) {
+    callback(new Error("password may only contain alphanumeric characters or the characters . ? or !"));
+    return;
+  }
 
+  connection.query('UPDATE accounts SET password=? WHERE username=? AND password=?', [newPassword, username, oldPassword], function(error,results,fields){
+  	if(error)
+  	{
+  	    callback(new Error(error));
+  	}
+  	if(results.affectedRows == 0)
+  	{
+  	    callback(new Error("invalid credentials"));
+  	}
+  	else if(results.affectedRows == 1)
+  	{
+  	    callback(null, {"message":"success"});
+  	}
+  	else
+  	{
+  	    callback(new Error('illegal state: multiple results for user and pass'));
+  	}
 
+  });
 };
 
 
@@ -257,7 +264,7 @@ var setRoomBlockedStatus = function(roomID, status, connection, callback){
 
 
     status = (status ? 1 : 0);
-    
+
     connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
 
 	if(error)
@@ -280,7 +287,7 @@ var setReservationShareable = function(reservationID, status, connection, callba
     //TODO check reservationID exists
 
     status = (status ? 1 : 0);
-    
+
     connection.query('UPDATE reservations SET shareable=? WHERE reservation_id=?', [status, reservationID], function(error,results,fields){
 
 	if(error)
@@ -305,12 +312,12 @@ var getAllRooms = function(date, connection, callback){
 	"rooms" : []
     }
 
-    
+
     if(!moment(date, "YYYY-MM-DD", true).isValid()){
 	callback(new Error("invalid date"));
 	return;
     }
-    
+
     connection.query('SELECT * FROM rooms', function(error,results,fields){
 
 	//Iterate over all rooms in database
@@ -331,13 +338,13 @@ var getAllRooms = function(date, connection, callback){
 
 	    //Get all reservations for room here
 	    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?',
-			     [element.room_id, date], function(error,results,fields){		
+			     [element.room_id, date], function(error,results,fields){
 		if(error){
 		    callback(error);
 		    return;
 		}
 
-				 
+
 		roomObj.res = results;
 		roomsData.rooms.push(roomObj);
 
@@ -347,11 +354,11 @@ var getAllRooms = function(date, connection, callback){
 
 
 	    });
-	    
+
 	});
 
     });
-    
+
 };
 
 
@@ -359,33 +366,33 @@ var getAllRooms = function(date, connection, callback){
 var getUserReservations = function(username, connection, callback){
 
 
-    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date >= CURDATE()', [username], function(error,results,fields){		
+    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date >= CURDATE()', [username], function(error,results,fields){
 
 	if(error){
 	    callback(error);
 	    return;
 	}
-	
+
 	if(results.length == 0){
 	    callback(null, {"res":[]});
 	    return;
 	}
-	
+
 	results.forEach(function(element, index, array){
-	    
-	    connection.query('SELECT room_name, blocked_status FROM rooms WHERE room_id=?', [element.roomID], function(error,results,fields){		
+
+	    connection.query('SELECT room_name, blocked_status FROM rooms WHERE room_id=?', [element.roomID], function(error,results,fields){
 
 		if(error){
 		    callback(error);
 		    return;
 		}
-		
+
 		if(results.length == 1){
 		    element.roomName = results[0].room_name;
 		    element.blockedStatus = results[0].blocked_status;
 		}
 		else if(results.length == 0){
-		    callback(new Error("Could not fetch roomName for roomID: " + element.roomID)); 
+		    callback(new Error("Could not fetch roomName for roomID: " + element.roomID));
 		    return;
 		}
 		else{
@@ -398,15 +405,15 @@ var getUserReservations = function(username, connection, callback){
 		if(index + 1  == array.length){
 		    callback(null,{"res":array});
 		}
-		
-		
+
+
 	    });
-	    
-	    
+
+
 	});
 
     });
-    
+
 };
 
 
@@ -419,8 +426,8 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 	callback(new Error("invalid date"));
 	return;
     }
-    
-    
+
+
     connection.query('SELECT * FROM rooms WHERE room_id = ?', [roomID], function(error,results,fields){
 
 	if(error){
@@ -435,9 +442,9 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 	    callback(new Error("invalid state: duplicate rooms in database"));
 	    return;
 	}
-	
-	
-	
+
+
+
 	//Set room data here
 	roomObj.roomID = results[0].room_id;
 	roomObj.roomName = results[0].room_name;
@@ -445,12 +452,12 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 	roomObj.blocked = results[0].blocked == 1 ? true : false;
 
 	//Get all reservations for room here
-	connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?', [roomID, date], function(error,results,fields){		
+	connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable FROM reservations WHERE room_id = ? AND date = ?', [roomID, date], function(error,results,fields){
 	    if(error){
 		callback(error);
 		return;
 	    }
-	    
+
 	    roomObj.reservations = results;
 	    callback(null,roomObj);
 
@@ -471,18 +478,18 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 *     shareable:    "TRUE" || "FALSE"
 */
 
-var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
+var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback)
 {
 
     //TODO: check hours
 
-    //We need synchronous execution here because we need to make sure 
+    //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
 
-	
+
 	formatcheck: function(callback) {
-	    
+
 	    if(startTime < 0 || startTime > 23){
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
@@ -494,7 +501,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	    else if(startTime >= endTime){
 		callback(new Error("startTime must be less than endTime"));
 		return;
-	    }	 
+	    }
 	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
 		callback(new Error("invalid date"));
 		return;
@@ -502,7 +509,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	    else{
 		callback(null, true);
 	    }
-	    
+
 	},
 
 	conflictcheck: function(callback) {
@@ -517,7 +524,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	    });
 
 	}
-	    
+
     },
     // ...and get the results here
     function(err, results) {
@@ -542,12 +549,12 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("Could not remove hours from user"));
 		return;
 	    }
-		
+
 	    //Change params to format we need
 	    startTime = util.format("0%d:00:00",startTime);
 	    endTime = util.format("0%d:00:00",endTime);
 	    shareable = shareable ? 1 : 0;
-	    
+
 
 	    connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,insertResults,fields){
 
@@ -559,20 +566,20 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
 			console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",insertResults.insertId,user,date,startTime,endTime));
 			callback(null, results.insertId);
-			
+
 		}
 	    });
 
 	});
     });
 }
-	
-var cancelReservation = function(reservationID, connection, callback) 
+
+var cancelReservation = function(reservationID, connection, callback)
 {
 
 
     async.waterfall([
-	
+
 	//Get reservation data
 	function(callback) {
 	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id=?', [reservationID], function(error,results,fields){
@@ -586,13 +593,13 @@ var cancelReservation = function(reservationID, connection, callback)
 		    callback(new Error("illegal state: multiple results for unique reservation_id"));
 	    });
 
-	    
+
 	},
 
 	//Return user hours
 	function(username, value, callback){
 	    connection.query('UPDATE accounts SET hours_remain=hours_remain+? WHERE username=?', [value,username], function(error,results,fields){
-		
+
 		if(error)
 		    callback(error);
 		else if(results.affectedRows == 1)
@@ -601,8 +608,8 @@ var cancelReservation = function(reservationID, connection, callback)
 		    callback(new Error("User doesn't exist"));
 		else
 		    callback(new Error("Illegal State: multiple results from username " + username));
-		
-	    });	    
+
+	    });
 	},
 
 	//Delete reservation
@@ -617,11 +624,11 @@ var cancelReservation = function(reservationID, connection, callback)
 		    callback(null, {"message":"success"});
 		else
 		    callback(new Error('illegal state: duplicate resvation IDs'));
-	    
+
 	    });
 
 	}
-	    
+
     ],function(err, results) {
 
 	if(err)
@@ -647,4 +654,3 @@ exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
-
