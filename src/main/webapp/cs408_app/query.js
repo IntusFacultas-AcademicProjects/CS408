@@ -8,7 +8,7 @@ var moment = require('moment');
 var async = require('async');
 
 var usernameExists = function(username,connection,callback) {
-   connection.query('SELECT * FROM accounts WHERE username LIKE ?', [username], function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE username=?', [username], function(error,results,fields){
        if(error){
 	   callback(error);
 	   return;
@@ -24,7 +24,7 @@ var usernameExists = function(username,connection,callback) {
 
 var emailExists = function(email,connection,callback) {
 
-   connection.query('SELECT * FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+   connection.query('SELECT * FROM accounts WHERE email=?', [email], function(error,results,fields){
 
        if(error){
 	   callback(error);
@@ -163,8 +163,8 @@ var addAccount = function(email,username,password,connection,callback) {
 
 var authAccount = function(username,password,connection,callback) 
 {
-	console.log("SELECT * FROM accounts WHERE username LIKE %s AND password LIKE %s\n", username, password);
-    connection.query('SELECT * FROM accounts WHERE username LIKE ? AND password LIKE ?', [username,password] ,function(error,results,fields){
+    
+    connection.query('SELECT * FROM accounts WHERE username=? AND password=?', [username,password] ,function(error,results,fields){
 	if(error)
 	    callback(error)
 
@@ -188,7 +188,7 @@ var authAccount = function(username,password,connection,callback)
 
 var deleteAccount = function(email,connection,callback) 
 {
-    connection.query('DELETE FROM accounts WHERE email LIKE ?', [email], function(error,results,fields){
+    connection.query('DELETE FROM accounts WHERE email=?', [email], function(error,results,fields){
 	if(error)
 	    throw error;
 	if(results.affectedRows == 1)
@@ -572,7 +572,7 @@ var cancelReservation = function(reservationID, connection, callback)
 	
 	//Get reservation data
 	function(callback) {
-	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id=?', [reservationID], function(error,results,fields){
 		if(error)
 		    callback(error)
 		else if(results.length == 1)
@@ -604,7 +604,7 @@ var cancelReservation = function(reservationID, connection, callback)
 
 	//Delete reservation
 	function(callback) {
-	    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+	    connection.query('DELETE FROM reservations WHERE reservation_id=?', [reservationID], function(error,results,fields){
 
 		if(error)
 		    callback(error)
