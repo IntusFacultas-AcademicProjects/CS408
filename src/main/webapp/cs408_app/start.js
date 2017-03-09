@@ -10,7 +10,7 @@ var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 var path = require("path");
 var fs = require('fs');
-
+var schedule = require('node-schedule');
 
 var app        = express();                 // define our app using express
 
@@ -64,6 +64,21 @@ app.response.errAndSend = function(err) {
 
 };
 
+
+
+var j = schedule.scheduleJob('0 0 0 * *', function(){
+
+    query.removeExpiredReservations(function(err,res){
+	if(err){
+	    console.log("Failed to remove expired reservations");
+	}
+	else{
+	    console.log("Removed %d expired reservations", res.data);
+	}
+	    	    
+    });
+    
+});
 
 
 // ROUTES FOR OUR API
