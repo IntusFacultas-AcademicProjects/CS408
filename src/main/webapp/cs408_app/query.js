@@ -165,9 +165,11 @@ var authAccount = function(username,password,connection,callback)
 {
     
     connection.query('SELECT * FROM accounts WHERE username=? AND password=?', [username,password] ,function(error,results,fields){
-	if(error)
-	    callback(error)
 
+	if(error){
+	    callback(error)
+	    return;
+	}
 
 	if(results.length == 0){
 	    callback(null, {"err":"Invalid Credentials"});
@@ -357,15 +359,16 @@ var getAllRooms = function(date, connection, callback){
 var getUserReservations = function(username, connection, callback){
 
 
-    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date > CURDATE()', [username], function(error,results,fields){		
+    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date >= CURDATE()', [username], function(error,results,fields){		
 
 	if(error){
 	    callback(error);
 	    return;
 	}
-
+	
 	if(results.length == 0){
 	    callback(null, {"res":[]});
+	    return;
 	}
 	
 	results.forEach(function(element, index, array){
