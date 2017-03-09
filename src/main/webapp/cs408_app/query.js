@@ -336,7 +336,7 @@ var getAllRooms = function(date, connection, callback){
 var getUserReservations = function(username, connection, callback){
 
 
-    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=?', [username], function(error,results,fields){		
+    connection.query('SELECT reservation_id, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, shareable, date, room_id AS `roomID` FROM reservations WHERE username=? AND date > CURDATE()', [username], function(error,results,fields){		
 
 	if(error){
 	    callback(error);
