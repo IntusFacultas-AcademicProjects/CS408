@@ -329,6 +329,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.roomStatus;
     //admin option
     $scope.option;
+    // start date of blocking
+    $scope.dpbStart;
+    // end date of blocking
+    $scope.dpbEnd;
+    
     $scope.availableHours = [];
 
     $scope._init = function() {
@@ -395,6 +400,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	    });
     };
     $scope.adminLoadRooms = function() {
+    
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -486,12 +492,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
     //admin block options
    	$scope.adminoption = function() {
-
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
             $scope.unblockRoom($scope.roomIndex);
             
-            alert("Unblock successfully");
+            alert("Unblocked successfully");
             window.location.reload();
 			return true;
         }
@@ -499,7 +504,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         {
             $scope.blockRoom($scope.roomIndex);
             
-            alert("Block successfully");
+            alert("Blocked successfully");
             window.location.reload();
 			return true;
         }
@@ -508,7 +513,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
-        
+        console.log(num);
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
          if ($scope.roomsData[num].blocked)
         {
@@ -520,23 +525,10 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             $scope.roomStatus = "Current Status: Available";
             $scope.option = "Block";
         }
-        if ($scope.roomsData[num].blocked == false && !$scope.user.admin) {
-            $("#reserve-modal").modal("toggle");
-            return true;
-        } 
-        else {
-            var room = $scope.roomsData[num];
-            console.log("attempting to open blocked room modal.")
-            if ($scope.user.admin) {
-                $("#reserve-block-modal").modal("toggle");
-                return false;
-            } 
-            else {
-                alert("This room is currently blocked");
-                return false;
-            }
-        }
-		
+        var room = $scope.roomsData[num];
+		$("#reserve-block-modal").modal("toggle");
+		return false;
+
     };
 
 }]);
