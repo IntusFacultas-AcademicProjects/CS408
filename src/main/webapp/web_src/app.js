@@ -201,6 +201,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     $scope.confirmPassword;
     $scope.oldPassword;
     $scope.newPassword;
+    $scope.numRes = 0;
     $scope.cancel = function(event) {
     	
     	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
@@ -270,12 +271,14 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
         					"21:59", "22:59", "23:59"];
         	var months = ["ERROR", "January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"];
         	angular.forEach($scope.reservations, function(reservation, index) {
-						
 					    reservation.date=reservation.date.substring(0, reservation.date.indexOf("T"));
 					    var date = reservation.date.split("-");
 					    reservation.date = months[parseInt(date[1])] + " " + date[2] + " " + date[0];
 					    reservation.startTime = start[reservation.startTime];
 						reservation.endTime = end[reservation.endTime];
+						if (reservation.blockedStatus == 0) {
+							$scope.numRes += 1;
+						}
 					}
 
 				);
