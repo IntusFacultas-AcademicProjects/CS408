@@ -632,6 +632,60 @@ var cancelReservation = function(reservationID, connection, callback)
     });
 };
 
+var getExpiredReservations = function(connection, callback){
+
+    connection.query('SELECT reservation_id, username, HOUR(start_time), HOUR(end_time), date FROM reservations WHERE date < CURDATE()', function(error,results,fields){
+
+	if(err)
+	    callback(err);
+	else
+	    callback(null,results);
+	
+    });
+}
+
+var removeExpiredReservations = function(connection, callback){
+
+    async.waterfall([
+
+	//Get expired reservations
+	function(callback){
+	    getExpiredReservations(connection, function(err, res){
+		if(err)
+		    callback(err);
+		else
+		    callback(null,res);
+	    });
+	},
+
+	function(reservations, callback){
+	    reservations.forEach(function(element, index, array){
+		cancelReservation(element.reservationID, connection, function(err, res){
+		    if(err){
+			callback(err);
+			return;
+		    }
+		    
+		    if(index + 1  == array.length){
+			callback(null, reservations);
+		    }
+
+		});
+
+	    });
+	}
+
+    ],function(err,result){
+
+	if(err)
+	    callback(err);
+	else
+	    callback(null,result);
+	
+    });
+    	    
+}
+
 exports.emailExists = emailExists;
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
