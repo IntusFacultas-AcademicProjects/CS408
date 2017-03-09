@@ -568,18 +568,17 @@ var cancelReservation = function(reservationID, connection, callback)
 {
 
 
-    async.series({
-
+    async.waterfall([
 	
-	hourData: function(callback) {
+	//Get reservation data
+	function(callback) {
 	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
-		console.log(results);
 		if(error)
 		    callback(error)
 		else if(results.length == 1)
-		    callback(null, {"username":results[0].username, "offset":results[0].endTime-results[0].startTime});
+		    callback(null, results[0].username, results[0].endTime-results[0].startTime);
 		else if(results.length == 0)
-		    callback(new Error("User doesn't exist"));
+		    callback(new Error("Reservation doesn't exist"));
 		else
 		    callback(new Error("illegal state: multiple results for unique reservation_id"));
 	    });
@@ -587,7 +586,24 @@ var cancelReservation = function(reservationID, connection, callback)
 	    
 	},
 
-	deleteReservation: function(callback) {
+	//Return user hours
+	function(username, value, callback){
+	    connection.query('UPDATE accounts SET hours_remain=hours_remain+? WHERE username=?', [value,username], function(error,results,fields){
+		
+		if(error)
+		    callback(error);
+		else if(results.affectedRows == 1)
+		    callback(null);
+		else if(results.affectedRows == 0)
+		    callback(new Error("User doesn't exist"));
+		else
+		    callback(new Error("Illegal State: multiple results from username " + username));
+		
+	    });	    
+	},
+
+	//Delete reservation
+	function(callback) {
 	    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
 
 		if(error)
@@ -595,7 +611,7 @@ var cancelReservation = function(reservationID, connection, callback)
 		if(results.affectedRows == 0)
 		    callback(new Error("reservation doesnt exist"));
 		else if(results.affectedRows == 1)
-		    callback(null, "success");
+		    callback(null, {"message":"success"});
 		else
 		    callback(new Error('illegal state: duplicate resvation IDs'));
 	    
@@ -603,37 +619,14 @@ var cancelReservation = function(reservationID, connection, callback)
 
 	}
 	    
-    },function(err, results) {
+    ],function(err, results) {
 
-	if(results.deleteReservation != 'success'){
-	    callback(new Error("Could not cancel reservation"));
-	    return;
-	}
-	
-	addDeltaUserHours(results.hourData.username, results.hourData.offset, connection, function(err, res){
-
-	    if(err){
-		callback(err);
-		return;
-	    }
-	    else{
-		callback(null, res);
-	    }
-	    
-	});
+	if(err)
+	    callback(err);
+	else
+	    callback(null, results);
 
     });
-    
-
-
-
-
-
-
-
-	
-
-
 };
 
 exports.emailExists = emailExists;
