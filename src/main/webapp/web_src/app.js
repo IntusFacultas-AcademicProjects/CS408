@@ -71,10 +71,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
     	
-		/*if($scope.username.contains('%') || $scope.password.contains('%')){
+		if ($scope.username.includes('%') || $scope.password.includes('%')){
 			alert("Invalid Credentials");
+            window.location.reload();
 			return;
-		}*/
+		}
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			
 			if (typeof response.data.err == "undefined") {
