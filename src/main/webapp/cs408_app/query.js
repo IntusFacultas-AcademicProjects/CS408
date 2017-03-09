@@ -56,8 +56,29 @@ var getUserHours = function(username,connection,callback) {
        else if(results.length == 0)
 	   callback(null, {"err":"username doesn't exist"});
        else
-	   callback(new Error("Illegal State: multiple hours results from username " + username));
+	   callback(new Error("Illegal State: multiple results from username " + username));
 
+    });
+};
+
+
+var addDeltaUserHours = function(username,value,connection,callback) {
+
+    
+    connection.query('UPDATE accounts SET hours_remain=hours_remain+? WHERE username=?', [value,username], function(error,results,fields){
+
+	if(error){
+	    callback(error);
+	    return;
+	}
+
+	if(results.affectedRows == 1)
+	   callback(null, {"message":"success"});
+	else if(results.affectedRows == 0)
+	    callback(null, {"err":"username doesn't exist"});
+	else
+	    callback(new Error("Illegal State: multiple results from username " + username));
+	
     });
 };
 
@@ -349,7 +370,7 @@ var getUserReservations = function(username, connection, callback){
 	
 	results.forEach(function(element, index, array){
 	    
-	    connection.query('SELECT room_name FROM rooms WHERE room_id=?', [element.roomID], function(error,results,fields){		
+	    connection.query('SELECT room_name, blocked_status FROM rooms WHERE room_id=?', [element.roomID], function(error,results,fields){		
 
 		if(error){
 		    callback(error);
@@ -358,6 +379,7 @@ var getUserReservations = function(username, connection, callback){
 		
 		if(results.length == 1){
 		    element.roomName = results[0].room_name;
+		    element.blockedStatus = results[0].blocked_status;
 		}
 		else if(results.length == 0){
 		    callback(new Error("Could not fetch roomName for roomID: " + element.roomID)); 
@@ -544,19 +566,73 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	
 var cancelReservation = function(reservationID, connection, callback) 
 {
-    
-    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
 
-	if(error)
-	    callback(error)
-	if(results.affectedRows == 0)
-	    callback(new Error("reservation doesnt exist"));
-	else if(results.affectedRows == 1)
-	    callback(null, {"message":"success"});
-	else
-	    callback(new Error('illegal state: duplicate resvation IDs'));
+
+    async.series({
+
 	
+	hourData: function(callback) {
+	    connection.query('SELECT username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+		console.log(results);
+		if(error)
+		    callback(error)
+		else if(results.length == 1)
+		    callback(null, {"username":results[0].username, "offset":results[0].endTime-results[0].startTime});
+		else if(results.length == 0)
+		    callback(new Error("User doesn't exist"));
+		else
+		    callback(new Error("illegal state: multiple results for unique reservation_id"));
+	    });
+
+	    
+	},
+
+	deleteReservation: function(callback) {
+	    connection.query('DELETE FROM reservations WHERE reservation_id LIKE ?', [reservationID], function(error,results,fields){
+
+		if(error)
+		    callback(error)
+		if(results.affectedRows == 0)
+		    callback(new Error("reservation doesnt exist"));
+		else if(results.affectedRows == 1)
+		    callback(null, "success");
+		else
+		    callback(new Error('illegal state: duplicate resvation IDs'));
+	    
+	    });
+
+	}
+	    
+    },function(err, results) {
+
+	if(results.deleteReservation != 'success'){
+	    callback(new Error("Could not cancel reservation"));
+	    return;
+	}
+	
+	addDeltaUserHours(results.hourData.username, results.hourData.offset, connection, function(err, res){
+
+	    if(err){
+		callback(err);
+		return;
+	    }
+	    else{
+		callback(null, res);
+	    }
+	    
+	});
+
     });
+    
+
+
+
+
+
+
+
+	
+
 
 };
 
