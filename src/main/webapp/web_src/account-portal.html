@@ -52,6 +52,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h4>Reservations</h4>
+                            <a href="#" onclick="alert('Room reservations may not show up due to an Administrator blocking the room, or because the date has already passed.')">My reserverations are missing?</a>
                             <hr>
                         </div>
                     </div>
@@ -74,9 +75,9 @@
                             <hr>
                             <div class="row">
                             	<div class="col-lg-12">
-		                            <div style="overflow-y:scroll; height: 500px;">
+		                            <div style="overflow-y:scroll; overflow-x:hidden; height: 500px;">
 		                                <div ng-repeat="reservation in reservations">
-		                                    <div class="row">
+		                                    <div class="row" ng-if="reservation.blockedStatus == 0">
 		                                        <div class="col-sm-4">
 		                                            <h6>{{reservation.date}}: {{reservation.startTime}} - {{reservation.endTime}}</h6>
 		                                        </div>
@@ -94,8 +95,8 @@
 		                                                </div>                                              
 		                                        </div>
 		                                    </div>
-		                                </div>
-		                            </div>
+		                                </div>		                            
+		                            </div>			                            
                                 </div>
                             </div>
                         </div>
@@ -146,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="shadowed" style="background-color:white; border-radius:25px; padding:20px; margin-top:20px; margin-left:-10px; margin-right:20px;">
+                <div class="shadowed" style="background-color:white; border-radius:25px; overflow-x:hidden; padding:20px; margin-top:20px; margin-left:-10px; margin-right:20px;">
                     <div class="row" >
                         <div class="col-sm-12">
                             <h4>Account Information</h4>
@@ -165,10 +166,11 @@
                     </div>
                     <div class="row" >
                         <div class="col-sm-12">
-                            <h5>Number of Reservations: {{reservations.length}} reservations</h4>
+                            <h5>Number of Reservations: {{numRes}} reservations</h4>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <script>
                 $.material.init();
