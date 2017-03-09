@@ -448,6 +448,9 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) 
 {
+
+    //TODO: check hours
+
     //We need synchronous execution here because we need to make sure 
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
@@ -502,32 +505,43 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	    return;
 	}
 
-	//Change params to format we need
-	startTime = util.format("0%d:00:00",startTime);
-	endTime = util.format("0%d:00:00",endTime);
-	shareable = shareable ? 1 : 0;
 
-
-	connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);',
-			 [roomID, user, date, startTime, endTime, shareable], function(error,results,fields){
+	connection.query('UPDATE accounts SET hours_remain = hours_remain - ? WHERE username=?',[endTime-startTime,user], function(error,results,fields){
 
 	    if(error){
 		callback(error);
 		return;
 	    }
-            else{
-		console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",results.insertId,user,date,startTime,endTime));
-		callback(null, results.insertId);
+
+	    if(results.affectedRows != 1){
+		callback(new Error("Could not remove hours from user"));
+		return;
 	    }
+		
+	    //Change params to format we need
+	    startTime = util.format("0%d:00:00",startTime);
+	    endTime = util.format("0%d:00:00",endTime);
+	    shareable = shareable ? 1 : 0;
+	    
+
+	    connection.query('INSERT INTO `reservations` (`room_id`, `username`, `date`, `start_time`, `end_time`, `shareable`) VALUES (?, ?, ?, ?, ?, ?);', [roomID, user, date, startTime, endTime, shareable], function(error,insertResults,fields){
+
+		if(error){
+		    callback(error);
+		    return;
+		}
+		else{
+
+			console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",insertResults.insertId,user,date,startTime,endTime));
+			callback(null, results.insertId);
+			
+		}
+	    });
 
 	});
-	
     });
-
-
-
-};
-
+}
+	
 var cancelReservation = function(reservationID, connection, callback) 
 {
     
