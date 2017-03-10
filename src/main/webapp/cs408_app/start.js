@@ -66,11 +66,12 @@ app.response.errAndSend = function(err) {
 
 
 
-var j = schedule.scheduleJob('0 0 0 * *', function(){
+var j = schedule.scheduleJob('* * * * * *', function(){
 
-    query.removeExpiredReservations(function(err,res){
+    query.removeExpiredReservations(con, function(err,res){
+	//console.log(res);
 	if(err){
-	    console.log("Failed to remove expired reservations");
+	    console.log("Could not remove all expired reservations: " + err.message);
 	}
 	else{
 	    console.log("Removed %d expired reservations", res.data);

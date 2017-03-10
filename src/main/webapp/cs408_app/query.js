@@ -565,7 +565,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		else{
 
 			console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",insertResults.insertId,user,date,startTime,endTime));
-			callback(null, results.insertId);
+		    callback(null, {"data":results.insertId});
 
 		}
 	    });
@@ -641,10 +641,13 @@ var cancelReservation = function(reservationID, connection, callback)
 
 var getExpiredReservations = function(connection, callback){
 
-    connection.query('SELECT reservation_id, username, HOUR(start_time), HOUR(end_time), date FROM reservations WHERE date < CURDATE()', function(error,results,fields){
+    connection.query('SELECT reservation_id AS `reservationID`, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, date FROM reservations WHERE date < CURDATE()', function(error,results,fields){
 
-	if(err)
-	    callback(err);
+	if(error){
+	    console.log(err.message);
+	    callback(error);
+	    
+	}
 	else
 	    callback(null,results);
 	
@@ -658,6 +661,7 @@ var removeExpiredReservations = function(connection, callback){
 	//Get expired reservations
 	function(callback){
 	    getExpiredReservations(connection, function(err, res){
+
 		if(err)
 		    callback(err);
 		else
@@ -667,18 +671,25 @@ var removeExpiredReservations = function(connection, callback){
 
 	function(reservations, callback){
 	    reservations.forEach(function(element, index, array){
+
+		errCount = 0;
 		cancelReservation(element.reservationID, connection, function(err, res){
+
 		    if(err){
-			callback(err);
-			return;
-		    }
-		    
-		    if(index + 1  == array.length){
-			callback(null, reservations);
+			errCount++;
 		    }
 
 		});
+		
+		if(index + 1  == array.length){
 
+		    if(errCount == 0)
+			callback(null, {"data":array.length});
+		    else
+			callback(new Error("%d of %d removed",array.length-errCount,array.length));
+		}
+
+		
 	    });
 	}
 
@@ -708,3 +719,5 @@ exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
+exports.getExpiredReservations = getExpiredReservations;
+exports.removeExpiredReservations = removeExpiredReservations;
