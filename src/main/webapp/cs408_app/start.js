@@ -10,7 +10,7 @@ var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 var path = require("path");
 var fs = require('fs');
-
+var schedule = require('node-schedule');
 
 var app        = express();                 // define our app using express
 
@@ -45,7 +45,6 @@ con.connect(function(err){
 	return;
     }
 });
-console.log('Connection established');
 
 
 //Create Universal response functions
@@ -64,6 +63,23 @@ app.response.errAndSend = function(err) {
 
 };
 
+
+console.log("Starting hourly cleanup routine");
+//Schedule job to run hourly
+var j = schedule.scheduleJob('0 0 * * * *', function(){
+
+    query.removeExpiredReservations(con, function(err,res){
+
+	if(err){
+	    console.log("Could not remove all expired reservations: " + err.message);
+	}
+	else{
+	    console.log("Removed %d expired reservations", res.data);
+	}
+	    	    
+    });
+    
+});
 
 
 // ROUTES FOR OUR API
@@ -266,6 +282,7 @@ var gracefulShutdown = function() {
 	// The connection is terminated gracefully
 	// Ensures all previously enqueued queries are still
 	// before sending a COM_QUIT packet to the MySQL server.
+	j.cancel();
 	process.exit();
     });
 

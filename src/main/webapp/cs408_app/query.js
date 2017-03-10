@@ -166,7 +166,7 @@ var authAccount = function(username,password,connection,callback)
 	}
 
 	if(results.length == 0){
-	    callback(null, {"err":"Invalid Credentials"});
+	    callback(new Error("Invalid Credentials"));
 	    return
 	}
 
@@ -236,6 +236,7 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
   	if(error)
   	{
   	    callback(new Error(error));
+        return;
   	}
   	if(results.affectedRows == 0)
   	{
@@ -476,31 +477,32 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 {
 
 
-    //We need synchronous execution here because we need to make sure 
+    //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
 
 	allowanceCheck: function(callback) {
 	   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [user], function(error,results,fields){
-
        if(error){
-	   callback(error);
-	   return;
+    	   callback(error);
+    	   return;
        }
+
        if(results.length == 1) {
-		   var used = endTime - startTime;
-		   if (used > results[0].hours_remain) {
-		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
-		   		return;
-		   }
-		   else {
-		   		callback(null);
-		   }
+  		   var used = endTime - startTime;
+  		   if (used > results[0].hours_remain) {
+  		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
+  		   		return;
+  		   }
+  		   else {
+  		   		callback(null);
+  		   }
+
        }
        else if(results.length == 0)
-	   callback(new Error("Illegal State: no results from username " + user));
+	      callback(new Error("Illegal State: no results from username " + user));
        else
-	   callback(new Error("Illegal State: multiple results from username " + user));
+        callback(new Error("Illegal State: multiple results from username " + user));
 
     });
 	},
@@ -581,7 +583,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		else{
 
 			console.log(util.format("Reservation Added: ID: %d, User: %s, Date: %s, Time:%s-%s",insertResults.insertId,user,date,startTime,endTime));
-			callback(null, results.insertId);
+		    callback(null, {"data":results.insertId});
 
 		}
 	    });
@@ -655,6 +657,71 @@ var cancelReservation = function(reservationID, connection, callback)
     });
 };
 
+var getExpiredReservations = function(connection, callback){
+
+    connection.query('SELECT reservation_id AS `reservationID`, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, date FROM reservations WHERE date < CURDATE()', function(error,results,fields){
+
+	if(error){
+	    console.log(err.message);
+	    callback(error);
+	    
+	}
+	else
+	    callback(null,results);
+	
+    });
+}
+
+var removeExpiredReservations = function(connection, callback){
+
+    async.waterfall([
+
+	//Get expired reservations
+	function(callback){
+	    getExpiredReservations(connection, function(err, res){
+
+		if(err)
+		    callback(err);
+		else
+		    callback(null,res);
+	    });
+	},
+
+	function(reservations, callback){
+	    reservations.forEach(function(element, index, array){
+
+		errCount = 0;
+		cancelReservation(element.reservationID, connection, function(err, res){
+
+		    if(err){
+			errCount++;
+		    }
+
+		});
+		
+		if(index + 1  == array.length){
+
+		    if(errCount == 0)
+			callback(null, {"data":array.length});
+		    else
+			callback(new Error("%d of %d removed",array.length-errCount,array.length));
+		}
+
+		
+	    });
+	}
+
+    ],function(err,result){
+
+	if(err)
+	    callback(err);
+	else
+	    callback(null,result);
+	
+    });
+    	    
+}
+
 exports.emailExists = emailExists;
 exports.usernameExists = usernameExists;
 exports.addAccount = addAccount;
@@ -670,3 +737,5 @@ exports.getUserReservations = getUserReservations;
 exports.getAllRooms = getAllRooms;
 exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
+exports.getExpiredReservations = getExpiredReservations;
+exports.removeExpiredReservations = removeExpiredReservations;

@@ -2,7 +2,7 @@
 //These tests establish a connection to the database and perform various actions on test tables
 //with structures identical to those of the tables that will be used by the application
 
-//These tests are stateful, so they all act on the same database state, as most actions (user auth, room reservation and cancelling, reservation lookup) 
+//These tests are stateful, so they all act on the same database state, as most actions (user auth, room reservation and cancelling, reservation lookup)
 //require a previously modified state to get a meaningful measure of the program's accuracy
 
 
@@ -69,58 +69,71 @@ var con = mysql.createConnection({
 async.series({
 
     CON_CONNECT:function(callback){
-	con.connect(function(err){
-	    if(err){
-		callback(err)
-		return;
-	    }
-	    callback(null,true);
-	})
+			con.connect(function(err){
+			    if(err){
+				callback(err)
+				return;
+			    }
+			    callback(null,true);
+			})
     },
 
+		SETUP:function(callback) {
+			query.deleteAccount(account1.email, con, function(err, res){callback(null, true)});
+		},
+		SETUP1:function(callback) {
+			query.deleteAccount(account2.email, con, function(err, res){callback(null, true)});
+		},
+		SETUP2:function(callback) {
+			query.deleteAccount(account3.email, con, function(err, res){callback(null, true)});
+		},
+		SETUP3:function(callback) {
+			query.cancelReservation(res1.reservation_id, con, function(err, res){callback(null, true)});
+		},
+		SETUP4:function(callback) {
+			query.cancelReservation(res2.reservation_id, con, function(err, res){callback(null, true)});
+		},
+		SETUP5:function(callback) {
+			query.cancelReservation(res3.reservation_id, con, function(err, res){callback(null, true)});
+		},
 
     //TEST PASS
     TEST1_PASS:function(callback){
-	query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
-
-	    if(err)
-		callback(null, false)
-	    else
-		callback(null, res.message == 'success');
-	})
+			query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
+			    if(err)
+						callback(null, false)
+			    else
+						callback(null, res.message == 'success');
+			})
 
     },
 
     //TEST PASS
     TEST2_PASS:function(callback){
-	query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){
-	    
-	    if(err)
-		callback(null, false)
-	    else
-		callback(null, res.message == 'success');
-	})
-
+			query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){
+			    if(err)
+						callback(null, false)
+			    else
+						callback(null, res.message == 'success');
+			})
     },
-    
-    
+
+
     //TEST 3 ERR - duplicate email
     TEST3_PASS:function(callback){
-	
-	query.addAccount(account1.email, account3.username, account3.password, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'email already exists');
-	    else
-		callback(null, false);
-	})
-
+			query.addAccount(account1.email, account3.username, account3.password, con, function(err, res){
+				if(err)
+					callback(null, err.message == 'email already exists');
+		    else
+					callback(null, false);
+			})
     },
 
     //TEST 5 ERR - duplicate username
     TEST4_PASS:function(callback){
 
 	query.addAccount(account3.email, account1.username, account3.password, con, function(err, res){
-   
+
 	    if(err)
 		callback(null, err.message == 'username already exists');
 	    else
@@ -132,294 +145,260 @@ async.series({
 
     //TEST PASS
     TEST5_PASS:function(callback){
-
-	query.deleteAccount(account2.email, con, function(err, res){
-	    if(err)
-		callback(null,false);
-	    else
-		callback(null, res.message == 'success');
-	})
-
+			query.deleteAccount(account2.email, con, function(err, res){
+			    if(err)
+				callback(null,false);
+			    else
+				callback(null, res.message == 'success');
+			})
     },
 
     //TEST FAIL - ACCOUNT DOESNT EXIST
     TEST6_PASS:function(callback){
-	
-	query.deleteAccount(account2.email, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'account doesnt exist');
-	    else
-		callback(null, false);
-	})
-
+			query.deleteAccount(account2.email, con, function(err, res){
+			    if(err)
+						callback(null, err.message == 'account doesnt exist');
+			    else
+						callback(null, false);
+			})
     },
-
-
-
-
 
     //TEST 8 TRUE - username exists
     TEST7_PASS:function(callback){
-	
-	query.usernameExists(account1.username, con, function(err,res){
-	    callback(null, res == true);
-	})
-
+			query.usernameExists(account1.username, con, function(err,res){
+	    	callback(null, res == true);
+			})
     },
 
     //TEST 9 FALSE - username does not exist
     TEST8_PASS:function(callback){
-
-	query.usernameExists("BADUSER", con, function(err,res) {
-	    callback(null, res == false);
-	})
-
+			query.usernameExists("BADUSER", con, function(err,res) {
+			    callback(null, res == false);
+			})
     },
-
-
-
 
     //TEST 11 TRUE - email exists
     TEST9_PASS:function(callback){
-
-	query.emailExists(account1.email, con, function(err, res){
-	    callback(null, res == true);
-	})
+			query.emailExists(account1.email, con, function(err, res){
+			    callback(null, res == true);
+			})
     },
 
     //TEST 13 FALSE - email does not exist
     TEST10_PASS:function(callback){
-
-	query.emailExists("BADEMAIL", con, function(err,res){
-	    callback(null, res == false);
-	})
+			query.emailExists("BADEMAIL", con, function(err,res){
+			    callback(null, res == false);
+			})
     },
 
-
-
-
-
-
     //TEST 15 TRUE - valid credentials
-    TEST11_PASS:function(callback){		
-
-	query.authAccount(account1.username, account1.password, con, function(err, res){
-	    callback(null, true/*res.message == "Authenticated"*/);
-	})
-    }, 
+    TEST11_PASS:function(callback){
+			query.authAccount(account1.username, account1.password, con, function(err, res){
+			    callback(null, true/*res.message == "Authenticated"*/);
+			})
+    },
 
     //TEST 17 FALSE - invalid credentials
     TEST12_PASS:function(callback){
-
-	query.authAccount(account3.email, account3.password, con, function(err,res){
-	    callback(null, err != null && err.message == "Invalid Credentials");
-	})
+			query.authAccount(account3.email, account3.password, con, function(err,res){
+	    	callback(null, err != null && err.message == "Invalid Credentials");
+			})
     },
-    
-    
+
     //TEST 19 PASS
     TEST13_PASS:function(callback){
+			query.addAccount(account3.email, account3.username, account3.password, con, function(err, res){});
+			query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){});
 
-	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
-
-	    if(err){
-		callback(null, false);
-	    }
-	    else{
-		res1.reservationID = res;
-		callback(null, true);
-	    }
-	})
+			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+				console.log("TEST 13 - err: " + err);
+				if(err){
+					callback(null, false);
+			  }
+			  else{
+					res1.reservationID = res;
+					callback(null, true);
+				}
+			})
     },
 
     //TEST PASS
-    TEST14_PASS:function(callback){	    
-	query.addReservation(res2.roomID, res2.username, res2.date, res2.startTime, res2.endTime, res2.shareable, con, function(err, res){
-	    if(err){
-		callback(null, false);
-	    }
-	    else{
-		res2.reservationID = res;
-		callback(null, true);
-	    }
-	})
+    TEST14_PASS:function(callback){
+
+			query.addReservation(res2.roomID, res2.username, res2.date, res2.startTime, res2.endTime, res2.shareable, con, function(err, res){
+				console.log("TEST 14 - err: " + err);
+			  if(err){
+					callback(null, false);
+		    }
+		    else{
+					res2.reservationID = res;
+					callback(null, true);
+		    }
+			})
     },
 
     //TEST PASS
-    TEST15_PASS:function(callback){	
+    TEST15_PASS:function(callback){
 
-	query.addReservation(res2.roomID, res3.username, res3.date, res3.startTime, res3.endTime, res3.shareable, con, function(err, res){
-	    if(err){
-		callback(null, false);
-	    }
-	    else{
-		res3.reservationID = res;
-		callback(null, true);
-	    }
-	})
-    },
-    
-    //ERR - overlapping reservation
-    TEST16_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'conflicting reservation time');
-	    else
-		callback(null, false);
-	})
+			query.addReservation(res3.roomID, res3.username, res3.date, res3.startTime, res3.endTime, res3.shareable, con, function(err, res){
+				console.log("TEST 15 - err: " + err);
+				if(err){
+					callback(null, false);
+		    }
+		    else{
+					res3.reservationID = res;
+					callback(null, true);
+		    }
+			})
     },
 
     //ERR - overlapping reservation
-    TEST17_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 7, 11, res1.shareable, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'conflicting reservation time');
-	    else
-		callback(null, false);
-	})
+    TEST16_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
+		    if(err)
+					callback(null, err.message == 'conflicting reservation time');
+		    else
+					callback(null, false);
+			})
     },
 
-    //ERR - startTime out of acceptable range [0,23]    
-    TEST18_PASS:function(callback){
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'startTime out of acceptable range [0,23]');
-	    else
-		callback(null, false);
-	})
+    //ERR - overlapping reservation
+    TEST17_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, 7, 11, res1.shareable, con, function(err, res){
+				console.log("TEST 17 ERR: " + err);
+		    if(err)
+					callback(null, err.message == 'conflicting reservation time');
+		    else
+					callback(null, false);
+				})
     },
 
     //ERR - startTime out of acceptable range [0,23]
-    TEST19_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
-	    if(err)
-    		callback(null,err.message == 'startTime out of acceptable range [0,23]');
-	    else
-		callback(null, false);
-	})
+    TEST18_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
+				console.log("TEST 18 ERR: " + err);
+		    if(err)
+					callback(null, err.message == 'startTime out of acceptable range [0,23]');
+		    else
+					callback(null, false);
+				})
     },
-    
-    //ERR - endTime out of acceptable range [0,23]
-    TEST20_PASS:function(callback){	
 
-	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
+    //ERR - startTime out of acceptable range [0,23]
+    TEST19_PASS:function(callback){
+			query.addReservation(res1.roomID, "Test19", res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
+				console.log("TEST 19 ERR: " + err);
+		    if(err)
+    			callback(null,err.message == 'startTime out of acceptable range [0,23]');
+		    else
+					callback(null, false);
+			})
+    },
+
+    //ERR - endTime out of acceptable range [0,23]
+    TEST20_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
     	    callback(null,err.message == 'endTime out of acceptable range [0,23]');
-	})
+				})
     },
 
     //ERR - endTime out of acceptable range [0,23]
-    TEST21_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
-	})
+    TEST21_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
+			})
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST22_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'startTime must be less than endTime');
-	})
+    TEST22_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, 9, 8, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'startTime must be less than endTime');
+			})
     },
 
     //TEST 15 FAIL - startTime must be less than endTime
-    TEST23_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'startTime must be less than endTime');
-	})
+    TEST23_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'startTime must be less than endTime');
+			})
     },
 
     //ERR - invalid date
     TEST24_PASS:function(callback){
-
-	query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'invalid date');
-	})
-    },
-    
-    //ERR - invalid date
-    TEST25_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'invalid date');
-	})
+			query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'invalid date');
+			})
     },
 
     //ERR - invalid date
-    TEST26_PASS:function(callback){	
-
-	query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
-    	    callback(null, err.message == 'invalid date');
-	})
+    TEST25_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'invalid date');
+			})
     },
 
-    
+    //ERR - invalid date
+    TEST26_PASS:function(callback){
+			query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'invalid date');
+		  })
+    },
+
+
     //TEST PASS
     TEST27_PASS:function(callback){
-	
-	query.deleteAccount(account1.email, con, function(err, res){
-	    if(err)
-		callback(null,false);
-	    else
-		callback(null, res.message == 'success');
-	})
-
+			query.deleteAccount(account1.email, con, function(err, res){
+			    if(err)
+						callback(null,false);
+			    else
+						callback(null, res.message == 'success');
+			})
     },
 
     //TEST PASS
     TEST29_PASS:function(callback){
-
-	query.cancelReservation(res1.reservationID, con, function(err, res){
-	    if(err)
-		callback(null,false);
-	    else
-		callback(null, true);
-	})
-
+			query.cancelReservation(res1.reservationID, con, function(err, res){
+				console.log("TEST 29 - ERR: " + err);
+			    if(err)
+						callback(null,false);
+			    else
+						callback(null, true);
+			})
     },
 
     //TEST PASS
     TEST30_PASS:function(callback){
-	
-	query.cancelReservation(res2.reservationID, con, function(err, res){
-	    if(err)
-		callback(null,false);
-	    else
-		callback(null, true);
-	})
-
+			query.cancelReservation(res2.reservationID, con, function(err, res){
+				console.log("TEST 30 - ERR: " + err);
+		    if(err)
+					callback(null,false);
+		    else
+					callback(null, true);
+			})
     },
 
     //TEST PASS
     TEST31_PASS:function(callback){
-
-	query.cancelReservation(res3.reservationID, con, function(err, res){
-	    if(err)
-		callback(null,false);
-	    else
-		callback(null, true);
-	})
-
+			query.cancelReservation(res3.reservationID, con, function(err, res){
+				console.log("TEST 31 - ERR: " + err);
+			    if(err)
+						callback(null,false);
+			    else
+						callback(null, true);
+			})
     },
 
     //TEST FAIL
     TEST32_PASS:function(callback){
-	
-	query.cancelReservation(1000000, con, function(err, res){
-	    if(err)
-		callback(null, err.message == 'reservation doesnt exist');
-	    else
-		callback(null, false);
-	})
+			query.cancelReservation(1000000, con, function(err, res){
+				console.log("TEST 32 - ERR: " + err);
+		    if(err)
+					callback(null, err.message == 'reservation doesnt exist');
+		    else
+					callback(null, false);
+			})
+		},
 
-    },
- 
     CON_QUIT:function(callback){
 	con.end(function(err) {
 	    // The connection is terminated gracefully
@@ -428,7 +407,7 @@ async.series({
 	    callback(null, true);
 	})
     }
-    
+
 }, function (err, result) {
     // result now equals 'done'
     console.log(result);
