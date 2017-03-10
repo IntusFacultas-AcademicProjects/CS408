@@ -301,9 +301,17 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 	    if(results.affectedRows == 0)
 		callback(null, {"err":"roomID doesn't exist"});
 	    else if(results.affectedRows == 1) {
-			connection.query('SELECT * FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
-				console.log(results);
-			} 
+			connection.query('SELECT *, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
+				
+				for (var i = 0; i < results.length; i++) {
+					
+					cancelReservation(results[i].reservation_id, connection,function(err,res){
+													
+					});
+					// TODO EMAIL PEOPLE WHO WERE CANCELLED
+					
+				}
+			});
 			callback(null, {"message":"success"});
 		}
 	    else
