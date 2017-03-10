@@ -82,6 +82,7 @@ async.series({
     //TEST PASS
     TEST1_PASS:function(callback){
 			query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
+			console.log("TEST 1: " + err);
 			    if(err)
 						callback(null, false)
 			    else
@@ -103,6 +104,8 @@ async.series({
     //TEST 3 ERR - duplicate email
     TEST3_PASS:function(callback){
 			query.addAccount(account1.email, account3.username, account3.password, con, function(err, res){
+			console.log("TEST 3: " + JSON.stringify(res));
+
 				if(err)
 					callback(null, err.message == 'email already exists');
 		    else
@@ -170,14 +173,14 @@ async.series({
 
     //TEST 15 TRUE - valid credentials
     TEST11_PASS:function(callback){
-			query.authAccount(account1.username, account1.password, con, function(err, res){
+			query.authAccount(account1.username, account1.password, null, con, function(err, res){
 			    callback(null, true/*res.message == "Authenticated"*/);
 			})
     },
 
     //TEST 17 FALSE - invalid credentials
     TEST12_PASS:function(callback){
-			query.authAccount(account3.email, account3.password, con, function(err,res){
+			query.authAccount(account3.email, account3.password, null, con, function(err,res){
 	    	callback(null, err != null && err.message == "Invalid Credentials");
 			})
     },
@@ -368,9 +371,8 @@ async.series({
     //TEST FAIL
     TEST32_PASS:function(callback){
 			query.cancelReservation(1000000, con, function(err, res){
-				console.log("TEST 32 - ERR: " + err);
 		    if(err)
-					callback(null, err.message == 'reservation doesnt exist');
+					callback(null, err.message == 'Reservation doesn\'t exist');
 		    else
 					callback(null, false);
 			})
