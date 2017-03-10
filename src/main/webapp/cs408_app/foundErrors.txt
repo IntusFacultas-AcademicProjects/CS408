@@ -1,0 +1,4 @@
+addReservation checks for too many hours before checking for hours out of
+range
+
+addReservations allows hours past 23

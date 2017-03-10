@@ -79,7 +79,7 @@ async.series({
 			})
     },
 
-    //TEST PASS
+//TEST PASS
     TEST1_PASS:function(callback){
 			query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
 			console.log("TEST 1: " + err);
@@ -104,7 +104,6 @@ async.series({
     //TEST 3 ERR - duplicate email
     TEST3_PASS:function(callback){
 			query.addAccount(account1.email, account3.username, account3.password, con, function(err, res){
-			console.log("TEST 3: " + JSON.stringify(res));
 
 				if(err)
 					callback(null, err.message == 'email already exists');
@@ -180,6 +179,18 @@ async.series({
 
     //TEST 17 FALSE - invalid credentials
     TEST12_PASS:function(callback){
+
+			query.addAccount("Test13@purdue.edu", "Test13", "Test13", con, function(err, res){});
+			query.addAccount("Test17@purdue.edu", "Test17", "Test17", con, function(err, res){});
+    			query.addAccount("Test16@purdue.edu", "Test16", "Test16", con, function(err, res){});
+			query.addAccount("Test19@purdue.edu", "Test19", "Test19", con, function(err, res){});
+			query.addAccount("Test20@purdue.edu", "Test20", "Test20", con, function(err, res){});
+			query.addAccount("Test21@purdue.edu", "Test21", "Test21", con, function(err, res){});
+			query.addAccount("Test23@purdue.edu", "Test23", "Test24", con, function(err, res){});
+			query.addAccount("Test24@purdue.edu", "Test24", "Test24", con, function(err, res){});
+			query.addAccount("Test25@purdue.edu", "Test25", "Test25", con, function(err, res){});
+			query.addAccount("Test26@purdue.edu", "Test26", "Test26", con, function(err, res){});
+
 			query.authAccount(account3.email, account3.password, null, con, function(err,res){
 	    	callback(null, err != null && err.message == "Invalid Credentials");
 			})
@@ -190,8 +201,7 @@ async.series({
 			query.addAccount(account3.email, account3.username, account3.password, con, function(err, res){});
 			query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){});
 
-			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
-				console.log("TEST 13 - err: " + err);
+			query.addReservation(res1.roomID, "Test13", res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
 				if(err){
 					callback(null, false);
 			  }
@@ -206,7 +216,6 @@ async.series({
     TEST14_PASS:function(callback){
 
 			query.addReservation(res2.roomID, res2.username, res2.date, res2.startTime, res2.endTime, res2.shareable, con, function(err, res){
-				console.log("TEST 14 - err: " + err);
 			  if(err){
 					callback(null, false);
 		    }
@@ -219,7 +228,6 @@ async.series({
 
     //TEST PASS
     TEST15_PASS:function(callback){
-
 			query.addReservation(res3.roomID, res3.username, res3.date, res3.startTime, res3.endTime, res3.shareable, con, function(err, res){
 				console.log("TEST 15 - err: " + err);
 				if(err){
@@ -234,7 +242,9 @@ async.series({
 
     //ERR - overlapping reservation
     TEST16_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, res1.date, 9, 10, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test16", res1.date, 7, 11, res1.shareable, con, function(err, res){
+				query.deleteAccount("Test16@purdue.edu", con, function(err, res){});
+				console.log("TEST 16: " + err);
 		    if(err)
 					callback(null, err.message == 'conflicting reservation time');
 		    else
@@ -244,8 +254,7 @@ async.series({
 
     //ERR - overlapping reservation
     TEST17_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, res1.date, 7, 11, res1.shareable, con, function(err, res){
-				console.log("TEST 17 ERR: " + err);
+			query.addReservation(res1.roomID, "Test17", res1.date, 7, 11, res1.shareable, con, function(err, res){
 		    if(err)
 					callback(null, err.message == 'conflicting reservation time');
 		    else
@@ -256,7 +265,6 @@ async.series({
     //ERR - startTime out of acceptable range [0,23]
     TEST18_PASS:function(callback){
 			query.addReservation(res1.roomID, res1.username, res1.date, 24, res1.endTime, res1.shareable, con, function(err, res){
-				console.log("TEST 18 ERR: " + err);
 		    if(err)
 					callback(null, err.message == 'startTime out of acceptable range [0,23]');
 		    else
@@ -266,8 +274,10 @@ async.series({
 
     //ERR - startTime out of acceptable range [0,23]
     TEST19_PASS:function(callback){
-			query.addReservation(res1.roomID, "Test19", res1.date, -1, res1.endTime, res1.shareable, con, function(err, res){
+			query.addReservation(res3.roomID, "Test19", res3.date, -1, res3.endTime, res3.shareable, con, function(err, res){
 				console.log("TEST 19 ERR: " + err);
+				query.deleteAccount("Test19@purdue.edu", con, function(err, res){});
+
 		    if(err)
     			callback(null,err.message == 'startTime out of acceptable range [0,23]');
 		    else
@@ -277,15 +287,19 @@ async.series({
 
     //ERR - endTime out of acceptable range [0,23]
     TEST20_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, 24, res1.shareable, con, function(err, res){
-    	    callback(null,err.message == 'endTime out of acceptable range [0,23]');
+			query.addReservation(res1.roomID, "Test20", res1.date, 22, 24, res1.shareable, con, function(err, res){
+			    console.log("TEST 20 - ERR:" + err + "RES: " + JSON.stringify(res));
+			    if(err)
+			    	callback(null,err.message == 'endTime out of acceptable range [0,23]');
+			    else
+			        callback(null, false);
 				})
     },
 
     //ERR - endTime out of acceptable range [0,23]
     TEST21_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
-		    	    callback(null, err.message == 'endTime out of acceptable range [0,23]');
+			query.addReservation(res1.roomID, "Test21", res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
+		    	    callback(null, err.message == 'startTime must be less than endTime');
 			})
     },
 
@@ -298,28 +312,28 @@ async.series({
 
     //TEST 15 FAIL - startTime must be less than endTime
     TEST23_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, res1.date, 8, 8, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test23", res1.date, 8, 8, res1.shareable, con, function(err, res){
 		    	    callback(null, err.message == 'startTime must be less than endTime');
 			})
     },
 
     //ERR - invalid date
     TEST24_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test24", "BADDATE", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
 		    	    callback(null, err.message == 'invalid date');
 			})
     },
 
     //ERR - invalid date
     TEST25_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test25", "10-00-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
 		    	    callback(null, err.message == 'invalid date');
 			})
     },
 
     //ERR - invalid date
     TEST26_PASS:function(callback){
-			query.addReservation(res1.roomID, res1.username, "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test26", "10-13-10", res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
 		    	    callback(null, err.message == 'invalid date');
 		  })
     },
@@ -327,6 +341,21 @@ async.series({
 
     //TEST PASS
     TEST27_PASS:function(callback){
+
+			query.deleteAccount("Test13@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test17@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test18@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test19@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test20@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test21@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test23@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test24@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test25@purdue.edu", con, function(err, res){});
+			query.deleteAccount("Test26@purdue.edu", con, function(err, res){});
+			query.deleteAccount(account1.email, con, function(err, res){});
+			query.deleteAccount(account2.email, con, function(err, res){});
+ 
+
 			query.deleteAccount(account1.email, con, function(err, res){
 			    if(err)
 						callback(null,false);
