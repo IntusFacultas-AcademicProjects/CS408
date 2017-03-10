@@ -135,7 +135,16 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 	}
     $scope.recover = function()
     {
-        
+        $http.post('/api/recoverPassword', {"email":$scope.emailRecovery}).then(function(response) {
+            if (typeof response.data.err == "undefined") {
+                alert("Your password has been sent to the email associatd with this account");
+                window.location.href = '/login.html';
+            }
+            else {
+                alert(response.data.err);
+                window.location.reload();
+            }
+        });
     }
     $scope.register = function()
     {	
