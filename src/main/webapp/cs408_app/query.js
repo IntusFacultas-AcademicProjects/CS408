@@ -25,6 +25,12 @@ function ghettoHash(str){
 	hash = ((hash<<5)-hash)+char;
 	hash = hash & hash; 
     }
+    // Salting because two passwords shouldn't have same hash.
+    var seconds = new Date().getTime() / 1000;
+    seconds = seconds / Math.floor(Math.random() * 2000);
+    seconds = Math.floor(seconds);
+    hash = hash + "" + seconds;
+    hash = parseInt(hash);
     return hash;
     
     
@@ -213,7 +219,7 @@ var addAccount = function(email,username,password,connection,callback) {
 				from: 'boilersvp@gmail.com', // sender address
 				to: email, // list of receivers
 				subject: 'Account Verification', // Subject line
-				text: "Thanks for signing up to Purdue RSVP! Your Pin is: " + pin
+				text: "Thanks for signing up to Purdue RSVP! Your Pin is: " + pin + "\n\n\n Please do not respond to this email. This is an automated message and not supervised."
 			};
 			
 			transporter.sendMail(mailOptions, function(error, info){
@@ -230,7 +236,6 @@ var addAccount = function(email,username,password,connection,callback) {
 	});
 
     });
-	// TODO EMAIL USER TO VERIFY PIN
 };
 
 var authAccount = function(username,password,adminTok,connection,callback)
@@ -287,7 +292,6 @@ var deleteAccount = function(email,connection,callback) {
 
 var getRoomBlockedStatus = function(roomID, connection, callback){
 
-    //TODO check roomID exists
 
     connection.query('SELECT blocked_status FROM rooms WHERE room_id=?', [roomID], function(error,results,fields){
 
@@ -359,7 +363,6 @@ var authorizePin = function(username, pin, connection, callback) {
 
 var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callback){
 
-    //console.log(adminTok);
     connection.query('SELECT * FROM accounts WHERE admin_token=?', [adminTok], function(error,results,fields){
 
 
@@ -376,18 +379,47 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 	    if(results.affectedRows == 0)
 		callback(null, {"err":"roomID doesn't exist"});
 	    else if(results.affectedRows == 1) {
-			connection.query('SELECT *, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
-				
-				for (var i = 0; i < results.length; i++) {
-					
-					cancelReservation(results[i].reservation_id, connection,function(err,res){
-													
+	    	if (status) {
+	    		connection.query('SELECT *, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
+					var roomNames = ["G118", "G119", "G120", "G121", "G122", "G123", "G124", "G125", "G126", "G127", "G128", "G129", "G130", "G131", "G132", "G133", "G134", "G135", "G136"];
+					async.times(results.length, function(i, next) {
+						console.log("In times: " + JSON.stringify(results[i]));
+						cancelReservation(results[i].reservation_id, connection,function(err,res){
+							console.log("In cancel: " + JSON.stringify(results[i]));
+							connection.query("SELECT * FROM `accounts` WHERE username=?", [results[i].username],function(error,inner_results,fields) {
+								console.log("found: " + JSON.stringify(inner_results));
+								var text = "We regret to inform you that an administrator has blocked a room you had a reservation in.\n"+
+								"We've refunded the hours for the following reservation:\n\n"+
+								"Reservation ID: " + results[i].reservation_id+"\n"+
+								"Room: " + roomNames[results[i].room_id] +"\n"+
+								"Start Time: " + results[i].start_time +"\n"+
+								"End Time: " + results[i].end_time+" *note that your reservation technically ends 1 minute before this time\n"+
+								"We apologize for the inconvenience.\nGood luck on your studying!\n\n\n Please do not respond to this email. This is an automated message and not supervised.";
+								var mailOptions = {
+									from: 'boilersvp@gmail.com', // sender address
+									to: inner_results[0].email, // list of receivers
+									subject: 'Reservation Cancellation', // Subject line
+									text: text
+								};
+			
+								transporter.sendMail(mailOptions, function(error, info){
+									if(error){
+										console.log(error);
+									}else{
+										console.log('Message sent: ' + info.response);
+									};
+								});			
+							});							
+						});	
+					}, function(err, users) {
+						callback(null, {"message":"success"});
 					});
-					// TODO EMAIL PEOPLE WHO WERE CANCELLED
-					
-				}
-			});
-			callback(null, {"message":"success"});
+				});
+	    	}
+	    	else {
+	    		callback(null, {"message":"success"});
+	    	}
+			
 		}
 	    else
 		callback(new Error('illegal state: duplicate blocked_status values'));
@@ -591,10 +623,10 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback) {
 
-
+	
     //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
-    async.series({
+    async.series({ 
 
 	allowanceCheck: function(callback) {
 	   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [user], function(error,results,fields){

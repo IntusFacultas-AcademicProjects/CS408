@@ -82,6 +82,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     		
     	}
         else {
+
             if ($scope.sessionData.loggedIn) {
                 window.location.href = '/reserve.html';
                 return;
@@ -495,7 +496,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
         	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: false, adminTok:$scope.sessionData.adminToken}).then(function(response) {
-        		alert(response.data.err);
+        		alert(response.data);
         		if (typeof response.data.err == "undefined") {
         		}
         		else {
@@ -516,6 +517,8 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
         	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: true, adminTok:$scope.sessionData.adminToken}).then(function(response) {
+        		alert(response.data);
+        		
         		if (typeof response.data.err == "undefined") {
         		}
         		else {
