@@ -143,7 +143,7 @@
 						    });
                         </script>
                     </div>
-                    <timetable class="col-lg-4 shadowed" slots="slots"  ></timetable>
+                    <div class="col-lg-4"></div>
                 </div>
             </div>
             <div  class="modal fade" id="reserve-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -151,6 +151,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="reserveRoomModal">{{roomSelected}} Reservation</h5>
+                            <p>Choose a start time.</p>
                         </div>
                         <div class="modal-body">
                             <reservation-table info="roomsData[roomIndex]" index="roomIndex"></reservation-table>

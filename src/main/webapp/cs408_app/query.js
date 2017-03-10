@@ -85,17 +85,11 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 
 
 
-var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
-
-    connection.query("SELECT * FROM reservations " +
-		     "WHERE room_id = ? " +
-		     "AND date = ? " +
-		     "AND ((HOUR(start_time) > ? AND HOUR(start_time) < ?) " +
-		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) " +
-		     "OR (HOUR(start_time) = ? AND HOUR(end_time) = ?))",
-		     [roomID, date, startTime, endTime, startTime, endTime, startTime, endTime],
+var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){							
+    connection.query("SELECT * FROM `reservations` WHERE room_id='?' AND date=? AND ((HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?))",
+		     [roomID, date, startTime, endTime,startTime, endTime,startTime,endTime,startTime, endTime],
 		     function(err, res, fields){
-
+			 console.log(res);
 			 if(err){
 			     callback(err)
 			     return;
@@ -172,7 +166,7 @@ var authAccount = function(username,password,connection,callback)
 	}
 
 	if(results.length == 0){
-	    callback(null, {"err":"Invalid Credentials"});
+	    callback(new Error("Invalid Credentials"));
 	    return
 	}
 
@@ -242,6 +236,7 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
   	if(error)
   	{
   	    callback(new Error(error));
+        return;
   	}
   	if(results.affectedRows == 0)
   	{
@@ -481,23 +476,46 @@ var getRoomSchedule = function(roomID, date, connection, callback){
 var addReservation = function(roomID, user, date, startTime, endTime, shareable, connection, callback)
 {
 
-    //TODO: check hours
 
     //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
 
+	allowanceCheck: function(callback) {
+	   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [user], function(error,results,fields){
+       if(error){
+    	   callback(error);
+    	   return;
+       }
 
+       if(results.length == 1) {
+  		   var used = endTime - startTime;
+  		   if (used > results[0].hours_remain) {
+  		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
+  		   		return;
+  		   }
+  		   else {
+  		   		callback(null);
+  		   }
+
+       }
+       else if(results.length == 0)
+	      callback(new Error("Illegal State: no results from username " + user));
+       else
+        callback(new Error("Illegal State: multiple results from username " + user));
+
+    });
+	},
 	formatcheck: function(callback) {
 
 	    if(startTime < 0 || startTime > 23){
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-	    else if(endTime < 0 || endTime > 23){
+	    /*else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
-	    }
+	    }*/
 	    else if(startTime >= endTime){
 		callback(new Error("startTime must be less than endTime"));
 		return;
