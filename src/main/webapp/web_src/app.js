@@ -41,9 +41,14 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     					password: String
     					};
     $scope.confirmLogin = function() {
-		if ($scope.sessionData.loggedIn) {
-    		window.location.href = '/reserve.html';
+    	if ($scope.sessionData === null) {
+    		
     	}
+        else {
+            if ($scope.sessionData.loggedIn) {
+                window.location.href = '/reserve.html';
+            }    
+        }
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
     		var data = JSON.parse(localStorage.getItem('login'));
 			$("#remember").prop('checked', true);
@@ -66,8 +71,9 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		$scope.userinfo.username = $scope.username;       
         $scope.userinfo.password = $scope.password;
     	
-		if($scope.username.contains('%') || $scope.password.contains('%')){
+		if ($scope.username.indexOf('%') >= 0 || $scope.password.indexOf('%') >= 0){
 			alert("Invalid Credentials");
+            window.location.reload();
 			return;
 		}
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
@@ -198,6 +204,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     $scope.confirmPassword;
     $scope.oldPassword;
     $scope.newPassword;
+    $scope.numRes = 0;
     $scope.cancel = function(event) {
     	
     	$http.post('/api/cancelReservation', {reservationID: $scope.reservations[parseInt(event.target.id)].reservation_id}).then(function(response) {
@@ -205,6 +212,11 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	});
     };
      $scope.confirmLogin = function() {
+     	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    		return;
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -262,12 +274,14 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
         					"21:59", "22:59", "23:59"];
         	var months = ["ERROR", "January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"];
         	angular.forEach($scope.reservations, function(reservation, index) {
-						
 					    reservation.date=reservation.date.substring(0, reservation.date.indexOf("T"));
 					    var date = reservation.date.split("-");
 					    reservation.date = months[parseInt(date[1])] + " " + date[2] + " " + date[0];
 					    reservation.startTime = start[reservation.startTime];
 						reservation.endTime = end[reservation.endTime];
+						if (reservation.blockedStatus == 0) {
+							$scope.numRes += 1;
+						}
 					}
 
 				);
@@ -321,6 +335,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.roomStatus;
     //admin option
     $scope.option;
+    // start date of blocking
+    $scope.dpbStart;
+    // end date of blocking
+    $scope.dpbEnd;
+    
     $scope.availableHours = [];
 
     $scope._init = function() {
@@ -329,6 +348,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     }
     $scope._init();
     $scope.confirmLogin = function() {
+    	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+    		return;
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -358,9 +382,16 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 					        $('#map').mapster('set_options', {
 					            areas: [{
 					                key: room.roomid,
-					                fillColor: 'ffffff'
-					            }]
-					        });        
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 					    }
 					}
 
@@ -375,6 +406,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 	    });
     };
     $scope.adminLoadRooms = function() {
+    
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1;
@@ -398,12 +430,19 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 						        var roomTable = "#room" + room.roomid + "c";
 						        $(roomName).mapster('set', true);
 						        $(roomName).css("background-color", 'black');
-						        $('#map').mapster('set_options', {
-						            areas: [{
-						                key: room.roomid,
-						                fillColor: 'ffffff'
-						            }]
-						        });        
+						         $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 						    }
 						}
 
@@ -459,6 +498,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
     //admin block options
    	$scope.adminoption = function() {
+<<<<<<< HEAD
         if ($scope.roomsData[$scope.roomIndex].blocked){
             if($scope.unblockRoom($scope.roomIndex)){
 				window.location.reload();
@@ -470,6 +510,23 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
  				window.location.reload();
 				return true;
 			}
+=======
+        if ($scope.roomsData[$scope.roomIndex].blocked)
+        {
+            $scope.unblockRoom($scope.roomIndex);
+            
+            alert("Unblocked successfully");
+            window.location.reload();
+			return true;
+        }
+        else
+        {
+            $scope.blockRoom($scope.roomIndex);
+            
+            alert("Blocked successfully");
+            window.location.reload();
+			return true;
+>>>>>>> d172eedbb96a7d5594b993b519943bbb5391c71c
         }
     };
 
@@ -477,7 +534,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
-        
+        console.log(num);
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
          if ($scope.roomsData[num].blocked)
         {
@@ -489,23 +546,10 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             $scope.roomStatus = "Current Status: Available";
             $scope.option = "Block";
         }
-        if ($scope.roomsData[num].blocked == false && !$scope.user.admin) {
-            $("#reserve-modal").modal("toggle");
-            return true;
-        } 
-        else {
-            var room = $scope.roomsData[num];
-            console.log("attempting to open blocked room modal.")
-            if ($scope.user.admin) {
-                $("#reserve-block-modal").modal("toggle");
-                return false;
-            } 
-            else {
-                alert("This room is currently blocked");
-                return false;
-            }
-        }
-		
+        var room = $scope.roomsData[num];
+		$("#reserve-block-modal").modal("toggle");
+		return false;
+
     };
 
 }]);
@@ -565,6 +609,11 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.lastName = "Fellers";
 //    end fake data
     $scope.confirmLogin = function() {
+    	if ($scope.sessionData === null) {
+    		alert("Session has expired.");
+    		window.location.href= '/login.html';
+            return;
+    	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
     	}
@@ -591,9 +640,16 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 					        $('#map').mapster('set_options', {
 					            areas: [{
 					                key: room.roomid,
-					                fillColor: 'ffffff'
-					            }]
-					        });        
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 					    }
 					}
 
@@ -636,12 +692,19 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 						        var roomTable = "#room" + room.roomid + "c";
 						        $(roomName).mapster('set', true);
 						        $(roomName).css("background-color", 'black');
-						        $('#map').mapster('set_options', {
-						            areas: [{
-						                key: room.roomid,
-						                fillColor: 'ffffff'
-						            }]
-						        });        
+						         $('#map').mapster('set_options', {
+					            areas: [{
+					                key: room.roomid,
+                                	listKey: room.roomid,
+					                fillColor: 'ffffff',
+                                	showToolTip: true
+                            }]});
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: room.roomid,
+						        toolTip: "Test"
+						        }]
+						    });
 						    }
 						}
 
@@ -730,6 +793,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.mouseOver = function(event) {
         var room = "#room" + event + "a";
         $(room).mapster('select');
+        $(room).attr('title', 'This is the hover-over text');
         return true;
     };
 

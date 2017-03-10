@@ -40,7 +40,7 @@ var res1 = {"username": "test1",
 	}
     });
 	
-	query.deleteAccount(account1.email, account1.password,con,function(res){
+	query.deleteAccount(account2.email, account2.password,con,function(res){
 		console.log("Cleaning up");	
 		con.end(function(err) {
 			// The connection is terminated gracefully

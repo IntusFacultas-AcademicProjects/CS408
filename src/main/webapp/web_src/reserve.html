@@ -130,10 +130,17 @@
                             var map = $('#map');
                             map.mapster({
                                 mapKey: 'room',
+                                listKey: 'room',
                                 fillColor: 'ffffff',
-                                isSelectable: false
+                                isSelectable: false,
+                                showToolTip: true
                             });
-                           	
+                           	map.mapster('set_options', { 
+						    areas: [{
+						        room: "0",
+						        toolTip: "Test"
+						        }]
+						    });
                         </script>
                     </div>
                     <timetable class="col-lg-4 shadowed" slots="slots"  ></timetable>
@@ -158,7 +165,8 @@
     			<!-- Footer -->
 			<footer id="footer">
                 <br>
-                <p>Selectable Rooms are colored in <img class="shadowed" alt="color_swatch" src="assets/img/color_swatch.png"></p><br>
+                <p>Selectable Rooms are colored in <img class="shadowed" alt="color_swatch" src="assets/img/color_swatch.png"></p>	
+                <p>Permanently highlighted rooms are blocked by the administrator and not available for use by students</p><br>
 				<p>&copy; RSVP. All rights reserved.</p>
 			</footer>
  

@@ -48,38 +48,38 @@ var res1 = {"username": "test1",
 
     //TEST 1 TRUE
     query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
-		     {
-			 assert.ok(!err);
-			 console.log("Passed Account Creation Test 1");
-			 sleep.sleep(3);
-			 // TEST 3 ERR - duplicate email
-			 query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
-			 		     {
-			 			 assert.ok(err);
-			 			 //assert.equal(err.message, 'Email already exists');
-			 			 console.log("Passed Account Creation Test 2");
-						 sleep.sleep(3);
-						 //TEST 5 ERR - duplicate username
-						 query.addAccount(account2.email, account1.username, account1.password, con, function(err, res)
+    {
+	 assert.ok(!err);
+	 console.log("Passed Account Creation Test 1");
+	 sleep.sleep(3);
+	 // TEST 3 ERR - duplicate email
+	 query.addAccount(account1.email, account1.username, account1.password, con, function(err, res)
+         {
+	     assert.ok(err);
+	     //assert.equal(err.message, 'Email already exists');
+	     console.log("Passed Account Creation Test 2");
+	     sleep.sleep(3);
+	     //TEST 5 ERR - duplicate username
+	     query.addAccount(account2.email, account1.username, account1.password, con, function(err, res)
 
-						 		     {
+	     {
 
-						 			 assert.ok(err);
-									 
-						 			 //assert.equal(err.message, 'Username already exists');
-						 			 console.log("Passed Account Creation Test 3");
-									 sleep.sleep(3);
-									 con.end(function(err) {
-									     // The connection is terminated gracefully
-									     // Ensures all previously enqueued queries are still
-									     // before sending a COM_QUIT packet to the MySQL server.
-									     console.log(" ");
-									     process.exit();
-									 });
-			 		     			});
+					 assert.ok(err);
+					 
+					 //assert.equal(err.message, 'Username already exists');
+					 console.log("Passed Account Creation Test 3");
+					 sleep.sleep(3);
+					 con.end(function(err) {
+					     // The connection is terminated gracefully
+					     // Ensures all previously enqueued queries are still
+					     // before sending a COM_QUIT packet to the MySQL server.
+					     console.log(" ");
+					     process.exit();
+					 });
+	    });
 
 
-			 		     });
-		     });
+	});
+    });
 
     
