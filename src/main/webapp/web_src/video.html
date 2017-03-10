@@ -45,8 +45,8 @@
 		<title>RSVP</title>
 	</head>
     
-	<body ng-app="myApp">
-		<div ng-controller="video" class="container">
+	<body>
+		<div class="container">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-4"></div>
@@ -59,7 +59,7 @@
                     <div class="col-lg-4">
                     </div>
                     <div class="col-lg-4">
-                    	<video id="video" width="500" height="500" controls>
+                    	<video id="video" width="1000" height="1000" controls onclick="playVideo()">
                           <source src="assets/videos/tutorial.mp4" type="video/mp4">
                         </video>
                         <script>
