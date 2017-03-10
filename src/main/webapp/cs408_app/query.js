@@ -483,34 +483,31 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 {
 
 
-    //We need synchronous execution here because we need to make sure 
+    //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({
 
 	allowanceCheck: function(callback) {
 	   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [user], function(error,results,fields){
-
        if(error){
-	   callback(error);
-	   return;
+    	   callback(error);
+    	   return;
        }
 
-	   console.log("hello?")
        if(results.length == 1) {
-		   console.log("hi");
-		   var used = endTime - startTime;
-		   if (used > results[0].hours_remain) {
-		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
-		   		return;
-		   }
-		   else {
-		   		callback(null);
-		   }
+  		   var used = endTime - startTime;
+  		   if (used > results[0].hours_remain) {
+  		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
+  		   		return;
+  		   }
+  		   else {
+  		   		callback(null);
+  		   }
        }
        else if(results.length == 0)
-	   callback(new Error("Illegal State: no results from username " + user));
+	      callback(new Error("Illegal State: no results from username " + user));
        else
-	   callback(new Error("Illegal State: multiple results from username " + user));
+        callback(new Error("Illegal State: multiple results from username " + user));
 
     });
 	},
