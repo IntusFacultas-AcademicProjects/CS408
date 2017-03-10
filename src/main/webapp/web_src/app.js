@@ -831,7 +831,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         	if (typeof response.data.err == "undefined") {
         	}
         	else {
-        		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
+        		alert(response.data.err);
         	}
         	window.location.reload();
         });
