@@ -7,8 +7,8 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName, adminPriv, adminTok) {
-	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv, adminToken: adminTok}));},
+    saveSession: function(logIn, uName, adminPriv, adminTok, ver) {
+	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv, adminToken: adminTok, verified: ver}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
@@ -20,7 +20,27 @@ app.factory('Session', function($http) {
   Session.updateSession();
   return Session; 
 });
-
+app.controller("verify", ['$scope', '$http', 'Session', function($scope, $http, Session) {
+	$scope.session = Session;
+	$scope.sessionData = $scope.session.updateSession();
+	$scope.pin;
+	$scope.confirmSession = function() {
+		if ($scope.sessionData === null) {
+    		
+    	}
+        else {
+            if ($scope.sessionData.verified && $scope.sessionData.loggedIn) {
+                window.location.href = '/reserve.html';
+            }
+            else if ($scope.sessionData.verified && !$scope.sessionData.loggedIn) {
+            	window.location.href='/login.html';
+            }   
+        }
+	}
+	$scope.submit = function() {
+		console.log($scope.pin);
+	}
+}
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
@@ -79,9 +99,8 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			
 			if (typeof response.data.err == "undefined") {
-				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username, response.data.data, response.data.adminTok);
+				$scope.session.saveSession(true, $scope.username, response.data.data, response.data.adminTok, response.data.ver);
 				
 				window.location.href = '/reserve.html';									
 			}
@@ -111,8 +130,10 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			$scope.userinfo.password = $scope.password;
 			$http.post('/api/addAccount', $scope.userinfo).then(function(response) {
 				if (typeof response.data.err == "undefined") {
-					localStorage["firstPageLoad"] = false;				
-					window.location.href = '/login.html';				 
+					localStorage["firstPageLoad"] = false;
+					$scope.session.saveSession(false, $scope.username, "null", "null", 0);
+					alert("Account creation successful!\n Please check your email for the verification pin and enter it in the next step.\n You won't be able to use RSVP until you do so!");				
+					window.location.href = '/pin.html';				 
 				}
 				else {
 					alert(response.data.err);
@@ -216,6 +237,9 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		alert("Session has expired.");
     		window.location.href= '/login.html';
     		return;
+    	}
+    	if (!$scope.sessionData.verified) {
+    		window.location.href = '/pin.html');
     	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
@@ -327,6 +351,9 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     		alert("Session has expired.");
     		window.location.href= '/login.html';
     		return;
+    	}
+    	if (!$scope.sessionData.verified) {
+    		window.location.href = '/pin.html');
     	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	
@@ -565,6 +592,9 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		alert("Session has expired.");
     		window.location.href= '/login.html';
             return;
+    	}
+    	if (!$scope.sessionData.verified) {
+    		window.location.href = '/pin.html');
     	}
     	if (!$scope.sessionData.loggedIn) {
     		window.location.href = '/login.html';	

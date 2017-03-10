@@ -1,0 +1,79 @@
+<!DOCTYPE>
+<html>
+	<head>
+        <!-- Latest jQuery-->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        
+        <!-- Material Design-->
+        <script src="assets/js/material.js"></script>
+        <script src="assets/js/ripples.js"></script>
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-material-design.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/ripples.css">
+        <script src="assets/js/tether.min.js"></script>
+            
+		<!-- Latest compiled and minified CSS -->
+ 		<meta charset="UTF-8">
+        <link type="text/css" rel="stylesheet" href="assets/css/rsvp.css">
+		<link title="compact" type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/material.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-datetimepicker-standalone.min.css">
+        
+        
+        <!-- Bootstrap Plugins needed for DateTimePicker-->
+        <script src="assets/js/moment.js"></script>
+        <script src="assets/js/collapse.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/datepicker.js"></script>
+        
+		<!-- Latest AngularJS lib -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+        
+        <!-- ImageMapster -->
+        <script src="assets/js/jquery.imagemapster.js"></script>
+		<!-- Our Angular Code -->
+		<script src="app.js"></script>
+        
+        <!-- Dropdown-->
+        <script src="assets/js/dropdown.js"></script>
+        <link type="text/css" rel="stylesheet" href="assets/css/dropdown.css">
+        
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
+		<title>RSVP</title>
+	</head>
+    
+	<body ng-app="myApp">
+		<div ng-controller="verify" class="container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                    	<div id="pin" class="form-group label-floating">
+		                    <label for="pin" class="control-label">Enter Pin</label>
+		                    <input type="pin" class="form-control" ng-model="pin" required>
+		                    <span class="help-block">Please enter your pin from the verification email sent</span>
+		                    
+		                </div>
+		                <script>
+                            $.material.init();
+                        </script>
+                    </div>
+                    <div class="col-lg-4">
+                    	<div class="col-sm-6" style="margin-bottom:10px">
+                                <button class="btn btn-primary btn-raised" style="width:100%" type="submit"  ng-click="submit()">Submit</button>    
+                            </div>
+                    </div>
+                </div>
+                <div 
+				<footer id="footer">
+		            <br>
+					<p>&copy; RSVP. All rights reserved.</p>
+				</footer>
+ 			</div>
+        </div>
+	</body>
+</html>
+

@@ -153,8 +153,8 @@ var addAccount = function(email,username,password,connection,callback) {
 	    callback(new Error("email already exists"));
 	    return;
 	}
-
-	connection.query('INSERT INTO accounts(email,username,password) VALUE (?,?,?)', [email,username,password] ,function(error,results,fields){
+	var pin = Math.floor(Math.random() * 2000000);
+	connection.query('INSERT INTO accounts(email,username,password,pin) VALUE (?,?,?)', [email,username,password,pin] ,function(error,results,fields){
     	    if(error){
     		callback(error);
     		return;
@@ -167,7 +167,7 @@ var addAccount = function(email,username,password,connection,callback) {
 	});
 
     });
-
+	// TODO EMAIL USER TO VERIFY PIN
 };
 
 var authAccount = function(username,password,adminTok,connection,callback)
@@ -188,7 +188,7 @@ var authAccount = function(username,password,adminTok,connection,callback)
 
 	var isAdmin = (results[0].is_admin == 1 ? true : false);
 	var adminTok = null;
-	
+	var verified = results[0].pin_verified;
 	if(isAdmin){
 	    adminTok = ghettoHash(password);
 	}
@@ -201,7 +201,7 @@ var authAccount = function(username,password,adminTok,connection,callback)
 	});
 	
 	if(results.length == 1)
-	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok});
+	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok, "ver":verified});
 	else
 	    callback(new Error("Illegal State: multiple values for credential pair"));
 
@@ -280,7 +280,26 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
 
   });
 };
-
+var authorizePin = function(username, pin, connection, callback) {
+	connection.query('SELECT * FROM accounts WHERE username=?', [username], function(error, results, fields) {
+		if (error) {
+			callback(new Error("Account verification failed. Contact system administrator for manual verification"));
+		}
+		if (results[0].pin != pin) {
+			callback(null, {"err": "Enter pin is incorrect"});
+		}
+		else {
+			callback(null, {"message":"success"});
+		}
+	}
+}
+/*
+	make field 
+	var authorizePin = function() {
+		query)(user) if pin = pin success
+		else error
+	}
+*/
 
 var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callback){
 
@@ -785,3 +804,4 @@ exports.addReservation = addReservation;
 exports.cancelReservation = cancelReservation;
 exports.getExpiredReservations = getExpiredReservations;
 exports.removeExpiredReservations = removeExpiredReservations;
+exports.authorizePin = authorizePin;

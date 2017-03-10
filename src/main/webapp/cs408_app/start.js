@@ -141,7 +141,14 @@ router.route('/deleteAccount')
 
 	});
     });
-
+router.route('/authorizePin').post(function(req,res) {
+	query.authorizePin(req.body.username,req.body,pin, con, function(err, result) [
+		if (err)
+			res.errAndSend(err);
+		else
+			res.logAndSend(result);
+	});
+});
 router.route('/updateAccountPassword')
     .post(function(req, res) {
 	query.updateAccountPassword(req.body.username,req.body.oldPassword,req.body.newPassword,con,function(err,result){
