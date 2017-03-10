@@ -6,6 +6,14 @@
 var util = require('util');
 var moment = require('moment');
 var async = require('async');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'boilersvp@gmail.com', // Your email id
+            pass: 'Boilerup' // Your password
+        }
+    });
 
 function ghettoHash(str){
 
@@ -200,7 +208,22 @@ var addAccount = function(email,username,password,connection,callback) {
     		return;
     	    }
     	    else{
-    		callback(null,{message:'success'});
+    		
+    		var mailOptions = {
+				from: 'boilersvp@gmail.com', // sender address
+				to: email, // list of receivers
+				subject: 'Account Verification', // Subject line
+				text: "Thanks for signing up to Purdue RSVP! Your Pin is: " + pin
+			};
+			
+			transporter.sendMail(mailOptions, function(error, info){
+				if(error){
+					console.log(error);
+				}else{
+					console.log('Message sent: ' + info.response);
+				};
+			});
+			callback(null,{message:'success'});
 	    }
 
     	    console.log('Added account: ' + email + ', password: ' + password + '\n');
