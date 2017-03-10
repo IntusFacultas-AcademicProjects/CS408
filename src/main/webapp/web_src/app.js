@@ -498,19 +498,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
     //admin block options
    	$scope.adminoption = function() {
-<<<<<<< HEAD
-        if ($scope.roomsData[$scope.roomIndex].blocked){
-            if($scope.unblockRoom($scope.roomIndex)){
-				window.location.reload();
-				return true;
-			}
-        }
-        else{
-            if($scope.blockRoom($scope.roomIndex)){
- 				window.location.reload();
-				return true;
-			}
-=======
+
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
             $scope.unblockRoom($scope.roomIndex);
@@ -526,7 +514,6 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             alert("Blocked successfully");
             window.location.reload();
 			return true;
->>>>>>> d172eedbb96a7d5594b993b519943bbb5391c71c
         }
     };
 

@@ -86,10 +86,10 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 
 
 var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){							
-    connection.query("SELECT * FROM reservations WHERE room_id = ? AND date = ? AND (HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?)",
+    connection.query("SELECT * FROM `reservations` WHERE room_id='?' AND date=? AND ((HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?))",
 		     [roomID, date, startTime, endTime,startTime, endTime,startTime,endTime,startTime, endTime],
 		     function(err, res, fields){
-
+			 console.log(res);
 			 if(err){
 			     callback(err)
 			     return;
@@ -487,10 +487,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 	   callback(error);
 	   return;
        }
-
-	   console.log("hello?")
        if(results.length == 1) {
-		   console.log("hi");
 		   var used = endTime - startTime;
 		   if (used > results[0].hours_remain) {
 		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
