@@ -45,7 +45,6 @@ con.connect(function(err){
 	return;
     }
 });
-console.log('Connection established');
 
 
 //Create Universal response functions
@@ -65,11 +64,12 @@ app.response.errAndSend = function(err) {
 };
 
 
-
-var j = schedule.scheduleJob('* * * * * *', function(){
+console.log("Starting hourly cleanup routine");
+//Schedule job to run hourly
+var j = schedule.scheduleJob('0 0 * * * *', function(){
 
     query.removeExpiredReservations(con, function(err,res){
-	//console.log(res);
+
 	if(err){
 	    console.log("Could not remove all expired reservations: " + err.message);
 	}
@@ -282,6 +282,7 @@ var gracefulShutdown = function() {
 	// The connection is terminated gracefully
 	// Ensures all previously enqueued queries are still
 	// before sending a COM_QUIT packet to the MySQL server.
+	j.cancel();
 	process.exit();
     });
 
