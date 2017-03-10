@@ -101,6 +101,9 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     }
     $scope.register = function()
     {	
+		if(!$scope.email.match(/^\w+([\.-]?\w+)*@purdue.edu$/)){
+			alert("Invalid Email");
+		}
         if ($scope.password == $scope.confirmpassword)
         {
 			$scope.userinfo.username = $scope.username;
@@ -121,7 +124,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         else {
         	alert("Passwords must match");
         }
-    }
+    };
 
 }]);
 
@@ -495,6 +498,19 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
     //admin block options
    	$scope.adminoption = function() {
+<<<<<<< HEAD
+        if ($scope.roomsData[$scope.roomIndex].blocked){
+            if($scope.unblockRoom($scope.roomIndex)){
+				window.location.reload();
+				return true;
+			}
+        }
+        else{
+            if($scope.blockRoom($scope.roomIndex)){
+ 				window.location.reload();
+				return true;
+			}
+=======
         if ($scope.roomsData[$scope.roomIndex].blocked)
         {
             $scope.unblockRoom($scope.roomIndex);
@@ -510,8 +526,10 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
             alert("Blocked successfully");
             window.location.reload();
 			return true;
+>>>>>>> d172eedbb96a7d5594b993b519943bbb5391c71c
         }
     };
+
     $scope.openAdminModal = function(event) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
