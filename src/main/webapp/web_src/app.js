@@ -118,7 +118,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         else {
         	alert("Passwords must match");
         }
-    }
+    };
 
 }]);
 
@@ -459,24 +459,20 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
     //admin block options
    	$scope.adminoption = function() {
-
-        if ($scope.roomsData[$scope.roomIndex].blocked)
-        {
-            $scope.unblockRoom($scope.roomIndex);
-            
-            alert("Unblock successfully");
-            window.location.reload();
-			return true;
+        if ($scope.roomsData[$scope.roomIndex].blocked){
+            if($scope.unblockRoom($scope.roomIndex)){
+				window.location.reload();
+				return true;
+			}
         }
-        else
-        {
-            $scope.blockRoom($scope.roomIndex);
-            
-            alert("Block successfully");
-            window.location.reload();
-			return true;
+        else{
+            if($scope.blockRoom($scope.roomIndex)){
+ 				window.location.reload();
+				return true;
+			}
         }
     };
+
     $scope.openAdminModal = function(event) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
