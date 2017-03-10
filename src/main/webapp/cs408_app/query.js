@@ -7,6 +7,21 @@ var util = require('util');
 var moment = require('moment');
 var async = require('async');
 
+function ghettoHash(str){
+
+
+    var hash = 0;
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+	var char = str.charCodeAt(i);
+	hash = ((hash<<5)-hash)+char;
+	hash = hash & hash; 
+    }
+    return hash;
+    
+    
+}
+
 var usernameExists = function(username,connection,callback) {
    connection.query('SELECT * FROM accounts WHERE username=?', [username], function(error,results,fields){
        if(error){
@@ -155,7 +170,7 @@ var addAccount = function(email,username,password,connection,callback) {
 
 };
 
-var authAccount = function(username,password,connection,callback)
+var authAccount = function(username,password,adminTok,connection,callback)
 {
 
     connection.query('SELECT * FROM accounts WHERE username=? AND password=?', [username,password] ,function(error,results,fields){
@@ -172,9 +187,21 @@ var authAccount = function(username,password,connection,callback)
 
 
 	var isAdmin = (results[0].is_admin == 1 ? true : false);
+	var adminTok = null;
+	
+	if(isAdmin){
+	    adminTok = ghettoHash(password);
+	}
 
+	connection.query('UPDATE accounts SET admin_token=? WHERE username=?', [adminTok, username], function(error,results,fields){
+	    if(error){
+		console.log(error.message);
+		console.log("Error setting admin token");
+	    }
+	});
+	
 	if(results.length == 1)
-	    callback(null, {"message":"Authenticated","data":isAdmin});
+	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok});
 	else
 	    callback(new Error("Illegal State: multiple values for credential pair"));
 
@@ -255,24 +282,30 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
 };
 
 
-var setRoomBlockedStatus = function(roomID, status, connection, callback){
+var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callback){
 
+    //console.log(adminTok);
+    connection.query('SELECT * FROM accounts WHERE admin_token=?', [adminTok], function(error,results,fields){
 
-    status = (status ? 1 : 0);
+	if(results.length != 1){
+	    callback(new Error("AdminTok does not match"));
+	    return;
+	}
+	
+	status = (status ? 1 : 0);
+	connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
 
-    connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
+	    if(error)
+		callback(error)
+	    if(results.affectedRows == 0)
+		callback(null, {"err":"roomID doesn't exist"});
+	    else if(results.affectedRows == 1)
+		callback(null, {"message":"success"});
+	    else
+		callback(new Error('illegal state: duplicate blocked_status values'));
 
-	if(error)
-	    callback(error)
-	if(results.affectedRows == 0)
-	    callback(null, {"err":"roomID doesn't exist"});
-	else if(results.affectedRows == 1)
-	    callback(null, {"message":"success"});
-	else
-	    callback(new Error('illegal state: duplicate blocked_status values'));
-
+	});
     });
-
 
 };
 

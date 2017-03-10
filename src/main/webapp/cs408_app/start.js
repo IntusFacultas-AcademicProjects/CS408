@@ -120,7 +120,7 @@ router.route('/addAccount')
 
 router.route('/authAccount')
     .post(function(req, res) {
-	query.authAccount(req.body.username,req.body.password,con,function(err,result){
+	query.authAccount(req.body.username,req.body.password,req.body.adminTok,con,function(err,result){
 
 	    if(err)
 	    	res.errAndSend(err);
@@ -180,7 +180,7 @@ router.route('/getRoomBlockedStatus')
 
 router.route('/setRoomBlockedStatus')
     .post(function(req, res) {
-	query.setRoomBlockedStatus(req.body.roomID, req.body.status, con, function(err,result){
+	query.setRoomBlockedStatus(req.body.roomID, req.body.status, req.body.adminTok, con, function(err,result){
 
 	    if(err)
 		res.errAndSend(err);
