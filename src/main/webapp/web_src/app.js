@@ -48,7 +48,7 @@ app.controller("verify", ['$scope', '$http', 'Session', function($scope, $http, 
 			if (typeof response.data.err == "undefined") {
 				$scope.session.saveSession(false, $scope.sessionData.username, $scope.sessionData.password,false, "null", 1);
 				alert("Verification successful! Please log in to continue!");
-				window.location.href='login.html';
+				window.location.href='video.html';
 			}
 			else {
 				alert(response.data.err);
