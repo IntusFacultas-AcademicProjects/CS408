@@ -299,29 +299,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.sessionData = $scope.session.updateSession();
 	$scope.date;
 	$scope.adminDate;
-	$scope.user = {
-        "username": String,
-        "password": String,
-        "userid": Number,
-        "email": String,
-        "budget": Number,
-        "admin": Boolean
-    };
- 	$scope.user.username = "Sfellers";
-    $scope.user.password = "password";
-    $scope.user.userid = 0;
-    $scope.user.email = "sfellers@purdue.edu";
-    $scope.user.budget = 3;
-    $scope.user.admin = true;
-    $scope.firstName = "Sam";
-    $scope.lastName = "Fellers";
-    var _slots = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
+   
      // json information delivered from SQL database (currently disposable data)
     $scope.roomsData = [];
     // name displayed at top of modal
@@ -339,14 +317,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     $scope.dpbStart;
     // end date of blocking
     $scope.dpbEnd;
-    
+    // preview table data
+    $scope.previewData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    $scope.previewRoom;
     $scope.availableHours = [];
 
-    $scope._init = function() {
-        $scope.slots = _slots;
-        return true;
-    }
-    $scope._init();
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
@@ -516,12 +491,32 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 			return true;
         }
     };
-
+	$scope.loadPreview =  function(num) {
+    	var roomReservations = $scope.roomsData[num].res;
+        var takenHours = [];
+        var roomHours = [];
+        for (var i = 0; i < roomReservations.length; i++) {
+            var reservationSlot = roomReservations[i];
+            var start = reservationSlot.startTime;
+            for (start; start < reservationSlot.endTime; start++) {
+                takenHours.push(start);
+            }
+        }
+        for (var i = 0; i < 24; i ++) {
+        	if (takenHours.indexOf(i) >= 0) {
+        		roomHours.push(1);
+        	}
+        	else {
+        		roomHours.push(0);
+        	}
+        }
+        $scope.previewData = roomHours;
+        $scope.previewRoom = $scope.roomsData[num].roomName;
+    }
     $scope.openAdminModal = function(event) {
         var id = event.target.id;
         var num = id.substring(4, id.length - 1);
         $scope.roomIndex = num;
-        console.log(num);
         $scope.roomSelected = $scope.roomsData[$scope.roomIndex].roomName;
          if ($scope.roomsData[num].blocked)
         {
@@ -546,13 +541,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.date;
  	
-    var _slots = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
+    var _slots = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     $scope._init = function() {
         $scope.slots = _slots;
@@ -650,25 +639,9 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    //load response
 	    });
     };
-    
+   
 //    Bound to datepicker, serves as init function and loads room information on page load for the current date
     $scope.loadRooms = function() {
-			/*
-			var today = new Date();
-			var dd = today.getDate();
-			var mm = today.getMonth()+1;
-			var yyyy = today.getFullYear();
-
-			if(dd<10) {
-				dd='0'+dd;
-			} 
-
-			if(mm<10) {
-				mm='0'+mm;
-			} 
-
-			today = yyyy+ '-'+mm+'-'+dd;
-			*/
 			var today = $scope.getToday();
 			$http.post('/api/getAllRooms', {date:today}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
@@ -678,7 +651,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 						        var roomName = "#room" + room.roomid + "a";
 						        var roomTable = "#room" + room.roomid + "c";
 						        $(roomName).mapster('set', true);
-						        $(roomName).css("background-color", 'black');
 						         $('#map').mapster('set_options', {
 					            areas: [{
 					                key: room.roomid,
@@ -744,6 +716,9 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     $scope.roomStatus;
     //admin option
     $scope.option;
+    // preview table data
+    $scope.previewData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    $scope.previewRoom;
     $scope.availableHours = [];
     $scope.availableHoursEnd = [];
 
@@ -752,7 +727,28 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 
 		});
 	}
-
+	 $scope.loadPreview =  function(num) {
+    	var roomReservations = $scope.roomsData[num].res;
+        var takenHours = [];
+        var roomHours = [];
+        for (var i = 0; i < roomReservations.length; i++) {
+            var reservationSlot = roomReservations[i];
+            var start = reservationSlot.startTime;
+            for (start; start < reservationSlot.endTime; start++) {
+                takenHours.push(start);
+            }
+        }
+        for (var i = 0; i < 24; i ++) {
+        	if (takenHours.indexOf(i) >= 0) {
+        		roomHours.push(1);
+        	}
+        	else {
+        		roomHours.push(0);
+        	}
+        }
+        $scope.previewData = roomHours;
+        $scope.previewRoom = $scope.roomsData[num].roomName;
+    }
     // opens modal for viewing hours for a room
     $scope.openModal = function(event) {
     	$("#roomModal.0").prop("disabled", true);
@@ -816,7 +812,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         //get the reservation time
         var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
         var end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
-        console.log(start, " ", end);
+
         start = parseInt(start);
         end = parseInt(end);
         var dateChosen = $("#dp").val();
@@ -876,7 +872,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
             }
         }
         var first = 0;
-        console.log("takenHours ", takenHours);
         for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
             if (first == 0) {
                 $scope.availableHours.push({
@@ -909,7 +904,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
                 });
             }
         }
-        console.log("endHours ", $scope.availableHoursEnd);
         $("#reserve-input-modal").modal("toggle");
         return true;
     }
@@ -986,14 +980,15 @@ app.directive('timetable', function() {
     return {
         restrict: 'AE',
         scope: {
-            slots: '='
+            slots: '=',
+            room: '='
         },
         templateUrl: 'my-timetable-iso.html',
         link: function(scope, element, attributes) {
-            var _days = ['Room 00', 'Room 01', 'Room 02', 'Room 03'];
+            var _days = ['Room 00'];
             var _selection = {
                 state: false,
-                day: [0, 0, 0, 0],
+                day: [0],
                 hour: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             };
 
@@ -1021,7 +1016,7 @@ app.directive('timetable', function() {
                     case 'hour':
                         _selection.hour[hour] = !_selection.hour[hour];
 
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < 1; i++) {
                             scope.slots[i][hour] = _selection.hour[hour];
                         }
                         break;
