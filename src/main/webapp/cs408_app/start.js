@@ -10,7 +10,7 @@ var mysql      = require("mysql");
 var query      = require('./query');          // our defined api calls
 var path = require("path");
 var fs = require('fs');
-
+var schedule = require('node-schedule');
 
 var app        = express();                 // define our app using express
 
@@ -45,7 +45,6 @@ con.connect(function(err){
 	return;
     }
 });
-console.log('Connection established');
 
 
 //Create Universal response functions
@@ -64,6 +63,23 @@ app.response.errAndSend = function(err) {
 
 };
 
+
+console.log("Starting hourly cleanup routine");
+//Schedule job to run hourly
+var j = schedule.scheduleJob('0 0 * * * *', function(){
+
+    query.removeExpiredReservations(con, function(err,res){
+
+	if(err){
+	    console.log("Could not remove all expired reservations: " + err.message);
+	}
+	else{
+	    console.log("Removed %d expired reservations", res.data);
+	}
+	    	    
+    });
+    
+});
 
 
 // ROUTES FOR OUR API
@@ -104,7 +120,7 @@ router.route('/addAccount')
 
 router.route('/authAccount')
     .post(function(req, res) {
-	query.authAccount(req.body.username,req.body.password,con,function(err,result){
+	query.authAccount(req.body.username,req.body.password,req.body.adminTok,con,function(err,result){
 
 	    if(err)
 	    	res.errAndSend(err);
@@ -164,7 +180,7 @@ router.route('/getRoomBlockedStatus')
 
 router.route('/setRoomBlockedStatus')
     .post(function(req, res) {
-	query.setRoomBlockedStatus(req.body.roomID, req.body.status, con, function(err,result){
+	query.setRoomBlockedStatus(req.body.roomID, req.body.status, req.body.adminTok, con, function(err,result){
 
 	    if(err)
 		res.errAndSend(err);
@@ -266,6 +282,7 @@ var gracefulShutdown = function() {
 	// The connection is terminated gracefully
 	// Ensures all previously enqueued queries are still
 	// before sending a COM_QUIT packet to the MySQL server.
+	j.cancel();
 	process.exit();
     });
 
