@@ -150,6 +150,14 @@ router.route('/authorizePin').post(function(req,res) {
 			res.logAndSend(result);
 	});
 });
+router.route('/recoverPassword').post(function(req,res) {
+    query.recoverPassword(req.body.email,con,function(err,result) {
+        if (err)
+            res.errAndSend(err);
+        else
+            res.logAndSend(result);
+    });
+});
 router.route('/updateAccountPassword')
     .post(function(req, res) {
 	query.updateAccountPassword(req.body.username,req.body.oldPassword,req.body.newPassword,con,function(err,result){

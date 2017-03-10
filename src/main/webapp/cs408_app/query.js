@@ -147,7 +147,31 @@ var isConflictingTime = function(roomID, date, startTime, endTime, connection, c
 		     });
 
 }
-
+var recoverPassword = function(email,connection, callback){
+     connection.query('SELECT * FROM accounts WHERE email=?', [email] ,function(error,results,fields){
+        if(results.length != 1){
+            callback(new Error("No account associated with this email."));
+            return;
+        }
+         else {
+             var mailOptions = {
+				from: 'boilersvp@gmail.com', // sender address
+				to: email, // list of receivers
+				subject: 'Password Recovery', // Subject line
+				text: "A password recovery has been requested for your account.\nIf you did not request this attempt, you can safely ignore this email.\n Password set to account: " + results[0].password + "\n\n\n Please do not respond to this email. This is an automated message and not supervised."
+			};
+			
+			transporter.sendMail(mailOptions, function(error, info){
+				if(error){
+					console.log(error);
+				}else{
+					console.log('Message sent: ' + info.response);
+				};
+			});
+			callback(null,{message:'success'});
+	    }
+     });
+}
 var addAccount = function(email,username,password,connection,callback) {
 
     //We do all error checking in parallel here...
@@ -880,3 +904,4 @@ exports.cancelReservation = cancelReservation;
 exports.getExpiredReservations = getExpiredReservations;
 exports.removeExpiredReservations = removeExpiredReservations;
 exports.authorizePin = authorizePin;
+exports.recoverPassword = recoverPassword;
