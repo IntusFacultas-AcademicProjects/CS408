@@ -172,7 +172,7 @@ var authAccount = function(username,password,connection,callback)
 	}
 
 	if(results.length == 0){
-	    callback(null, {"err":"Invalid Credentials"});
+	    callback(new Error("Invalid Credentials"));
 	    return
 	}
 
@@ -242,6 +242,7 @@ var updateAccountPassword = function(username, oldPassword, newPassword, connect
   	if(error)
   	{
   	    callback(new Error(error));
+        return;
   	}
   	if(results.affectedRows == 0)
   	{
