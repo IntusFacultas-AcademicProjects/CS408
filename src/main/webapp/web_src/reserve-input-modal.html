@@ -20,8 +20,8 @@
                 <h6 class="header">End Time</h6>
                 <div class="form-group">
                     <label for="endTime">Reservation End Time</label>
-                    <select id="endtTime" class="form-control" ng-repeat="hour in availableHours">
-                          <option value="{{hour.id}}" selected="{{hour.selected}}">{{hour.name}}</option>
+                    <select id="endtTime" class="form-control" ng-repeat="hourEnd in availableEndHoursEnd">
+                          <option value="{{hourEnd.id}}" selected="{{hourEnd.selected}}">{{hourEnd.name}}</option>
                     </select>
                 </div>
             </div>

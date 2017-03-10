@@ -740,6 +740,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     //admin option
     $scope.option;
     $scope.availableHours = [];
+    $scope.availableHoursEnd = [];
 
 	$scope.refreshRoomsData = function(){
 		$http.post('/api/getAllRooms', $scope.date).then(function(response) {
@@ -810,6 +811,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         //get the reservation time
         var start = document.getElementById("startTime").options[document.getElementById("startTime").selectedIndex].value;
         var end = document.getElementById("endTime").options[document.getElementById("endTime").selectedIndex].value;
+        console.log(start, " ", end);
         start = parseInt(start);
         end = parseInt(end);
         var dateChosen = $("#dp").val();
@@ -829,7 +831,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         	if (typeof response.data.err == "undefined") {
         	}
         	else {
-        		alert("Reservation failed. Please contact System Administrator\n Error Message: " + response.data.err);
+        		alert(response.data.err);
         	}
         	window.location.reload();
         });
@@ -839,14 +841,23 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     // opens second reservation modal
     $scope.openHours = function(event, roomSelected) {
         $scope.availableHours = [];
-        var hourTemplate = ["00:00-00:59", "01:00-01:59", "02:00-02:59", 
-        					"03:00-03:59", "04:00-04:59", "05:00-05:59", 
-        					"06:00-06:59", "07:00-07:59", "08:00-08:59", 
-        					"09:00-09:59", "10:00-10:59", "11:00-11:59", 
-        					"12:00-12:59", "13:00-13:59", "14:00-14:59", 
-        					"15:00-15:59", "16:00-16:59", "17:00-17:59", 
-        					"18:00-18:59", "19:00-19:59", "20:00-20:59", 
-        					"21:00-21:59", "22:00-22:59", "23:00-23:59"];
+        $scope.availableHoursEnd = [];
+        var hourTemplateStart = ["00:00", "01:00", "02:00", 
+        					"03:00", "04:00", "05:00", 
+        					"06:00", "07:00", "08:00", 
+        					"09:00", "10:00", "11:00", 
+        					"12:00", "13:00", "14:00", 
+        					"15:00", "16:00", "17:00", 
+        					"18:00", "19:00", "20:00", 
+        					"21:00", "22:00", "23:00"];
+        var hourTemplateEnd = ["00:59", "01:59", "02:59", 
+        					"03:59", "04:59", "05:59", 
+        					"06:59", "07:59", "08:59", 
+        					"09:59", "10:59", "11:59", 
+        					"12:59", "13:59", "14:59", 
+        					"15:59", "16:59", "17:59", 
+        					"18:59", "19:59", "20:59", 
+        					"21:59", "22:59", "23:59"];
         var startTime = event.target.id.substring(10, event.target.id.length);
         $scope.hourSelected = startTime;
         var room = roomSelected;
@@ -855,27 +866,45 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
         for (var i = 0; i < roomReservations.length; i++) {
             var reservationSlot = roomReservations[i];
             var start = reservationSlot.startTime;
-            for (start; start <= reservationSlot.endTime; start++) {
+            for (start; start < reservationSlot.endTime; start++) {
                 takenHours.push(start);
             }
         }
         var first = 0;
+        console.log("takenHours ", takenHours);
         for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
             if (first == 0) {
                 $scope.availableHours.push({
                     id: i,
-                    name: hourTemplate[i],
+                    name: hourTemplateStart[i],
                     selected: "selected"
                 });
                 first++;
             } else {
                 $scope.availableHours.push({
                     id: i,
-                    name: hourTemplate[i],
+                    name: hourTemplateStart[i],
                     selected: ""
                 });
             }
         }
+        for (var i = parseInt(startTime); takenHours.indexOf(i) < 0 && i < 24; i++) {
+            if (first == 0) {
+                $scope.availableHoursEnd.push({
+                    id: i+1,
+                    name: hourTemplateEnd[i],
+                    selected: "selected"
+                });
+                first++;
+            } else {
+                $scope.availableHoursEnd.push({
+                    id: i+1,
+                    name: hourTemplateEnd[i],
+                    selected: ""
+                });
+            }
+        }
+        console.log("endHours ", $scope.availableHoursEnd);
         $("#reserve-input-modal").modal("toggle");
         return true;
     }
@@ -892,7 +921,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     	if (typeof roomData != 'undefined') {
     		var room = roomData.res;
 		    for (var i = 0; i < room.length; i++) {
-		        if (room[i].startTime <= hour && room[i].endTime >= hour){
+		        if (room[i].startTime <= hour && room[i].endTime > hour){
 		            return true;
 		        }
 		    }
@@ -908,7 +937,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		
 		    for (var i = 0; i < room.length; i++) {
 		    	
-		        if (room[i].startTime <= hour && room[i].endTime >= hour){
+		        if (room[i].startTime <= hour && room[i].endTime > hour){
 		            if (room[i].shareable == 1) {
 		            	
 		                return true
