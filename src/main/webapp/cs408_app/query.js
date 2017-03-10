@@ -85,17 +85,11 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 
 
 
-var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
-
-    connection.query("SELECT * FROM reservations " +
-		     "WHERE room_id = ? " +
-		     "AND date = ? " +
-		     "AND ((HOUR(start_time) > ? AND HOUR(start_time) < ?) " +
-		     "OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) " +
-		     "OR (HOUR(start_time) = ? AND HOUR(end_time) = ?))",
-		     [roomID, date, startTime, endTime, startTime, endTime, startTime, endTime],
+var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){							
+    connection.query("SELECT * FROM `reservations` WHERE room_id='?' AND date=? AND ((HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?))",
+		     [roomID, date, startTime, endTime,startTime, endTime,startTime,endTime,startTime, endTime],
 		     function(err, res, fields){
-
+			 console.log(res);
 			 if(err){
 			     callback(err)
 			     return;
@@ -503,6 +497,7 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
   		   else {
   		   		callback(null);
   		   }
+
        }
        else if(results.length == 0)
 	      callback(new Error("Illegal State: no results from username " + user));
