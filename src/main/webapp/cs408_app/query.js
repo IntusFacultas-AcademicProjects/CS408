@@ -261,13 +261,17 @@ var setRoomBlockedStatus = function(roomID, status, connection, callback){
     status = (status ? 1 : 0);
 
     connection.query('UPDATE rooms SET blocked_status=? WHERE room_id=?', [status, roomID], function(error,results,fields){
-
+	
 	if(error)
 	    callback(error)
 	if(results.affectedRows == 0)
 	    callback(null, {"err":"roomID doesn't exist"});
-	else if(results.affectedRows == 1)
-	    callback(null, {"message":"success"});
+	else if(results.affectedRows == 1) {
+		connection.query('SELECT * FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
+			console.log(results);
+		}  
+	    callback(null, {"message":"success"});    
+	}
 	else
 	    callback(new Error('illegal state: duplicate blocked_status values'));
 

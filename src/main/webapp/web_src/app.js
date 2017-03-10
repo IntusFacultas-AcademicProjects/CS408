@@ -7,14 +7,14 @@ app.run(function(Session) {}); //bootstrap session;
 app.factory('Session', function($http) {
   var Session = {
     data: {},
-    saveSession: function(logIn, uName, adminPriv) {
-	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv}));},
+    saveSession: function(logIn, uName, adminPriv, adminTok) {
+	   	sessionStorage.setItem('data', JSON.stringify({loggedIn: logIn, username: uName, admin: adminPriv, adminToken: adminTok}));},
     updateSession: function() { 
       /* load data from db */
       return data = JSON.parse(sessionStorage.getItem('data'));      
     },
     closeSession: function() {
-    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false}));
+    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false, adminToken:"null"}));
     }
   };
   Session.updateSession();
@@ -81,7 +81,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			if (typeof response.data.err == "undefined") {
 				alert("Login successful");
 				localStorage["firstPageLoad"] = false;				
-				$scope.session.saveSession(true, $scope.username, response.data.data);
+				$scope.session.saveSession(true, $scope.username, response.data.data, response.data.adminTok);
 				
 				window.location.href = '/reserve.html';									
 			}
@@ -438,7 +438,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
-        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: false}).then(function(response) {
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: false, adminTok:$scope.sessionData.adminToken}).then(function(response) {
         		if (typeof response.data.err == "undefinfed") {
         		}
         		else {
@@ -458,7 +458,7 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
-        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: true}).then(function(response) {
+        	$http.post('/api/setRoomBlockedStatus', {roomID: $scope.roomsData[id].roomid, status: true, adminTok:$scope.sessionData.adminToken}).then(function(response) {
         		if (typeof response.data.err == "undefinfed") {
         		}
         		else {
@@ -540,50 +540,25 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.date;
- 	
-    var _slots = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-    $scope._init = function() {
-        $scope.slots = _slots;
-        return true;
-    }
-    $scope._init();
-    
-    // fake variables for development time testing
-    $scope.hours = [{
-            id: 0,
-            selected: "selected",
-            name: "00:00 - 00:59"
-        },
-        {
-            id: 1,
-            selected: "",
-            name: "01:00 - 01:59"
-        },
-        {
-            id: 2,
-            selected: "",
-            name: "02:00 - 02:59"
-        }
-
-    ];
-    $scope.user = {
-        "username": String,
-        "password": String,
-        "userid": Number,
-        "email": String,
-        "budget": Number,
-        "admin": Boolean
-    };
-    $scope.user.username = "Sfellers";
-    $scope.user.password = "password";
-    $scope.user.userid = 0;
-    $scope.user.email = "sfellers@purdue.edu";
-    $scope.user.budget = 3;
-    $scope.user.admin = true;
-    $scope.firstName = "Sam";
-    $scope.lastName = "Fellers";
-//    end fake data
+    // json information delivered from SQL database 
+    $scope.roomsData = [];
+    // name displayed at top of modal
+    $scope.roomSelected;
+    // index of room data in array
+    $scope.roomIndex;
+    // hour selected from reserve-modal serves as start time
+    $scope.hourSelected;
+    // available hours from selected start time
+    //status text
+    $scope.roomStatus;
+    //admin option
+    $scope.option;
+    // preview table data
+    $scope.previewData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    $scope.previewRoom;
+    $scope.availableHours = [];
+    $scope.availableHoursEnd = [];
+	
     $scope.confirmLogin = function() {
     	if ($scope.sessionData === null) {
     		alert("Session has expired.");
@@ -594,6 +569,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		window.location.href = '/login.html';	
     	}
     }
+    
 //    Bound to datepicker, serves as onchange function and loads new room information
     $scope.updateRooms = function() {
 		//var datePieces= $scope.date.split('/');
@@ -702,26 +678,6 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		var date = datePieces[2]+"-"+datePieces[0]+"-"+datePieces[1];
 		return date;
 	};
-
-    // json information delivered from SQL database (currently disposable data)
-    $scope.roomsData = [];
-    // name displayed at top of modal
-    $scope.roomSelected;
-    // index of room data in array
-    $scope.roomIndex;
-    // hour selected from reserve-modal serves as start time
-    $scope.hourSelected;
-    // available hours from selected start time
-    //status text
-    $scope.roomStatus;
-    //admin option
-    $scope.option;
-    // preview table data
-    $scope.previewData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    $scope.previewRoom;
-    $scope.availableHours = [];
-    $scope.availableHoursEnd = [];
-
 	$scope.refreshRoomsData = function(){
 		$http.post('/api/getAllRooms', $scope.date).then(function(response) {
 
