@@ -192,7 +192,7 @@ var addAccount = function(email,username,password,connection,callback) {
 	}
 
 	var pin = Math.floor(Math.random() * 2000000);
-	connection.query('INSERT INTO accounts(email,username,password,pin) VALUE (?,?,?)', [email,username,password,pin] ,function(error,results,fields){
+	connection.query('INSERT INTO accounts(email,username,password,pin) VALUE (?,?,?,?)', [email,username,password,pin] ,function(error,results,fields){
 	
 
     	    if(error){
@@ -314,9 +314,13 @@ var authorizePin = function(username, pin, connection, callback) {
 			callback(new Error("Account verification failed. Contact system administrator for manual verification"));
 		}
 		if (results[0].pin != pin) {
-			callback(null, {"err": "Enter pin is incorrect"});
+			callback(null, {"err": "Entered pin is incorrect"});
 		}
 		else {
+			connection.query('UPDATE accounts SET pin_verified=1 WHERE username=?', [username], function(error,results,fields){
+
+
+			});
 			callback(null, {"message":"success"});
 		}
 	});

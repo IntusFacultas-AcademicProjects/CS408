@@ -142,7 +142,7 @@ router.route('/deleteAccount')
 	});
     });
 router.route('/authorizePin').post(function(req,res) {
-	query.authorizePin(req.body.username,req.body,pin, con, function(err, result) {
+	query.authorizePin(req.body.username,req.body.pin, con, function(err, result) {
 		if (err)
 			res.errAndSend(err);
 		else

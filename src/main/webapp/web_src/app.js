@@ -14,7 +14,7 @@ app.factory('Session', function($http) {
       return data = JSON.parse(sessionStorage.getItem('data'));      
     },
     closeSession: function() {
-    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false, adminToken:"null"}));
+    	sessionStorage.setItem('data', JSON.stringify({loggedIn: false, username: "null" , admin: false, adminToken:"null", verified: true}));
     }
   };
   Session.updateSession();
@@ -25,8 +25,14 @@ app.controller("verify", ['$scope', '$http', 'Session', function($scope, $http, 
 	$scope.sessionData = $scope.session.updateSession();
 	$scope.pin;
 	$scope.confirmSession = function() {
+		if (typeof $scope.sessionData == "undefined" ) {
+     		$scope.sessionData = $scope.session.updateSession();
+     		while(typeof $scope.sessionData == "undefined") {
+     		
+     		}
+     	}
 		if ($scope.sessionData === null) {
-    		
+    		alert("what");
     	}
         else {
             if ($scope.sessionData.verified && $scope.sessionData.loggedIn) {
@@ -38,9 +44,20 @@ app.controller("verify", ['$scope', '$http', 'Session', function($scope, $http, 
         }
 	}
 	$scope.submit = function() {
+		$http.post("/api/authorizePin",{"username":$scope.sessionData.username, "pin": $scope.pin}).then(function(response){
+			if (typeof response.data.err == "undefined") {
+				$scope.session.saveSession(false, $scope.sessionData.username, $scope.sessionData.password,false, "null", 1);
+				alert("Verification successful! Please log in to continue!");
+				window.location.href='login.html';
+			}
+			else {
+				alert(response.data.err);
+				window.location.reload();
+			}
+		});
 		console.log($scope.pin);
 	}
-}
+}]);
 app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, Session) {
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
@@ -67,6 +84,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         else {
             if ($scope.sessionData.loggedIn) {
                 window.location.href = '/reserve.html';
+                return;
             }    
         }
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
@@ -158,7 +176,9 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		return true;
 	}
 	$scope.notLogged = function() {
-		
+		if ($scope.sessionData == null) {
+			return true;
+		}
 		if ($scope.sessionData.loggedIn) {
 		
 			return false;
@@ -167,7 +187,9 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		return true;
 	}
 	$scope.logged = function() {
-		
+		if ($scope.sessionData == null) {
+			return false;
+		}
 		
 		if ($scope.sessionData.loggedIn) {
 			if ($scope.sessionData.admin == false) {
@@ -181,7 +203,9 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		return false;
 	}
 	$scope.adminLog = function() {
-		
+		if ($scope.sessionData == null) {
+			return false;
+		}
 		if ($scope.sessionData.loggedIn && $scope.sessionData.admin) {
 		
 			return true;
@@ -239,10 +263,12 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     		return;
     	}
     	if (!$scope.sessionData.verified) {
-    		window.location.href = '/pin.html');
-    	}
+        		window.location.href = '/pin.html';
+        		return
+        	}
     	if (!$scope.sessionData.loggedIn) {
-    		window.location.href = '/login.html';	
+    		window.location.href = '/login.html';
+    		return;	
     	}
     	else {
     		$scope.fetchReservations();
@@ -353,13 +379,16 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     		return;
     	}
     	if (!$scope.sessionData.verified) {
-    		window.location.href = '/pin.html');
+    		window.location.href = '/pin.html';
+    		return;
     	}
     	if (!$scope.sessionData.loggedIn) {
-    		window.location.href = '/login.html';	
+    		window.location.href = '/login.html';
+    		return;	
     	}
     	else if (!$scope.sessionData.admin && $scope.sessionData.loggedIn) {
     		window.location.href = '/reserve.html';
+    		return;
     	}
     	else {
     		$scope.adminLoadRooms();
@@ -594,10 +623,12 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
             return;
     	}
     	if (!$scope.sessionData.verified) {
-    		window.location.href = '/pin.html');
+    		window.location.href = '/pin.html';
+    		return;
     	}
     	if (!$scope.sessionData.loggedIn) {
-    		window.location.href = '/login.html';	
+    		window.location.href = '/login.html';
+    		return;	
     	}
     }
     
