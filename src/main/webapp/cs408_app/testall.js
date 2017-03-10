@@ -61,9 +61,9 @@ var res3 = {"username": "test3",
 //Note: This database can only be accessed through Purdue's network.
 var con = mysql.createConnection({
     host: "mydb.itap.purdue.edu",
-    user: "pike4",
-    password: "mike408",
-    database: "pike4"
+    user: "bhuemann",
+    password: "ben408",
+    database: "bhuemann"
 });
 
 async.series({
@@ -71,31 +71,13 @@ async.series({
     CON_CONNECT:function(callback){
 			con.connect(function(err){
 			    if(err){
-				callback(err)
-				return;
+						console.log(JSON.stringify(err));
+						callback(err)
+						return;
 			    }
 			    callback(null,true);
 			})
     },
-
-		SETUP:function(callback) {
-			query.deleteAccount(account1.email, con, function(err, res){callback(null, true)});
-		},
-		SETUP1:function(callback) {
-			query.deleteAccount(account2.email, con, function(err, res){callback(null, true)});
-		},
-		SETUP2:function(callback) {
-			query.deleteAccount(account3.email, con, function(err, res){callback(null, true)});
-		},
-		SETUP3:function(callback) {
-			query.cancelReservation(res1.reservation_id, con, function(err, res){callback(null, true)});
-		},
-		SETUP4:function(callback) {
-			query.cancelReservation(res2.reservation_id, con, function(err, res){callback(null, true)});
-		},
-		SETUP5:function(callback) {
-			query.cancelReservation(res3.reservation_id, con, function(err, res){callback(null, true)});
-		},
 
     //TEST PASS
     TEST1_PASS:function(callback){
@@ -105,7 +87,6 @@ async.series({
 			    else
 						callback(null, res.message == 'success');
 			})
-
     },
 
     //TEST PASS
@@ -131,16 +112,12 @@ async.series({
 
     //TEST 5 ERR - duplicate username
     TEST4_PASS:function(callback){
-
-	query.addAccount(account3.email, account1.username, account3.password, con, function(err, res){
-
-	    if(err)
-		callback(null, err.message == 'username already exists');
-	    else
-		callback(null, false)
-
-	})
-
+			query.addAccount(account3.email, account1.username, account3.password, con, function(err, res){
+			    if(err)
+						callback(null, err.message == 'username already exists');
+			    else
+						callback(null, false)
+			})
     },
 
     //TEST PASS
