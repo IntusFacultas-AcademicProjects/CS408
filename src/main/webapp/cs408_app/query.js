@@ -651,7 +651,30 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
     //We need synchronous execution here because we need to make sure
     //input for isConflictingTime() is valid. So we do checking here...
     async.series({ 
+	
+	formatcheck: function(callback) {
+	    if(startTime < 0 || startTime > 23){
+		callback(new Error("startTime out of acceptable range [0,23]"));
+		return;
+	    }
 
+	    else if(endTime < 0 || endTime > 23){
+		callback(new Error("endTime out of acceptable range [0,23]"));
+		return;
+	    }
+	    else if(startTime >= endTime){
+		callback(new Error("startTime must be less than endTime"));
+		return;
+	    }
+	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
+		callback(new Error("invalid date"));
+		return;
+	    }
+	    else{
+		callback(null, true);
+	    }
+
+	},
 	allowanceCheck: function(callback) {
 	   connection.query('SELECT hours_remain FROM accounts WHERE username=?', [user], function(error,results,fields){
        if(error){
@@ -677,31 +700,6 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
     });
 	},
-	formatcheck: function(callback) {
-
-	    if(startTime < 0 || startTime > 23){
-		callback(new Error("startTime out of acceptable range [0,23]"));
-		return;
-	    }
-
-	    else if(endTime < 0 || endTime > 23){
-		callback(new Error("endTime out of acceptable range [0,23]"));
-		return;
-	    }
-	    else if(startTime >= endTime){
-		callback(new Error("startTime must be less than endTime"));
-		return;
-	    }
-	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
-		callback(new Error("invalid date"));
-		return;
-	    }
-	    else{
-		callback(null, true);
-	    }
-
-	},
-
 	conflictcheck: function(callback) {
 
 	    isConflictingTime(roomID, date, startTime, endTime, connection, function(err, res){
