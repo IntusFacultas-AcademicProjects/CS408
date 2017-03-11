@@ -47,7 +47,8 @@ con.connect(function(err){
     }
 });
 
-
+app.use(express.static('../web_src/'));
+app.use('/*', express.static('../web_src/login.html'));
 //Create Universal response functions
 app.response.logAndSend = function(obj) {
     console.log('<<<[RESPONSE]: %j', obj);
@@ -106,8 +107,8 @@ router.use(function(req, res, next) {
 
 });
 
-router.get('/', function (req, res) {
-  res.send('Hello World!')
+app.get('/', function (req, res) {
+   res.render('../web_src/login.html');
 })
 router.route('/addAccount')
     .post(function(req, res) {
