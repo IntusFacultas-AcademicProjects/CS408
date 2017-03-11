@@ -23,6 +23,11 @@ const MSG_SUCCESS = {'message':'success'};
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.get('/', function (req, res) {
+   res.redirect('login.html');
+});
+
 app.use(express.static(path.join(__dirname, '/../web_src')));
 
 
@@ -106,9 +111,7 @@ router.use(function(req, res, next) {
 
 });
 
-app.get('/', function (req, res) {
-   res.render('login.html');
-})
+
 
 router.route('/addAccount')
     .post(function(req, res) {
