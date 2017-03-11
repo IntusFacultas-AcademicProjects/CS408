@@ -109,7 +109,7 @@ router.use(function(req, res, next) {
 app.get('/', function (req, res) {
    res.render('../web_src/login.html');
 })
-router.route('/').post(function(req,res) {
+router.route('/').get(function(req,res) {
    console.log("test?"); 
 });
 router.route('/addAccount')
