@@ -178,7 +178,7 @@ async.series({
     
 
     TEST35_PASS:function(callback){
-	query.setRoomBlockedStatus(room2.roomID, true, con, function(err, res){
+	query.setRoomBlockedStatus(room2.roomID, true, null, con, function(err, res){
 	    
 	    if(err)
 		callback(null, false);

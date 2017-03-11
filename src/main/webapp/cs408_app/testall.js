@@ -32,9 +32,9 @@ var account3 = {"email":"test3@purdue.edu",
 
 
 //Valid reservation
-var res1 = {"username": "test1",
+var res1 = {"username": "Test13",
 	    "roomID": 1,
-	    "date": "2010-01-01",
+	    "date": "2018-01-01",
 	    "startTime":7,
 	    "endTime":9,
 	    "shareable":1
@@ -42,7 +42,7 @@ var res1 = {"username": "test1",
 
 var res2 = {"username": "test2",
 	    "roomID": 1,
-	    "date": "2010-01-01",
+	    "date": "2018-01-01",
 	    "startTime":6,
 	    "endTime":7,
 	    "shareable":1
@@ -50,7 +50,7 @@ var res2 = {"username": "test2",
 
 var res3 = {"username": "test3",
 	    "roomID": 1,
-	    "date": "2010-01-01",
+	    "date": "2018-01-01",
 	    "startTime":9,
 	    "endTime":10,
 	    "shareable":1
@@ -82,7 +82,6 @@ async.series({
 //TEST PASS
     TEST1_PASS:function(callback){
 			query.addAccount(account1.email, account1.username, account1.password, con, function(err, res){
-			console.log("TEST 1: " + err);
 			    if(err)
 						callback(null, false)
 			    else
@@ -201,7 +200,7 @@ async.series({
 			query.addAccount(account3.email, account3.username, account3.password, con, function(err, res){});
 			query.addAccount(account2.email, account2.username, account2.password, con, function(err, res){});
 
-			query.addReservation(res1.roomID, "Test13", res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, res1.username, res1.date, res1.startTime, res1.endTime, res1.shareable, con, function(err, res){
 				if(err){
 					callback(null, false);
 			  }
@@ -229,7 +228,6 @@ async.series({
     //TEST PASS
     TEST15_PASS:function(callback){
 			query.addReservation(res3.roomID, res3.username, res3.date, res3.startTime, res3.endTime, res3.shareable, con, function(err, res){
-				console.log("TEST 15 - err: " + err);
 				if(err){
 					callback(null, false);
 		    }
@@ -244,7 +242,6 @@ async.series({
     TEST16_PASS:function(callback){
 			query.addReservation(res1.roomID, "Test16", res1.date, 7, 11, res1.shareable, con, function(err, res){
 				query.deleteAccount("Test16@purdue.edu", con, function(err, res){});
-				console.log("TEST 16: " + err);
 		    if(err)
 					callback(null, err.message == 'conflicting reservation time');
 		    else
@@ -288,7 +285,6 @@ async.series({
     //ERR - endTime out of acceptable range [0,23]
     TEST20_PASS:function(callback){
 			query.addReservation(res1.roomID, "Test20", res1.date, 22, 24, res1.shareable, con, function(err, res){
-			    console.log("TEST 20 - ERR:" + err + "RES: " + JSON.stringify(res));
 			    if(err)
 			    	callback(null,err.message == 'endTime out of acceptable range [0,23]');
 			    else
@@ -298,7 +294,7 @@ async.series({
 
     //ERR - endTime out of acceptable range [0,23]
     TEST21_PASS:function(callback){
-			query.addReservation(res1.roomID, "Test21", res1.date, res1.startTime, -1, res1.shareable, con, function(err, res){
+			query.addReservation(res1.roomID, "Test21", res1.date, res1.startTime, res1.startTime - 1, res1.shareable, con, function(err, res){
 		    	    callback(null, err.message == 'startTime must be less than endTime');
 			})
     },
@@ -342,7 +338,6 @@ async.series({
     //TEST PASS
     TEST27_PASS:function(callback){
 
-			query.deleteAccount("Test13@purdue.edu", con, function(err, res){});
 			query.deleteAccount("Test17@purdue.edu", con, function(err, res){});
 			query.deleteAccount("Test18@purdue.edu", con, function(err, res){});
 			query.deleteAccount("Test19@purdue.edu", con, function(err, res){});
@@ -352,8 +347,6 @@ async.series({
 			query.deleteAccount("Test24@purdue.edu", con, function(err, res){});
 			query.deleteAccount("Test25@purdue.edu", con, function(err, res){});
 			query.deleteAccount("Test26@purdue.edu", con, function(err, res){});
-			query.deleteAccount(account1.email, con, function(err, res){});
-			query.deleteAccount(account2.email, con, function(err, res){});
  
 
 			query.deleteAccount(account1.email, con, function(err, res){
@@ -366,39 +359,54 @@ async.series({
 
     //TEST PASS
     TEST29_PASS:function(callback){
-			query.cancelReservation(res1.reservationID, con, function(err, res){
-				console.log("TEST 29 - ERR: " + err);
-			    if(err)
-						callback(null,false);
-			    else
-						callback(null, true);
+    			query.getUserReservations(res1.username, con, function(er, re){
+
+			if(re.res && re.res[0]) {
+				query.cancelReservation(re.res[0].reservation_id, con, function(err, res){
+				    if(err)
+							callback(null,false);
+				    else
+							callback(null, true);
+				});
+			}
+
+			else {
+				callback(null, false);
+			}
 			})
     },
 
     //TEST PASS
     TEST30_PASS:function(callback){
-			query.cancelReservation(res2.reservationID, con, function(err, res){
-				console.log("TEST 30 - ERR: " + err);
+			query.getUserReservations(res2.username, con, function(er, re){
+			query.cancelReservation(re.res[0].reservation_id, con, function(err, res){
 		    if(err)
 					callback(null,false);
 		    else
 					callback(null, true);
-			})
+			});
+			});
     },
 
     //TEST PASS
     TEST31_PASS:function(callback){
-			query.cancelReservation(res3.reservationID, con, function(err, res){
-				console.log("TEST 31 - ERR: " + err);
+			query.getUserReservations(res3.username, con, function(er, re){
+			query.cancelReservation(re.res[0].reservation_id, con, function(err, res){
 			    if(err)
 						callback(null,false);
 			    else
 						callback(null, true);
+			});
 			})
     },
 
     //TEST FAIL
     TEST32_PASS:function(callback){
+
+			query.deleteAccount("Test13@purdue.edu", con, function(err, res){});
+			query.deleteAccount(account2.email, con, function(err, res){});
+			query.deleteAccount(account3.email, con, function(err, res){});
+
 			query.cancelReservation(1000000, con, function(err, res){
 		    if(err)
 					callback(null, err.message == 'Reservation doesn\'t exist');

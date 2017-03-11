@@ -389,7 +389,7 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
     connection.query('SELECT * FROM accounts WHERE admin_token=?', [adminTok], function(error,results,fields){
 
 
-	if(results.length != 1){
+	if(results && results.length != 1){
 	    callback(new Error("AdminTok does not match"));
 	    return;
 	}
@@ -418,6 +418,7 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 								"Start Time: " + results[i].start_time +"\n"+
 								"End Time: " + results[i].end_time+" *note that your reservation technically ends 1 minute before this time\n"+
 								"We apologize for the inconvenience.\nGood luck on your studying!\n\n\n Please do not respond to this email. This is an automated message and not supervised.";
+								console.log("INNER RESULTS: " + inner_results + " ERR: " + error);
 								var mailOptions = {
 									from: 'boilersvp@gmail.com', // sender address
 									to: inner_results[0].email, // list of receivers
@@ -682,10 +683,11 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-	    /*else if(endTime < 0 || endTime > 23){
+
+	    else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
-	    }*/
+	    }
 	    else if(startTime >= endTime){
 		callback(new Error("startTime must be less than endTime"));
 		return;
