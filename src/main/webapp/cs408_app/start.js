@@ -24,9 +24,6 @@ const MSG_SUCCESS = {'message':'success'};
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', function (req, res) {
-   res.redirect('login.html');
-});
 
 app.use(express.static(path.join(__dirname, '/../web_src')));
 
@@ -52,7 +49,7 @@ con.connect(function(err){
     }
 });
 
-app.use('/*', express.static('../web_src/login.html'));
+
 //Create Universal response functions
 app.response.logAndSend = function(obj) {
     console.log('<<<[RESPONSE]: %j', obj);
@@ -110,7 +107,10 @@ router.use(function(req, res, next) {
     }
 
 });
-
+app.use('/*', express.static('../web_src/login.html'));
+app.get('/', function (req, res) {
+   res.redirect('login.html');
+});
 
 
 router.route('/addAccount')
