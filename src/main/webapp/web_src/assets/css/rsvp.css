@@ -129,3 +129,6 @@
 .my-timetable {
 	height: 500px;
 }
+.selected {
+     background-color: #B1810B !important
+}
