@@ -71,7 +71,7 @@ async.series({
     CON_CONNECT:function(callback){
 			con.connect(function(err){
 			    if(err){
-						console.log(JSON.stringify(err));
+				//console.log(JSON.stringify(err));
 						callback(err)
 						return;
 			    }
@@ -272,7 +272,7 @@ async.series({
     //ERR - startTime out of acceptable range [0,23]
     TEST19_PASS:function(callback){
 			query.addReservation(res3.roomID, "Test19", res3.date, -1, res3.endTime, res3.shareable, con, function(err, res){
-				console.log("TEST 19 ERR: " + err);
+			    //console.log("TEST 19 ERR: " + err);
 				query.deleteAccount("Test19@purdue.edu", con, function(err, res){});
 
 		    if(err)

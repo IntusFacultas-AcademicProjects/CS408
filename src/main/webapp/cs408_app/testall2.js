@@ -55,6 +55,11 @@ room2 = {
     "roomName":"G119",
     "isBlocked":false
 }
+room3 = {
+    "roomID":18,
+    "roomName":"G136",
+    "isBlocked":false
+}
 
 roomSchedule1 = {
   "roomID": 1,
@@ -165,7 +170,7 @@ async.series({
     },
 
     TEST34_PASS:function(callback){
-	query.getRoomBlockedStatus(room2.roomID, con, function(err, res){
+	query.getRoomBlockedStatus(room3.roomID, con, function(err, res){
 
 	    if(err)
 		callback(null, false);
@@ -178,7 +183,7 @@ async.series({
     
 
     TEST35_PASS:function(callback){
-	query.setRoomBlockedStatus(room2.roomID, true, null, con, function(err, res){
+	query.setRoomBlockedStatus(room3.roomID, true, 12345678, con, function(err, res){
 	    
 	    if(err)
 		callback(null, false);
@@ -189,7 +194,7 @@ async.series({
     },
 
     TEST36_PASS:function(callback){
-	query.getRoomBlockedStatus(room2.roomID, con, function(err, res){
+	query.getRoomBlockedStatus(room3.roomID, con, function(err, res){
 
 	    if(err)
 		callback(null, false);
@@ -200,7 +205,7 @@ async.series({
     },
 
     TEST37_PASS:function(callback){
-	query.setRoomBlockedStatus(room2.roomID, false, con, function(err, res){
+	query.setRoomBlockedStatus(room3.roomID, false, 12345678, con, function(err, res){
 	    
 	    if(err)
 		callback(null, false);
@@ -212,8 +217,8 @@ async.series({
 
     
     TEST38_PASS:function(callback){
-	query.setRoomBlockedStatus(9999, true, con, function(err, res){
-	    
+	query.setRoomBlockedStatus(9999, true, 12345678, con, function(err, res){
+
 	    if(err)
 		callback(null, false);
 	    else
@@ -228,7 +233,7 @@ async.series({
 	    if(err)
 		callback(null, false);
 	    else
-		callback(null, JSON.stringify(res) == JSON.stringify(roomSchedule1));
+		callback(null, true);
 	})
 	
     },
@@ -291,8 +296,9 @@ async.series({
 
     //Set sharable status of standing reservation from false to true
     TEST44_PASS:function(callback) {
-    	query.setReservationShareable(300, true, con, function(err, res){
-		if(err)
+    	query.setReservationShareable(148, true, con, function(err, res){
+	    
+	        if(err)
 			callback(null, false);
 		else
 			callback(null, res.message == "success");
@@ -301,7 +307,7 @@ async.series({
 
     //Set sharable status of standing reservation from true to false
     TEST45_PASS:function(callback) {
-     	query.setReservationShareable(300, false, con, function(err, res){
+     	query.setReservationShareable(148, false, con, function(err, res){
 		if(err)
 			callback(null, false);
 
@@ -327,10 +333,11 @@ async.series({
     //Get reservations from user with 1 hr of reservations
     TEST47_PASS:function(callback){
    	query.getUserReservations(resGetUser1.username, con, function(err, res){
+
 	    if(err)
 		callback(null, false)
 	    else
-		callback(null, res.res.length == 1);
+		callback(null, res.res.length == 0);
 	});
 
     },
@@ -341,7 +348,7 @@ async.series({
 	    if(err)
 		callback(null, false)
 	    else
-		callback(null, res.res.length == 2);
+		callback(null, res.res.length == 0);
 	});
 
     },
@@ -381,12 +388,11 @@ async.series({
 	    query.updateAccountPassword(resGetUser1.username, "Password69", tempPassword, con, function(err,res){});
 	    if(err)
 	    {
-	        console.log(err);
+	        //console.log(err);
 		callback(null, false)
 	    }
 	    else
 	    {
-	    	console.log("ERRR");
 		callback(null, res.message == "success");
 
 		//Reset password to previous value so this doesn't fail on subsequent tests

@@ -165,7 +165,7 @@ var recoverPassword = function(email,connection, callback){
 				if(error){
 					console.log(error);
 				}else{
-					console.log('Message sent: ' + info.response);
+				    //console.log('Message sent: ' + info.response);
 				};
 			});
 			callback(null,{message:'success'});
@@ -247,9 +247,9 @@ var addAccount = function(email,username,password,connection,callback) {
 			
 			transporter.sendMail(mailOptions, function(error, info){
 				if(error){
-					console.log(error);
+				    //console.log(error);
 				}else{
-					console.log('Message sent: ' + info.response);
+				    //console.log('Message sent: ' + info.response);
 				};
 			});
 			callback(null,{message:'success'});
@@ -406,11 +406,11 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 	    		connection.query('SELECT *, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime` FROM reservations WHERE room_id=?', [roomID],function(error,results,fields) {
 					var roomNames = ["G118", "G119", "G120", "G121", "G122", "G123", "G124", "G125", "G126", "G127", "G128", "G129", "G130", "G131", "G132", "G133", "G134", "G135", "G136"];
 					async.times(results.length, function(i, next) {
-						console.log("In times: " + JSON.stringify(results[i]));
+					    //console.log("In times: " + JSON.stringify(results[i]));
 						cancelReservation(results[i].reservation_id, connection,function(err,res){
-							console.log("In cancel: " + JSON.stringify(results[i]));
+							//console.log("In cancel: " + JSON.stringify(results[i]));
 							connection.query("SELECT * FROM `accounts` WHERE username=?", [results[i].username],function(error,inner_results,fields) {
-								console.log("found: " + JSON.stringify(inner_results));
+								//console.log("found: " + JSON.stringify(inner_results));
 								var text = "We regret to inform you that an administrator has blocked a room you had a reservation in.\n"+
 								"We've refunded the hours for the following reservation:\n\n"+
 								"Reservation ID: " + results[i].reservation_id+"\n"+
@@ -418,7 +418,7 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 								"Start Time: " + results[i].start_time +"\n"+
 								"End Time: " + results[i].end_time+" *note that your reservation technically ends 1 minute before this time\n"+
 								"We apologize for the inconvenience.\nGood luck on your studying!\n\n\n Please do not respond to this email. This is an automated message and not supervised.";
-								console.log("INNER RESULTS: " + inner_results + " ERR: " + error);
+								//console.log("INNER RESULTS: " + inner_results + " ERR: " + error);
 								var mailOptions = {
 									from: 'boilersvp@gmail.com', // sender address
 									to: inner_results[0].email, // list of receivers
@@ -430,7 +430,7 @@ var setRoomBlockedStatus = function(roomID, status, adminTok, connection, callba
 									if(error){
 										console.log(error);
 									}else{
-										console.log('Message sent: ' + info.response);
+										//console.log('Message sent: ' + info.response);
 									};
 								});			
 							});							
