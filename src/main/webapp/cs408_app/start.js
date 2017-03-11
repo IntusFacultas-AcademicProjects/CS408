@@ -106,7 +106,9 @@ router.use(function(req, res, next) {
 
 });
 
-
+router.get('/', function (req, res) {
+  res.send('Hello World!')
+})
 router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
