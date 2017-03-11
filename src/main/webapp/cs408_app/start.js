@@ -107,11 +107,9 @@ router.use(function(req, res, next) {
 });
 
 app.get('/', function (req, res) {
-   res.render('../web_src/login.html');
+   res.render('login.html');
 })
-router.route('/').get(function(req,res) {
-   console.log("test?"); 
-});
+
 router.route('/addAccount')
     .post(function(req, res) {
 	query.addAccount(req.body.email,req.body.username,req.body.password,con,function(err){
