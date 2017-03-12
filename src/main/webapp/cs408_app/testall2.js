@@ -26,7 +26,7 @@ These tests provide coverage for the following API calls:
 //Thses data will be in database at all times
 //Any API calls that change the working order
 //of the DB make sure to undo before closing
-
+var moment = require('moment');
 user1 = {
 
     "email":"dummy1@purdue.edu",
@@ -447,7 +447,7 @@ async.series({
 
     //Get all rooms for a valid date with some reservations
     TEST56_PASS:function(callback){
-	query.getAllRooms(testDate1[0].date, con, function(err, res){
+	query.getAllRooms(moment("2018-01-01").format("YYYY-DD-MM"), con, function(err, res){
 	    if(err)
 		callback(null, false);
 	    else
@@ -468,7 +468,7 @@ async.series({
 		var room3Reservations = rooms.filter(function(room) {
 			return room.roomid == 3;
 		});
-
+		
 		var res1 = room1Reservations[0].res;
 		var res2 = room2Reservations[0].res;
 		var res3 = room3Reservations[0].res;
