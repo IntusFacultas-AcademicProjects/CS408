@@ -336,7 +336,19 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 
 var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
   var passCheck = passwordIsValid(newPassword);
-  if(passCheck != "good") {
+
+  /* BUG #4
+   * Old Code :	if(passCheck != "good") {
+   * 				callback(new Error(passCheck));
+   * 				return;
+   *			}
+   * New Code :	if(passCheck == null) {
+   * 				callback(new Error(passCheck));
+   * 				return;
+   *			}
+   */
+
+  if(passCheck == null) {
     callback(new Error(passCheck));
     return;
   }

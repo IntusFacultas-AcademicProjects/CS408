@@ -590,7 +590,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
          if ($scope.roomsData[num].blocked)
         {
             $scope.roomStatus = "Current Status: Blocked";
-            $scope.option = "Unblock";
+			/* BUG #5
+			 * Old Code : $scope.option = "Unblock";
+			 * New Code : $scope.option = "Block";
+			 */
+            $scope.option = "Block";
         }
         else
         {
