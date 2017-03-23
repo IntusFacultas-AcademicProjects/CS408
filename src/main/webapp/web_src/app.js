@@ -299,7 +299,10 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	}
     }
     $scope.changePassword = function() {
-    	if ($scope.newPassword == $scope.confirmPassword) {
+    /* BUG 24
+    old :if ($scope.newPassword == $scope.confirmPassword)
+    new :if ($scope.newPassword != null)*/
+    	if ($scope.newPassword != null) {
 			$http.post('/api/updateAccountPassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					alert("Password has been changed");
