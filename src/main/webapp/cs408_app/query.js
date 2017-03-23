@@ -288,6 +288,12 @@ var authAccount = function(username,password,adminTok,connection,callback)
 	var isAdmin = (results[0].is_admin == 1 ? true : false);
 	var adminTok = null;
 	var verified = results[0].pin_verified;
+	var pin;
+	if (verified = 1) {
+		pin = 1;
+	}else {
+		pin = 0;
+	}
 	if(isAdmin){
 	    adminTok = ghettoHash(password);
 	}
@@ -300,7 +306,7 @@ var authAccount = function(username,password,adminTok,connection,callback)
 	});
 	
 	if(results.length == 1)
-	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok, "ver":verified});
+	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok, "ver":pin});
 	else
 	    callback(new Error("Illegal State: multiple values for credential pair"));
 
@@ -677,16 +683,10 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-        /* BUG #2
-		 * Old Code : else if(endTime < 1 || endTime > 24){
-		 *            	callback(new Error("endTime out of acceptable range [1,24]"));
-		 *				return;
-	     *			  }
-		 * New Code : else if(endTime < 0 || endTime > 23){
-		 *				callback(new Error("endTime out of acceptable range [0,23]"));
-		 *				return;
-	     *			  }
-		 */
+		else if (roomID <= 0 || roomID>= 18) {
+        callback(new Error("invalid roomId"));
+        return;
+        }
 	    else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
