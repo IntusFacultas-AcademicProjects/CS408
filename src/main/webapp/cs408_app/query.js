@@ -215,7 +215,7 @@ var addAccount = function(email,username,password,connection,callback) {
 		 * Old Code : callback(new Error("username already exists"));
 		 * New Code : callback(new Error("Invalid Credentials"));
 		 */
-	    callback(new Error("Invalid Credentials"));
+	    callback(new Error("Invalid Credenti"));
 	    return;
 	}
 	else if(results.emailcheck){
@@ -691,10 +691,14 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
 	    }
-	    else if(startTime >= endTime){
-		callback(new Error("startTime must be less than endTime"));
-		return;
-	    }
+
+        /* BUG #11
+		 * Old Code :	else if(startTime >= endTime){
+		 *					callback(new Error("startTime must be less than endTime"));
+		 *					return;
+	     *				}
+		 * New Code :	N/A
+		 */
 	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
 		callback(new Error("invalid date"));
 		return;
