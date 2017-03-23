@@ -111,10 +111,10 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         $scope.userinfo.password = $scope.password;
     	
 		if ($scope.username.indexOf('%') >= 0 || $scope.password.indexOf('%') >= 0){
-			alert("Invalid Credentials");
-            window.location.reload();
-			return;
-		}
+		 					alert("Invalid Credentials");
+            				window.location.reload();
+		 					return;
+		 }
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			
 			if (typeof response.data.err == "undefined") {
