@@ -139,6 +139,8 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     $scope.recover = function()
     {
         $http.post('/api/recoverPassword', {"email":$scope.emailRecovery}).then(function(response) {
+            /*Bug 22
+            Old Code 
             if (typeof response.data.err == "undefined") {
                 alert("Your password has been sent to the email associated with this account");
                 window.location.href = '/login.html';
@@ -147,6 +149,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
                 alert(response.data.err);
                 window.location.reload();
             }
+            New Code:
+            alert("Your password has been sent to the email associated with this account");
+                window.location.href = '/login.html';*/
+            alert("Your password has been sent to the email associated with this account");
+                window.location.href = '/login.html';
         });
     }
     $scope.register = function()
