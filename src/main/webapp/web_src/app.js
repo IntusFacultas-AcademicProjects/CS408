@@ -498,9 +498,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 		    });
     }
     $scope.unblockRoom = function(id) {
-    		//int id : roomId
-    		
-    		if(id < 0 || id > 20){
+    	//int id : roomId
+    	/* BUG #8
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id <= 0 || id > 20)
+		 */
+    	if(id <= 0 || id > 20){
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
@@ -520,8 +523,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
 	
 	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    	if(id < 0 || id > 20){
+  		//int id : roomId
+		/* BUG #7
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id < 0 || id > 17)
+		 */
+    	if(id < 0 || id > 17){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {

@@ -211,7 +211,11 @@ var addAccount = function(email,username,password,connection,callback) {
     function(err, results) {
 
 	if(results.usercheck){
-	    callback(new Error("username already exists"));
+		/* BUG #6
+		 * Old Code : callback(new Error("username already exists"));
+		 * New Code : callback(new Error("Invalid Credentials"));
+		 */
+	    callback(new Error("Invalid Credentials"));
 	    return;
 	}
 	else if(results.emailcheck){
