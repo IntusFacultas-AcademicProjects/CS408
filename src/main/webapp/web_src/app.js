@@ -140,7 +140,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     {
         $http.post('/api/recoverPassword', {"email":$scope.emailRecovery}).then(function(response) {
             if (typeof response.data.err == "undefined") {
-                alert("Your password has been sent to the email associatd with this account");
+                alert("Your password has been sent to the email associated with this account");
                 window.location.href = '/login.html';
             }
             else {
@@ -151,8 +151,15 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     }
     $scope.register = function()
     {	
-        if ($scope.password == $scope.confirmpassword)
-        {
+		/*BUG 12
+		if(!$scope.email.match(/^\w+([\.-]?\w+)*@purdue.edu$/)){
+			alert("Invalid Email");
+		}*/
+		/* BUG #15
+		 * Old Code :	if ($scope.password == $scope.confirmpassword)
+		 * New Code :	if ($scope.password != null)
+		 */
+        if ($scope.password != null)
 			$scope.userinfo.username = $scope.username;
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;

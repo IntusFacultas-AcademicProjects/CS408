@@ -10,7 +10,7 @@
   <tbody>
     <tr data-ng-repeat="i in loop(0, 23, 1)">
       <th >{{i + ':00'}}</th>
-      <td style="width:100%" data-ng-repeat="j in loop(0, 0, 1)" data-ng-class="{selected: slots[i]}"></td>
+      <td style="width:100%" data-ng-repeat="j in loop(0, 0, 1)" data-ng-class="{selected: slots[i-1]}"></td>
     </tr>
   </tbody>
 </table>
