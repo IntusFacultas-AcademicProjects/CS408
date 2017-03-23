@@ -227,8 +227,12 @@ var addAccount = function(email,username,password,connection,callback) {
 	    callback(new Error("bad password"));
 	    return;
 	}
-
-	var pin = Math.floor(Math.random() * 2000000);
+	/* BUG #1 
+	 * Old Code: var pin = Math.floor(Math.random() * 2000000);
+	 * New Code: var pin = Math.floor(Math.random() * 1000);
+	 * 3 digit verification pins make it very easy to either guess or iterate.
+	 */
+	var pin = Math.floor(Math.random() * 1000);
 	connection.query('INSERT INTO accounts(email,username,password,pin) VALUE (?,?,?,?)', [email,username,password,pin] ,function(error,results,fields){
 	
 
@@ -485,8 +489,8 @@ var getAllRooms = function(date, connection, callback){
 
 
     if(!moment(date, "YYYY-MM-DD", true).isValid()){
-	callback(new Error("invalid date"));
-	return;
+		callback(new Error("invalid date"));
+		return;
     }
 
     connection.query('SELECT * FROM rooms', function(error,results,fields){
@@ -657,7 +661,16 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-
+        /* BUG #2
+		 * Old Code : else if(endTime < 1 || endTime > 24){
+		 *            	callback(new Error("endTime out of acceptable range [1,24]"));
+		 *				return;
+	     *			  }
+		 * New Code : else if(endTime < 0 || endTime > 23){
+		 *				callback(new Error("endTime out of acceptable range [0,23]"));
+		 *				return;
+	     *			  }
+		 */
 	    else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
@@ -684,7 +697,12 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
        if(results.length == 1) {
   		   var used = endTime - startTime;
-  		   if (used > results[0].hours_remain) {
+
+		   /* BUG #3
+			* Old Code : if (used > results[0].hours_remain)
+			* New Code : if (used >= results[0].hours_remain)
+			*/
+  		   if (used >= results[0].hours_remain) {
   		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
   		   		return;
   		   }
