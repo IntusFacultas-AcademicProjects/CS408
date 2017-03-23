@@ -864,6 +864,13 @@ var cancelReservation = function(reservationID, connection, callback){
 
 var getExpiredReservations = function(connection, callback){
 
+	/*
+	 	Bug #25 do not check for past hours
+		OLD CODE: "...WHERE date < CURDATE() OR (date = CURDATE() AND end_time < CURTIME())
+
+		NEW: "...WHERE date < CURDATE()"
+	 */
+
     connection.query('SELECT reservation_id AS `reservationID`, username, HOUR(start_time) AS `startTime`, HOUR(end_time) AS `endTime`, date FROM reservations WHERE date < CURDATE()', function(error,results,fields){
 
 	if(error){
