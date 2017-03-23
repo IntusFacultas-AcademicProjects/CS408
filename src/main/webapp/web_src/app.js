@@ -151,9 +151,10 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     }
     $scope.register = function()
     {	
+		/*BUG 12
 		if(!$scope.email.match(/^\w+([\.-]?\w+)*@purdue.edu$/)){
 			alert("Invalid Email");
-		}
+		}*/
 		/* BUG #15
 		 * Old Code :	if ($scope.password == $scope.confirmpassword)
 		 * New Code :	if ($scope.password != null)
