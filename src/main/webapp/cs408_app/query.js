@@ -129,7 +129,15 @@ var addDeltaUserHours = function(username,value,connection,callback) {
 };
 
 var isConflictingTime = function(roomID, date, startTime, endTime, connection, callback){
-    connection.query("SELECT * FROM `reservations` WHERE room_id='?' AND date=? AND ((HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?))",
+
+    /*
+      BUG #16 
+      Does not take date into account when checking conflicting times
+      OLD CODE:  "...WHERE room_id='?' AND date=? AND..."
+      NEW CODE:  "...WHERE room_id='?' AND..."
+    */
+
+    connection.query("SELECT * FROM `reservations` WHERE room_id='?' AND ((HOUR(start_time) < ? AND HOUR(end_time) > ?) OR (HOUR(end_time) > ? AND HOUR(end_time) < ?) OR (HOUR(start_time) > ? AND HOUR(start_time) < ?) OR (HOUR(start_time) > ? AND HOUR(end_time) < ?))",
 		     [roomID, date, startTime, endTime,startTime, endTime,startTime,endTime,startTime, endTime],
 		     function(err, res, fields){
 			 if(err){
