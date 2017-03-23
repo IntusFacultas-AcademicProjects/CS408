@@ -91,8 +91,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
     		var data = JSON.parse(localStorage.getItem('login'));
 			$("#remember").prop('checked', true);
-			$("#usernameDiv").addClass("is-focused");
-			$("#passwordDiv").addClass("is-focused");
+			/* BUG #13
+			 * Old Code : $("#usernameDiv").addClass("is-focused");
+			 *			  $("#passwordDiv").addClass("is-focused");
+			 * New Code : N/A
+			 */
     		$scope.username = data.username;
     		$scope.password = data.password;
     	}
@@ -111,10 +114,10 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         $scope.userinfo.password = $scope.password;
     	
 		if ($scope.username.indexOf('%') >= 0 || $scope.password.indexOf('%') >= 0){
-			alert("Invalid Credentials");
-            window.location.reload();
-			return;
-		}
+		 					alert("Invalid Credentials");
+            				window.location.reload();
+		 					return;
+		 }
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			
 			if (typeof response.data.err == "undefined") {
@@ -495,9 +498,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 		    });
     }
     $scope.unblockRoom = function(id) {
-    		//int id : roomId
-    		
-    		if(id < 0 || id > 20){
+    	//int id : roomId
+    	/* BUG #8
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id <= 0 || id > 20)
+		 */
+    	if(id <= 0 || id > 20){
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
@@ -517,8 +523,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
 	
 	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    	if(id < 0 || id > 20){
+  		//int id : roomId
+		/* BUG #7
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id < 0 || id > 17)
+		 */
+    	if(id < 0 || id > 17){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
@@ -587,7 +597,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
          if ($scope.roomsData[num].blocked)
         {
             $scope.roomStatus = "Current Status: Blocked";
-            $scope.option = "Unblock";
+			/* BUG #5
+			 * Old Code : $scope.option = "Unblock";
+			 * New Code : $scope.option = "Block";
+			 */
+            $scope.option = "Block";
         }
         else
         {

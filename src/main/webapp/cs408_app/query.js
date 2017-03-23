@@ -211,7 +211,11 @@ var addAccount = function(email,username,password,connection,callback) {
     function(err, results) {
 
 	if(results.usercheck){
-	    callback(new Error("username already exists"));
+		/* BUG #6
+		 * Old Code : callback(new Error("username already exists"));
+		 * New Code : callback(new Error("Invalid Credentials"));
+		 */
+	    callback(new Error("Invalid Credenti"));
 	    return;
 	}
 	else if(results.emailcheck){
@@ -227,8 +231,12 @@ var addAccount = function(email,username,password,connection,callback) {
 	    callback(new Error("bad password"));
 	    return;
 	}
-
-	var pin = Math.floor(Math.random() * 2000000);
+	/* BUG #1 
+	 * Old Code: var pin = Math.floor(Math.random() * 2000000);
+	 * New Code: var pin = Math.floor(Math.random() * 1000);
+	 * 3 digit verification pins make it very easy to either guess or iterate.
+	 */
+	var pin = Math.floor(Math.random() * 1000);
 	connection.query('INSERT INTO accounts(email,username,password,pin) VALUE (?,?,?,?)', [email,username,password,pin] ,function(error,results,fields){
 	
 
@@ -280,6 +288,12 @@ var authAccount = function(username,password,adminTok,connection,callback)
 	var isAdmin = (results[0].is_admin == 1 ? true : false);
 	var adminTok = null;
 	var verified = results[0].pin_verified;
+	var pin;
+	if (verified = 1) {
+		pin = 1;
+	}else {
+		pin = 0;
+	}
 	if(isAdmin){
 	    adminTok = ghettoHash(password);
 	}
@@ -292,7 +306,7 @@ var authAccount = function(username,password,adminTok,connection,callback)
 	});
 	
 	if(results.length == 1)
-	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok, "ver":verified});
+	    callback(null, {"message":"Authenticated","data":isAdmin,"adminTok":adminTok, "ver":pin});
 	else
 	    callback(new Error("Illegal State: multiple values for credential pair"));
 
@@ -332,7 +346,19 @@ var getRoomBlockedStatus = function(roomID, connection, callback){
 
 var updateAccountPassword = function(username, oldPassword, newPassword, connection, callback){
   var passCheck = passwordIsValid(newPassword);
-  if(passCheck != "good") {
+
+  /* BUG #4
+   * Old Code :	if(passCheck != "good") {
+   * 				callback(new Error(passCheck));
+   * 				return;
+   *			}
+   * New Code :	if(passCheck == null) {
+   * 				callback(new Error(passCheck));
+   * 				return;
+   *			}
+   */
+
+  if(passCheck == null) {
     callback(new Error(passCheck));
     return;
   }
@@ -485,8 +511,8 @@ var getAllRooms = function(date, connection, callback){
 
 
     if(!moment(date, "YYYY-MM-DD", true).isValid()){
-	callback(new Error("invalid date"));
-	return;
+		callback(new Error("invalid date"));
+		return;
     }
 
     connection.query('SELECT * FROM rooms', function(error,results,fields){
@@ -657,15 +683,22 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 		callback(new Error("startTime out of acceptable range [0,23]"));
 		return;
 	    }
-
+		else if (roomID <= 0 || roomID>= 18) {
+        callback(new Error("invalid roomId"));
+        return;
+        }
 	    else if(endTime < 0 || endTime > 23){
 		callback(new Error("endTime out of acceptable range [0,23]"));
 		return;
 	    }
-	    else if(startTime >= endTime){
-		callback(new Error("startTime must be less than endTime"));
-		return;
-	    }
+
+        /* BUG #11
+		 * Old Code :	else if(startTime >= endTime){
+		 *					callback(new Error("startTime must be less than endTime"));
+		 *					return;
+	     *				}
+		 * New Code :	N/A
+		 */
 	    else if(!moment(date, "YYYY-MM-DD", true).isValid()){
 		callback(new Error("invalid date"));
 		return;
@@ -684,7 +717,12 @@ var addReservation = function(roomID, user, date, startTime, endTime, shareable,
 
        if(results.length == 1) {
   		   var used = endTime - startTime;
-  		   if (used > results[0].hours_remain) {
+
+		   /* BUG #3
+			* Old Code : if (used > results[0].hours_remain)
+			* New Code : if (used >= results[0].hours_remain)
+			*/
+  		   if (used >= results[0].hours_remain) {
   		   		callback(new Error("Reservation failed: This reservation exceeds your allotted allowance."));
   		   		return;
   		   }
