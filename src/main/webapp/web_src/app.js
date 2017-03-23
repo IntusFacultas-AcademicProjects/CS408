@@ -91,8 +91,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
     		var data = JSON.parse(localStorage.getItem('login'));
 			$("#remember").prop('checked', true);
-			$("#usernameDiv").addClass("is-focused");
-			$("#passwordDiv").addClass("is-focused");
+			/* BUG #13
+			 * Old Code : $("#usernameDiv").addClass("is-focused");
+			 *			  $("#passwordDiv").addClass("is-focused");
+			 * New Code : N/A
+			 */
     		$scope.username = data.username;
     		$scope.password = data.password;
     	}
