@@ -977,7 +977,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		
 		    for (var i = 0; i < room.length; i++) {
 		    	
-		        if (room[i].startTime <= hour && room[i].endTime > hour){
+		        if (room[i].startTime < hour && room[i].endTime > hour){
 		            if (room[i].shareable == 1) {
 		            	
 		                return true
@@ -987,6 +987,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    
 		    return false;
     	}
+    	return false;
     };
 }]).directive('reservationTable', function($timeout) {
     // handles the hour by hour modal body for the modal opened on map click
