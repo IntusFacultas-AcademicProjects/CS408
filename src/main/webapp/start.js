@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 
-app.use(express.static(path.join(__dirname, '/../web_src')));
+app.use(express.static(path.join(__dirname, '/web_src')));
 
 
 var port = process.env.PORT || 8888;        // set our port
@@ -34,10 +34,10 @@ var port = process.env.PORT || 8888;        // set our port
 //Once Node's installed, run command 'npm install' in 'CS408/src/main/webapp/cs408_app' dir.
 //Note: This database can only be accessed through Purdue's network.
 var con = mysql.createConnection({
-  host: "mydb.itap.purdue.edu",
-  user: "bhuemann",
-  password: "ben408",
-  database: "bhuemann"
+  host: "us-cdbr-iron-east-03.cleardb.net",
+  user: "b72754d9fb6cc7",
+  password: "75d29973",
+  database: "heroku_142078951fa9ec0"
 });
 
 console.log('Creating connection to mySQL server');
@@ -48,7 +48,17 @@ con.connect(function(err){
 	return;
     }
 });
-
+con.on('error', function(err) {
+    console.log("DB ERROR:", err.code); // 'ER_BAD_DB_ERROR'
+    console.log("Attempting to reconnect.")
+    con = mysql.createConnection({
+     host: "us-cdbr-iron-east-03.cleardb.net",
+      user: "b72754d9fb6cc7",
+      password: "75d29973",
+      database: "heroku_142078951fa9ec0"
+    });
+    console.log("Reconnected.");
+});
 
 //Create Universal response functions
 app.response.logAndSend = function(obj) {
@@ -83,7 +93,10 @@ var j = schedule.scheduleJob('0 0 * * * *', function(){
     });
     
 });
-
+setInterval(function () {
+    console.log("Keeping connection alive.");
+    con.query('SELECT 1');
+}, 5000);
 
 // ROUTES FOR OUR API
 // =============================================================================
