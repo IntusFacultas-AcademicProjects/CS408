@@ -1,0 +1,44 @@
+{
+    "name": "Heroku",
+    "version": "1.0.0",
+    "engines": {
+        "node": "6.10.0"
+    },
+    "dependencies": {
+        "ejs": "2.4.1",
+        "express": "4.15.2",
+        "nodemailer":"3.1.5",
+        "async":"2.1.5",
+        "body-parser":"1.17.1",
+        "moment":"2.17.1",
+        "mysql":"2.13.0",
+        "node-schedule":"1.2.0",
+        "util":"0.10.3"
+    },
+    "scripts": {
+        "start": "node start.js"
+      },
+    "repository": {
+        "type": "git",
+        "url": "https://git.heroku.com/buggedrsvp.git"
+      },
+    "description": "Instructions on setting up backend:\r 1. You must have node and its dependencies loaded on you machine. Download here: https://nodejs.org/en/\r 2. In backend dir run command 'npm install'\r 3. Start backend by running command 'node start.js'",
+    "main": "start.js",
+    "keywords": [
+        "node",
+        "heroku",
+        "express",
+        "ejs",
+        "nodemailer",
+        "async",
+        "body-parser",
+        "moment",
+        "mysql",
+        "node-schedule",
+        "sleep",
+        "utl"
+      ],
+    "author": "CS408",
+    "license": "ISC"
+
+}

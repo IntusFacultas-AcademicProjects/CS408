@@ -20,20 +20,3 @@ Ben:
 	authUser(user,pass)
 	addUser(user,pass)
 	
-
-
-Unit tests Sprint 2:
-
-Micheal:
-
-        updateAccountPassword;
-        getUserReservations;
-        setReservationShareable;
-        getAllRooms;
-
-Ben:
-        getRoomBlockedStatus;
-        setRoomBlockedStatus;
-        getRoomSchedule;
-        getUserHours;
-

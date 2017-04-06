@@ -91,8 +91,11 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     	if (localStorage.getItem("saveFlag") != null && JSON.parse(localStorage.getItem('saveFlag')).save) {
     		var data = JSON.parse(localStorage.getItem('login'));
 			$("#remember").prop('checked', true);
-			$("#usernameDiv").addClass("is-focused");
-			$("#passwordDiv").addClass("is-focused");
+			/* BUG #13
+			 * Old Code : $("#usernameDiv").addClass("is-focused");
+			 *			  $("#passwordDiv").addClass("is-focused");
+			 * New Code : N/A
+			 */
     		$scope.username = data.username;
     		$scope.password = data.password;
     	}
@@ -111,10 +114,10 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
         $scope.userinfo.password = $scope.password;
     	
 		if ($scope.username.indexOf('%') >= 0 || $scope.password.indexOf('%') >= 0){
-			alert("Invalid Credentials");
-            window.location.reload();
-			return;
-		}
+		 					alert("Invalid Credentials");
+            				window.location.reload();
+		 					return;
+		 }
 		$http.post('/api/authAccount', $scope.userinfo).then(function(response) {
 			
 			if (typeof response.data.err == "undefined") {
@@ -137,7 +140,7 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     {
         $http.post('/api/recoverPassword', {"email":$scope.emailRecovery}).then(function(response) {
             if (typeof response.data.err == "undefined") {
-                alert("Your password has been sent to the email associatd with this account");
+                alert("Your password has been sent to the email associated with this account");
                 window.location.href = '/login.html';
             }
             else {
@@ -148,11 +151,15 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
     }
     $scope.register = function()
     {	
+		/*BUG 12
 		if(!$scope.email.match(/^\w+([\.-]?\w+)*@purdue.edu$/)){
 			alert("Invalid Email");
-		}
-        if ($scope.password == $scope.confirmpassword)
-        {
+		}*/
+		/* BUG #15
+		 * Old Code :	if ($scope.password == $scope.confirmpassword)
+		 * New Code :	if ($scope.password != null)
+		 */
+        if ($scope.password != null)
 			$scope.userinfo.username = $scope.username;
 			$scope.userinfo.email = $scope.email;
 			$scope.userinfo.password = $scope.password;
@@ -170,11 +177,6 @@ app.controller("user", ['$scope', '$http', 'Session', function ($scope, $http, S
 			    //load response
 			    });
         }
-        else {
-        	alert("Passwords must match");
-        }
-    };
-
 }]);
 
 app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http, Session)  {
@@ -197,6 +199,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		return true;
 	}
 	$scope.logged = function() {
+        return false;
 		if ($scope.sessionData == null) {
 			return false;
 		}
@@ -213,6 +216,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		return false;
 	}
 	$scope.adminLog = function() {
+        return true;
 		if ($scope.sessionData == null) {
 			return false;
 		}
@@ -251,6 +255,7 @@ app.controller("navbar", ['$scope', '$http', 'Session', function ($scope, $http,
 		window.location.href = "/account-portal.html";
     }
 }]);
+
 app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $http, Session){
 	$scope.session = Session;
 	$scope.sessionData = $scope.session.updateSession();
@@ -285,7 +290,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
     	}
     }
     $scope.changePassword = function() {
-    	if ($scope.newPassword == $scope.confirmPassword) {
+
 			$http.post('/api/updateAccountPassword', {username:$scope.sessionData.username, oldPassword: $scope.oldPassword, newPassword: $scope.newPassword}).then(function(response) {
 				if (typeof response.data.err == "undefined") {
 					alert("Password has been changed");
@@ -296,11 +301,7 @@ app.controller("userPortal",['$scope', '$http', 'Session', function ($scope, $ht
 				window.location.reload();
 			});
     	}
-    	else {
-    		alert("Passwords must match.");
-    	}
-    	
-    }
+
     $scope.share = function(event) {
     	$http.post('/api/setReservationShareable', {reservationID: $scope.reservations[parseInt(event.target.id.substring(7, event.target.id.length))].reservation_id, status:$(event.target).is(":checked")}).then(function(response) {
     		if (typeof response.data.err == "undefined") {
@@ -498,9 +499,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
 		    });
     }
     $scope.unblockRoom = function(id) {
-    		//int id : roomId
-    		
-    		if(id < 0 || id > 20){
+    	//int id : roomId
+    	/* BUG #8
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id <= 0 || id > 20)
+		 */
+    	if(id <= 0 || id > 20){
         	return false;
         }
         if ($scope.roomsData[$scope.roomIndex].blocked) {
@@ -520,8 +524,12 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
     };
 	
 	$scope.blockRoom = function(id) {
-  			//int id : roomId
-    	if(id < 0 || id > 20){
+  		//int id : roomId
+		/* BUG #7
+		 * Old Code : if(id < 0 || id > 20)
+		 * New Code : if(id < 0 || id > 17)
+		 */
+    	if(id < 0 || id > 17){
         	return false;
         }
         if (!$scope.roomsData[$scope.roomIndex].blocked) {
@@ -590,7 +598,11 @@ app.controller('administration', ['$scope', '$http', 'Session', function ($scope
          if ($scope.roomsData[num].blocked)
         {
             $scope.roomStatus = "Current Status: Blocked";
-            $scope.option = "Unblock";
+			/* BUG #5
+			 * Old Code : $scope.option = "Unblock";
+			 * New Code : $scope.option = "Block";
+			 */
+            $scope.option = "Block";
         }
         else
         {
@@ -966,7 +978,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
     		
 		    for (var i = 0; i < room.length; i++) {
 		    	
-		        if (room[i].startTime <= hour && room[i].endTime > hour){
+		        if (room[i].startTime < hour && room[i].endTime > hour){
 		            if (room[i].shareable == 1) {
 		            	
 		                return true
@@ -976,6 +988,7 @@ app.controller("reservation", ['$scope', '$http', 'Session', function ($scope, $
 		    
 		    return false;
     	}
+    	return false;
     };
 }]).directive('reservationTable', function($timeout) {
     // handles the hour by hour modal body for the modal opened on map click
